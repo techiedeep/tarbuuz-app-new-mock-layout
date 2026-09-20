@@ -1,0 +1,71 @@
+@if (open) {
+  <div class="drawer-backdrop" (click)="close()" aria-hidden="true"></div>
+}
+
+<aside
+  id="bidding-review-drawer"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Review Bids"
+  class="bidding-drawer"
+  [class.bidding-drawer--open]="open"
+>
+  <div class="bidding-drawer__header">
+    <div class="bidding-drawer__title-group">
+      <div class="header-logo" aria-hidden="true">🏆</div>
+      <div>
+        <h2 class="bidding-drawer__title">Review Bids</h2>
+        <p class="bidding-drawer__subtitle">{{ event ? event.eventName : 'Select the best bid for your event' }}</p>
+      </div>
+    </div>
+    <button type="button" class="bidding-drawer__close" (click)="close()" aria-label="Close Review Bids panel">✕</button>
+  </div>
+
+  <div class="bidding-drawer__body">
+    <!-- Shared gradient definition — SVG url(#) references resolve against
+         the rendered DOM, not Angular component boundaries, so this only
+         needs to exist once here even though every child BidCard's ring
+         references it. -->
+    <svg width="0" height="0" style="position:absolute;pointer-events:none">
+      <defs>
+        <linearGradient id="bidScoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#D4A94A" />
+          <stop offset="100%" stop-color="#B8862E" />
+        </linearGradient>
+      </defs>
+    </svg>
+
+    @if (isLoading()) {
+      <div class="bids-loading">
+        <div class="bids-loading__spinner"></div>
+        <p class="bids-loading__text">Fetching top-rated bids...</p>
+      </div>
+    }
+
+    @if (!isLoading()) {
+      <div class="bid-cards-list">
+        @for (bid of bids(); track bid.id) {
+          <app-bid-card
+            [bid]="bid"
+            [selected]="selectedBidId() === bid.id"
+            [totalGuestCount]="event?.guestCount ?? null"
+            (select)="selectBid($event)"
+          />
+        }
+        @if (bids().length === 0) {
+          <div class="bid-cards-empty">No rated bids available for this event.</div>
+        }
+      </div>
+    }
+  </div>
+
+  <div class="bidding-drawer__footer">
+    @if (showSelectionError()) {
+      <p class="bidding-drawer__no-selection-msg">⚠️ Please select a bid before proceeding.</p>
+    }
+    <div class="bidding-drawer__footer-actions">
+      <button type="button" class="btn btn-secondary" (click)="close()">Cancel</button>
+      <button type="button" class="btn btn-primary" (click)="acceptSelectedBid()">Accept Bid</button>
+    </div>
+  </div>
+</aside>

@@ -1,0 +1,70 @@
+<app-header />
+
+<main class="marketplace">
+
+  <!-- HERO -->
+  <section class="mp-hero">
+    <div class="mp-hero__glow"></div>
+    <div class="mp-hero__eyebrow">Specialty Extras</div>
+    <h1 class="mp-hero__title">The details that make it <span class="mp-hero__accent">unforgettable</span>.</h1>
+    <p class="mp-hero__sub">
+      Cakes, tableware, live music, photography - browse specialty offerings from verified Suppliers
+      across the network, then connect with each one directly.
+    </p>
+  </section>
+
+  <!-- SEARCH + CATEGORY FILTERS -->
+  <section class="mp-filters">
+    <div class="mp-search">
+      <span class="mp-search__icon">🔍</span>
+      <input
+        type="text" class="mp-search__input" placeholder="Search cakes, tableware, photographers…"
+        [value]="searchQuery()" (input)="searchQuery.set($any($event.target).value)"
+      >
+    </div>
+    <div class="mp-category-row">
+      <button type="button" class="mp-chip" [class.selected]="activeCategory() === null" (click)="selectCategory(null)">
+        <span class="mp-chip__icon">✨</span> All
+      </button>
+      @for (cat of categories; track cat.value) {
+        <button type="button" class="mp-chip" [class.selected]="activeCategory() === cat.value" (click)="selectCategory(cat.value)">
+          <span class="mp-chip__icon">{{ cat.icon }}</span> {{ cat.label }}
+          <span class="mp-chip__count">{{ categoryCount(cat.value) }}</span>
+        </button>
+      }
+    </div>
+  </section>
+
+  <!-- LISTINGS -->
+  <section class="mp-grid-wrap">
+    <div class="mp-grid" aria-label="Specialty offerings">
+      @if (filteredListings().length === 0) {
+        <div class="mp-empty">
+          <div class="mp-empty__icon">🔎</div>
+          <p>Nothing matches that search. Try another category or term.</p>
+        </div>
+      }
+      @for (listing of filteredListings(); track listing.id) {
+        <article class="mp-card">
+          <div class="mp-card__icon">{{ listing.icon }}</div>
+          <div class="mp-card__body">
+            <h3 class="mp-card__title">{{ listing.title }}</h3>
+            <p class="mp-card__supplier">
+              by <strong>{{ listing.supplierName }}</strong>
+              · ★ {{ listing.supplierRating }} ({{ listing.supplierReviews }})
+              · {{ listing.location }}
+            </p>
+            <p class="mp-card__desc">{{ listing.description }}</p>
+          </div>
+          <div class="mp-card__foot">
+            <span class="mp-card__price">{{ listing.price }}</span>
+            <a class="mp-view-btn" routerLink="/supplier-profile">View Supplier →</a>
+          </div>
+        </article>
+      }
+    </div>
+  </section>
+
+</main>
+
+<app-footer />

@@ -1,0 +1,15 @@
+<div class="stepper-wrap">
+  <div class="stepper-track" role="list" aria-label="Event lifecycle stages">
+    @for (stage of stages; track stage.num; let last = $last) {
+      <div class="stepper-node" role="listitem" [style.--stagger]="stage.num">
+        <div class="stepper-circle">
+          <span class="stepper-num">{{ stage.num }}</span>
+        </div>
+        <span class="stepper-label">{{ stage.label }}</span>
+      </div>
+      @if (!last) {
+        <div class="stepper-connector" [style.--stagger]="stage.num"><span class="stepper-shimmer"></span></div>
+      }
+    }
+  </div>
+</div>

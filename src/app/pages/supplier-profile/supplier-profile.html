@@ -1,0 +1,267 @@
+<app-header />
+
+<div class="cover"></div>
+
+<div class="header-wrap">
+  <div class="profile-header">
+    <div class="avatar-lg">📦</div>
+    <div class="header-info">
+      <div class="header-name">{{ displayName() }}</div>
+      <p class="header-tagline">{{ profile()?.companyInfo?.description || 'Tell Hosts and Foodies what you make.' }}</p>
+      <div class="header-facts">
+        <span class="rating">★ New</span>
+        <span>· 0 reviews</span>
+        @if (profile()?.companyInfo?.address) {
+          <span>📍 {{ profile()?.companyInfo?.address }}</span>
+        }
+      </div>
+    </div>
+    <div class="header-actions">
+      <div class="switcher-wrap">
+        <button class="switcher-pill" type="button" [class.open]="switcherOpen()" (click)="toggleSwitcher()">
+          <span>👤 Supplier</span>
+          <span class="chev" [class.expanded]="switcherOpen()">›</span>
+        </button>
+        @if (switcherOpen()) {
+          <ul class="profile-switcher-list">
+            <li>
+              <div class="ps-item ps-item--active">
+                <span class="ps-item__name">📦 Supplier</span>
+                <span class="ps-item__badge">Primary</span>
+                <span class="ps-item__check">✓</span>
+              </div>
+            </li>
+            <li><button class="ps-enable-btn" type="button">＋ Enable Foodie</button></li>
+            <li><button class="ps-enable-btn" type="button">＋ Enable Host</button></li>
+          </ul>
+        }
+      </div>
+      @if (!isEditing()) {
+        <button class="btn btn-primary" type="button" (click)="enableEdit()" [disabled]="isLoading()">
+          <span>✏️</span><span>Edit Profile</span>
+        </button>
+      }
+    </div>
+  </div>
+</div>
+
+<div class="tab-strip-wrap">
+  <div class="tab-strip">
+    @for (tab of tabs; track tab.id) {
+      <button
+        type="button"
+        class="tab-btn"
+        [class.active]="activeTab() === tab.id"
+        (click)="scrollToTab(tab.id)">
+        {{ tab.label }}
+      </button>
+    }
+  </div>
+</div>
+
+<div class="body-wrap">
+  <div class="col-left">
+    <div class="card">
+      <div class="card-title">Intro</div>
+      <p class="intro-bio">{{ profile()?.companyInfo?.description || 'Add a company description to introduce yourself to Hosts and Foodies.' }}</p>
+      @if (profile()?.companyInfo?.yearEstablished) {
+        <div class="fact-row"><span class="ico">🏢</span><span>Founded in <b>{{ profile()?.companyInfo?.yearEstablished }}</b></span></div>
+      }
+      @if (profile()?.companyInfo?.serviceArea) {
+        <div class="fact-row"><span class="ico">🚚</span><span>Serves <b>{{ profile()?.companyInfo?.serviceArea }}</b></span></div>
+      }
+      <div class="fact-row"><span class="ico">✅</span><span><b>Verified Supplier</b></span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Featured Products</div>
+      <div class="preview-grid">
+        <div class="preview-offer"><span class="ico">🍦</span><div class="name">Ice Cream Bar</div><div class="price">From $6/guest</div></div>
+        <div class="preview-offer"><span class="ico">🍧</span><div class="name">Sundae Cart</div><div class="price">From $450</div></div>
+      </div>
+      <a class="see-all-link" (click)="scrollToTab('products')">See all products</a>
+    </div>
+  </div>
+
+  <div class="col-right">
+
+    <!-- ═══ COMPANY INFO ═══ -->
+    <div class="section-panel primary" #sectionEl>
+      <div class="section-head">
+        <div><div class="section-title">Company Info</div><div class="section-sub">Manage your business details and contact information</div></div>
+      </div>
+
+      @if (isLoading()) {
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <p>Loading profile...</p>
+        </div>
+      }
+
+      @if (!isLoading()) {
+        <form [formGroup]="companyForm" (ngSubmit)="saveCompanyInfo()">
+          @if (error()) {
+            <div class="info-message" role="alert" style="color:var(--danger); border-color:rgba(226,114,108,.3); background:rgba(226,114,108,.08);">
+              <span>⚠️</span><span>{{ error() }}</span>
+            </div>
+          }
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Company Name <span class="required">*</span></label>
+              <input type="text" class="form-input" formControlName="companyName" placeholder="Enter Company Name">
+              @if (hasError('companyName')) { <div class="form-error">{{ getErrorMessage('companyName') }}</div> }
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Product Category <span class="required">*</span></label>
+              @if (!isEditing()) {
+                <input type="text" class="form-input" [value]="getProductCategoryLabel(companyForm.get('productCategory')?.value)" readonly>
+              } @else {
+                <select class="form-select" formControlName="productCategory">
+                  <option value="" disabled>Select Product Category</option>
+                  @for (category of productCategoryOptions; track category.value) {
+                    <option [value]="category.value">{{ category.label }}</option>
+                  }
+                </select>
+              }
+              @if (hasError('productCategory')) { <div class="form-error">{{ getErrorMessage('productCategory') }}</div> }
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Company Address <span class="required">*</span></label>
+              <input type="text" class="form-input" formControlName="address" placeholder="Address, City, State, Country, Zip">
+              @if (hasError('address')) { <div class="form-error">{{ getErrorMessage('address') }}</div> }
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">First Name <span class="required">*</span></label>
+              <input type="text" class="form-input" formControlName="firstName" autocomplete="given-name" placeholder="Enter First Name">
+              @if (hasError('firstName')) { <div class="form-error">{{ getErrorMessage('firstName') }}</div> }
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Last Name <span class="required">*</span></label>
+              <input type="text" class="form-input" formControlName="lastName" autocomplete="family-name" placeholder="Enter Last Name">
+              @if (hasError('lastName')) { <div class="form-error">{{ getErrorMessage('lastName') }}</div> }
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Email <span class="required">*</span></label>
+              <input type="email" class="form-input" formControlName="email" placeholder="Enter Email Address">
+              @if (hasError('email')) { <div class="form-error">{{ getErrorMessage('email') }}</div> }
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Phone Number <span class="required">*</span></label>
+              <input type="tel" class="form-input" formControlName="phoneNumber" placeholder="Enter Phone Number">
+              <div class="form-hint">Include country code (e.g. +1 5551234567 or +44 7911 123456)</div>
+              @if (hasError('phoneNumber')) { <div class="form-error">{{ getErrorMessage('phoneNumber') }}</div> }
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Website</label>
+              <input type="url" class="form-input" formControlName="website" placeholder="https://yourcompany.com">
+              @if (hasError('website')) { <div class="form-error">{{ getErrorMessage('website') }}</div> }
+            </div>
+          </div>
+
+          <div class="form-group description-group">
+            <label class="form-label">Company Description <span class="required">*</span></label>
+            <textarea class="form-textarea" formControlName="description" rows="4" maxlength="500" placeholder="Describe your company, products, or services"></textarea>
+            <div class="helper-text">{{ descriptionLength() }} / 500 characters</div>
+            @if (hasError('description')) { <div class="form-error">{{ getErrorMessage('description') }}</div> }
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Year Established</label>
+              <input type="number" class="form-input" formControlName="yearEstablished" min="1900" max="2024" placeholder="e.g. 2005">
+              @if (hasError('yearEstablished')) { <div class="form-error">{{ getErrorMessage('yearEstablished') }}</div> }
+            </div>
+            <div class="form-group">
+              <label class="form-label">Service Area</label>
+              <input type="text" class="form-input" formControlName="serviceArea" placeholder="e.g. Austin, TX">
+              @if (hasError('serviceArea')) { <div class="form-error">{{ getErrorMessage('serviceArea') }}</div> }
+            </div>
+          </div>
+
+          @if (isEditing()) {
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" [disabled]="isSaving()">
+                <span>{{ isSaving() ? '' : '💾' }}</span>
+                @if (isSaving()) { <span class="spinner-small"></span> }
+                <span>{{ isSaving() ? 'Saving…' : 'Save Changes' }}</span>
+              </button>
+              <button type="button" class="btn btn-secondary" (click)="cancelEdit()" [disabled]="isSaving()">
+                <span>❌</span><span>Cancel</span>
+              </button>
+            </div>
+          } @else {
+            <div class="info-message"><span>💡</span><span>Click "Edit Profile" to update your company information</span></div>
+          }
+        </form>
+      }
+    </div>
+
+    <!-- ═══ PRODUCTS ═══ -->
+    <div class="section-panel" #sectionEl>
+      <div class="section-head">
+        <div><div class="section-title">Products</div><div class="section-sub">What Hosts and Foodies can request from you</div></div>
+        <button type="button" class="btn-ghost-sm">＋ Add Product</button>
+      </div>
+      <div class="catalog-grid">
+        <div class="offer-card"><div class="offer-icon">🍦</div><div class="offer-name">Small-Batch Ice Cream Bar</div><div class="offer-desc">3–5 flavors from our current rotation, self-serve or scooped.</div><div class="offer-price">From $6 / guest</div></div>
+        <div class="offer-card"><div class="offer-icon">🎨</div><div class="offer-name">Custom Flavor Creation</div><div class="offer-desc">A flavor built around your event, developed just for the occasion.</div><div class="offer-price">From $180 flat + $4 / guest</div></div>
+        <div class="offer-card"><div class="offer-icon">🍧</div><div class="offer-name">Sundae Cart Rental</div><div class="offer-desc">Full build-your-own sundae station, delivered and staffed.</div><div class="offer-price">From $450 / event</div></div>
+        <div class="offer-card"><div class="offer-icon">🌱</div><div class="offer-name">Dietary-Friendly Options</div><div class="offer-desc">Fully vegan and dairy-free bases, same pricing as standard menu.</div><div class="offer-price">No upcharge</div></div>
+      </div>
+    </div>
+
+    <!-- ═══ CERTIFICATIONS ═══ -->
+    <div class="section-panel" #sectionEl>
+      <div class="section-head">
+        <div><div class="section-title">Certifications</div><div class="section-sub">Verified credentials Hosts can see on your profile</div></div>
+        <button type="button" class="btn-ghost-sm">＋ Upload Certification</button>
+      </div>
+      <div class="cert-list">
+        <div class="cert-card"><div class="cert-icon">📜</div><div class="cert-body"><div class="cert-name">Food Handler Certification</div><div class="cert-meta">Expires Dec 2027</div></div><span class="status-badge status-verified">Verified</span></div>
+        <div class="cert-card"><div class="cert-icon">🏥</div><div class="cert-body"><div class="cert-name">Local Health Permit</div><div class="cert-meta">Expires Mar 2027</div></div><span class="status-badge status-verified">Verified</span></div>
+        <div class="cert-card"><div class="cert-icon">🛡️</div><div class="cert-body"><div class="cert-name">General Liability Insurance</div><div class="cert-meta">Submitted Aug 2026</div></div><span class="status-badge status-pending">Pending Review</span></div>
+      </div>
+    </div>
+
+    <!-- ═══ SETTINGS ═══ -->
+    <div class="section-panel" #sectionEl>
+      <div class="section-head">
+        <div><div class="section-title">Settings</div><div class="section-sub">Notifications and account preferences</div></div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-text"><b>New bid request alerts</b><span>Get notified when an event matches your category</span></div>
+        <label class="toggle">
+          <input type="checkbox" [checked]="profile()?.settings?.newBidAlerts" (change)="toggleSetting('newBidAlerts')">
+          <span class="toggle-track"></span><span class="toggle-thumb"></span>
+        </label>
+      </div>
+      <div class="setting-row">
+        <div class="setting-text"><b>SMS notifications</b><span>Time-sensitive alerts only</span></div>
+        <label class="toggle">
+          <input type="checkbox" [checked]="profile()?.settings?.smsNotifications" (change)="toggleSetting('smsNotifications')">
+          <span class="toggle-track"></span><span class="toggle-thumb"></span>
+        </label>
+      </div>
+      <div class="setting-row">
+        <div class="setting-text"><b>Public profile</b><span>Let Hosts and Foodies browse your catalog</span></div>
+        <label class="toggle">
+          <input type="checkbox" [checked]="profile()?.settings?.publicProfile" (change)="toggleSetting('publicProfile')">
+          <span class="toggle-track"></span><span class="toggle-thumb"></span>
+        </label>
+      </div>
+      <div class="danger-zone">
+        <button type="button" class="danger-link">Deactivate account</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<app-footer />

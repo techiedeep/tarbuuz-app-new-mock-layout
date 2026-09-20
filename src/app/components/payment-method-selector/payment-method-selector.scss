@@ -1,0 +1,62 @@
+/**
+ * Fully self-contained - this component never assumes a parent page's
+ * stylesheet happens to already define .form-input, .btn-proceed, etc.
+ * (the same mistake the bid-cart styling rebuild fixed for that page's
+ * own classes - a component reused elsewhere shouldn't inherit that
+ * same fragility).
+ */
+
+.payment-method-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: .5rem; margin-bottom: 1.3rem; }
+@media (max-width: 560px) { .payment-method-row { grid-template-columns: repeat(3, 1fr); } }
+.payment-method-btn {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .35rem;
+  background: #1C1F2A; border: 1.5px solid rgba(255,255,255,.1); border-radius: 12px; padding: .7rem .4rem;
+  cursor: pointer; transition: border-color .15s, transform .15s; color: #cfcac0; font-size: .68rem; font-weight: 700;
+  font-family: 'Inter', sans-serif;
+}
+.payment-method-btn:hover { transform: translateY(-1px); border-color: rgba(255,255,255,.25); }
+.payment-method-btn.active { border-color: #D4A94A; background: rgba(212,169,74,.08); }
+.pm-icon { display: flex; align-items: center; justify-content: center; font-size: .95rem; }
+
+/* Brand-accurate treatments, matching each provider's real look rather
+   than one generic icon style - a Foodie recognizes "PayPal blue" and
+   "black Apple Pay pill" faster than a uniform monochrome glyph set. */
+.pm-icon--paypal { color: #003087; font-weight: 700; font-size: .82rem; font-family: Georgia, serif; font-style: italic; }
+.pm-icon--paypal b { color: #0070BA; }
+.pm-icon--venmo { color: #3D95CE; font-weight: 800; font-size: .82rem; text-transform: lowercase; letter-spacing: -.02em; }
+.pm-icon--gpay { display: flex; align-items: center; gap: .2rem; font-weight: 600; font-size: .78rem; color: #5f6368; }
+.gpay-g { color: #4285F4; font-weight: 800; }
+.payment-method-btn[data-method="gpay"] { background: #fff; }
+.payment-method-btn[data-method="gpay"] .pm-icon--gpay { color: #3c4043; }
+.payment-method-btn[data-method="gpay"]:hover, .payment-method-btn[data-method="gpay"].active { border-color: #4285F4; background: #fff; }
+.pm-icon--applepay { display: flex; align-items: center; gap: .15rem; }
+.payment-method-btn[data-method="applepay"] { background: #000; color: #fff; }
+.payment-method-btn[data-method="applepay"] .pm-icon--applepay { color: #fff; }
+.payment-method-btn[data-method="applepay"]:hover, .payment-method-btn[data-method="applepay"].active { border-color: #fff; }
+
+/* ═══ CARD FORM ═══ */
+.mock-payment-form .form-group { margin-bottom: 1rem; }
+.mock-payment-form label { display: block; font-size: .78rem; font-weight: 700; color: #cfcac0; margin-bottom: .4rem; }
+.form-input {
+  width: 100%; box-sizing: border-box; background: #1C1F2A; border: 1.5px solid rgba(255,255,255,.12); border-radius: 10px; color: #fff;
+  font: 500 .88rem/1.4 'Inter', sans-serif; padding: .7rem .9rem; outline: none;
+}
+.form-input:focus { border-color: #D4A94A; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+@media (max-width: 420px) { .form-row { grid-template-columns: 1fr; } }
+
+/* ═══ REDIRECT-STYLE PANEL (PayPal / Venmo / Google Pay / Apple Pay) ═══ */
+.redirect-payment-panel { text-align: center; padding: 1.6rem 1rem; background: #1C1F2A; border-radius: 14px; margin-bottom: 1.1rem; }
+.redirect-icon { font-size: 2rem; margin-bottom: .8rem; }
+.redirect-text { font-size: .85rem; color: #A39D8F; line-height: 1.5; margin-bottom: 1.2rem; }
+.redirect-text strong { color: #fff; }
+
+/* ═══ SHARED PAY / CONTINUE BUTTON ═══ */
+.btn-proceed {
+  width: 100%; display: flex; align-items: center; justify-content: center; gap: .5rem;
+  background: linear-gradient(135deg, #D4A94A, #B8862E); color: #0F1117; font-weight: 700; font-size: .95rem;
+  border: none; border-radius: 999px; padding: .95rem; cursor: pointer; box-shadow: 0 10px 26px -8px rgba(212,169,74,.5);
+  transition: transform .2s; font-family: 'Inter', sans-serif;
+}
+.btn-proceed:hover { transform: translateY(-2px); }
+.btn-proceed:disabled { opacity: .6; cursor: not-allowed; transform: none; }

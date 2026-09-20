@@ -1,0 +1,157 @@
+<app-header />
+
+<div class="checkout-page">
+
+  <header class="checkout-page__header">
+    <button class="checkout-back-btn" (click)="goToBuuz()" aria-label="Back to Buuz">
+      <span aria-hidden="true">←</span> Back to Buuz
+    </button>
+    <div class="checkout-page__title-group">
+      <div class="checkout-page__icon" aria-hidden="true">
+        <svg class="checkout-page__icon-svg" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 4h2l1.6 10.6a2 2 0 0 0 2 1.7h8.4a2 2 0 0 0 2-1.6L20.4 8H6.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="9.5" cy="20" r="1.4" fill="currentColor"/>
+          <circle cx="17.5" cy="20" r="1.4" fill="currentColor"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="checkout-page__title">Checkout</h1>
+        <p class="checkout-page__subtitle">Review your kits before paying</p>
+      </div>
+    </div>
+  </header>
+
+  @if (!hasItems() && !showSuccessModal()) {
+    <div class="checkout-empty">
+      <svg class="checkout-empty__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M3 4h2l1.6 10.6a2 2 0 0 0 2 1.7h8.4a2 2 0 0 0 2-1.6L20.4 8H6.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="9.5" cy="20" r="1.3" fill="currentColor"/>
+        <circle cx="17.5" cy="20" r="1.3" fill="currentColor"/>
+      </svg>
+      <p>Your cart is empty.</p>
+      <button type="button" class="btn-proceed" (click)="goToBuuz()">Build a Kit →</button>
+    </div>
+  } @else if (hasItems()) {
+
+    <!-- Step indicator -->
+    <div class="checkout-steps" aria-hidden="true">
+      <span class="checkout-step" [class.checkout-step--current]="checkoutStep() === 'summary'" [class.checkout-step--done]="checkoutStep() === 'payment'">
+        <span class="checkout-step__dot">{{ checkoutStep() === 'payment' ? '✓' : '1' }}</span> Order Summary
+      </span>
+      <span class="checkout-step__line"></span>
+      <span class="checkout-step" [class.checkout-step--current]="checkoutStep() === 'payment'">
+        <span class="checkout-step__dot">2</span> Payment
+      </span>
+    </div>
+
+    <div class="checkout-layout">
+
+      <!-- ── Left: step content ── -->
+      <div class="checkout-left">
+        @if (checkoutStep() === 'summary') {
+          <section class="checkout-card fade-in">
+            <h2 class="checkout-card__title">Your Kits</h2>
+            @for (item of items(); track item.id) {
+              <div class="checkout-line">
+                <div class="checkout-line__thumb" aria-hidden="true">{{ item.formatIcon }}</div>
+                <div class="checkout-line__body">
+                  <div class="checkout-line__name">{{ item.formatName }} Kit</div>
+                  <div class="checkout-line__detail">Qty {{ item.quantity }} · {{ item.mixSummary }}</div>
+                </div>
+                <div class="checkout-line__price">{{ item.unitPrice * item.quantity | currency:'USD':'symbol':'1.2-2' }}</div>
+              </div>
+            }
+            <p class="checkout-edit-hint">Need to change quantities? <a (click)="goToBuuz()">Edit your cart</a> from the Buuz page.</p>
+          </section>
+
+          <section class="checkout-card fade-in">
+            <h2 class="checkout-card__title">Delivery Address</h2>
+            <div class="form-group">
+              <label class="form-label" for="deliveryAddress">Shipping Address <span class="required">*</span></label>
+              <input
+                id="deliveryAddress"
+                type="text"
+                class="form-input"
+                [class.error]="addressMissing()"
+                placeholder="123 Market St, San Francisco, CA 94103"
+                [value]="deliveryAddress()"
+                (input)="deliveryAddress.set($any($event.target).value)"
+                (blur)="addressTouched.set(true)"
+                autocomplete="street-address"
+              >
+              @if (addressMissing()) {
+                <div class="field-error" role="alert">A delivery address is required</div>
+              }
+            </div>
+          </section>
+
+          <button type="button" class="btn-proceed" (click)="proceedToPayment()">
+            <span aria-hidden="true">🔒</span> Continue to Payment <span aria-hidden="true">→</span>
+          </button>
+        }
+
+        @if (checkoutStep() === 'payment') {
+          <section class="checkout-card fade-in">
+            <div class="payment-header">
+              <button type="button" class="payment-back-btn" (click)="backToSummary()" aria-label="Back to order summary">← Back to summary</button>
+              <div class="payment-amount-recap">
+                <span class="payment-amount-label">Paying</span>
+                <span class="payment-amount-value">{{ grandTotal() | currency:'USD':'symbol':'1.2-2' }}</span>
+              </div>
+            </div>
+
+            <div class="checkout-divider"></div>
+
+            @if (paymentErrorMessage()) {
+              <p class="payment-error" role="alert">{{ paymentErrorMessage() }}</p>
+            }
+            <app-payment-method-selector
+              [amount]="grandTotal()"
+              currency="USD"
+              [isSubmitting]="isSubmittingPayment()"
+              (paymentSubmitted)="submitPayment($event)"
+            />
+          </section>
+        }
+      </div><!-- /checkout-left -->
+
+      <!-- ── Right: order total ── -->
+      <aside class="checkout-right" aria-label="Order total">
+        <div class="checkout-summary-card fade-in">
+          <h3 class="checkout-summary__title">Order Total</h3>
+          <div class="checkout-summary__lines">
+            <div class="checkout-summary__line">
+              <span>Subtotal</span><span>{{ subtotal() | currency:'USD':'symbol':'1.2-2' }}</span>
+            </div>
+            <div class="checkout-summary__line">
+              <span>Shipping</span><span>{{ shipping() | currency:'USD':'symbol':'1.2-2' }}</span>
+            </div>
+            <div class="checkout-summary__divider"></div>
+            <div class="checkout-summary__line checkout-summary__line--total">
+              <span>Total</span><span>{{ grandTotal() | currency:'USD':'symbol':'1.2-2' }}</span>
+            </div>
+          </div>
+          <div class="checkout-trust">
+            <span>🔐 Secure checkout</span>
+            <span>📋 Instant confirmation</span>
+          </div>
+        </div>
+      </aside>
+
+    </div><!-- /checkout-layout -->
+  }
+
+</div>
+
+<app-footer />
+
+@if (showSuccessModal()) {
+  <div class="modal-overlay" (click)="closeSuccessModal()">
+    <div class="modal success-modal" (click)="$event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="checkoutSuccessTitle">
+      <div class="modal-icon-wrap"><div class="modal-icon">✓</div></div>
+      <h2 class="modal-title" id="checkoutSuccessTitle">Order Confirmed!</h2>
+      <p class="modal-sub">Your Buuz kits are on the way. A receipt has been sent to your email.</p>
+      <button type="button" class="btn-primary-full" (click)="closeSuccessModal()">Back to Buuz</button>
+    </div>
+  </div>
+}

@@ -1,0 +1,118 @@
+// Careers — reuses Tarbuuz's established ink/amber/indigo palette (this
+// is an existing product, not a fresh brand), but deliberately avoids
+// this app's own "uniform card grid" pattern for every section here.
+// Only the submission form is boxed — it's the one place structure
+// actually helps; everything above it leans on type scale and an
+// intentionally uneven grid instead of repeated identical cards.
+:host { display: block; background: #0F1117; color: #F5F3EE; }
+
+.careers { overflow-x: hidden; }
+
+// ── Hero — the one bold moment on the page ──
+.hero {
+  position: relative; max-width: 900px; margin: 0 auto; padding: 5rem 2rem 4rem;
+  text-align: left;
+}
+.glow {
+  position: absolute; top: -20%; left: -10%; width: 500px; height: 500px; border-radius: 50%;
+  background: #D4A94A; opacity: .1; filter: blur(80px); pointer-events: none;
+}
+.hero-title {
+  position: relative; font-family: 'Cormorant Garamond', serif; font-weight: 700;
+  font-size: clamp(2.4rem, 6vw, 4.2rem); line-height: 1.12; margin-bottom: 1.6rem;
+}
+.role-cycle {
+  position: relative; display: inline-block; min-width: 16ch; height: 1.1em; vertical-align: bottom;
+  font-style: italic; color: #D4A94A;
+}
+.role-word {
+  position: absolute; left: 0; top: 0; white-space: nowrap;
+  opacity: 0; transform: translateY(.3em);
+  transition: opacity .5s ease, transform .5s ease;
+}
+.role-word.active { opacity: 1; transform: translateY(0); }
+.hero-sub { position: relative; color: #A39D8F; font-size: 1.05rem; line-height: 1.6; max-width: 56ch; margin-bottom: 2rem; }
+.hero-cta { position: relative; color: #D4A94A; font-weight: 700; font-size: 1rem; text-decoration: none; border-bottom: 1.5px solid rgba(212, 169, 74, .4); padding-bottom: .2rem; }
+.hero-cta:hover { border-color: #D4A94A; }
+
+// ── Teams — deliberately uneven grid, not a uniform card kit ──
+.teams { max-width: 1080px; margin: 0 auto; padding: 1rem 2rem 5rem; }
+.section-title { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.7rem; margin-bottom: 2rem; }
+.teams-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1.2rem; }
+.team {
+  background: #151822; border: 1.5px solid rgba(255, 255, 255, .08); border-radius: 16px; padding: 1.6rem 1.5rem;
+}
+.team h3 { font-family: 'Cormorant Garamond', serif; font-weight: 700; margin-bottom: .6rem; }
+.team p { color: #A39D8F; font-size: .92rem; line-height: 1.55; }
+.team--lg { grid-column: span 4; }
+.team--md { grid-column: span 3; }
+.team--sm { grid-column: span 2; }
+.team--lg h3 { font-size: 1.5rem; }
+.team--md h3 { font-size: 1.3rem; }
+.team--sm h3 { font-size: 1.15rem; }
+@media (max-width: 860px) {
+  .teams-grid { grid-template-columns: repeat(2, 1fr); }
+  .team--lg, .team--md, .team--sm { grid-column: span 1; }
+}
+@media (max-width: 560px) {
+  .teams-grid { grid-template-columns: 1fr; }
+}
+
+// ── Submission — the functional heart, so it gets real structure ──
+.pitch-section { max-width: 700px; margin: 0 auto; padding: 1rem 2rem 6rem; }
+.pitch-card { background: #151822; border: 1.5px solid rgba(255, 255, 255, .1); border-radius: 24px; padding: 2.4rem 2.2rem; }
+.pitch-head h2 { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.7rem; margin-bottom: .5rem; }
+.pitch-head p { color: #A39D8F; font-size: .92rem; line-height: 1.55; margin-bottom: 1.8rem; }
+
+.field-group { margin-bottom: 1.2rem; }
+.field-label { display: block; font-weight: 700; font-size: .82rem; color: #A39D8F; margin-bottom: .55rem; }
+.field-label .opt { font-weight: 500; font-style: italic; color: #8B8478; }
+.field-input {
+  width: 100%; font: 400 1rem/1 'Inter', sans-serif; color: #fff; background: #1C1F2A;
+  border: 1.5px solid rgba(255, 255, 255, .18); border-radius: 12px; padding: .8rem 1rem; outline: none;
+}
+.field-input:focus { border-color: #D4A94A; }
+.field-input.field-error { border-color: #e2726c; }
+.field-error-msg { color: #e2726c; font-size: .78rem; font-weight: 600; margin-top: .4rem; }
+.field-input::placeholder { color: #8B8478; }
+.field-textarea { resize: vertical; min-height: 90px; font-family: 'Inter', sans-serif; line-height: 1.5; }
+.field-textarea--lead { min-height: 120px; font-size: 1.05rem; border-color: rgba(212, 169, 74, .3); }
+
+.field-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+@media (max-width: 560px) { .field-row { grid-template-columns: 1fr; } }
+
+.area-chips { display: flex; flex-wrap: wrap; gap: .6rem; }
+.area-chip {
+  background: #1C1F2A; border: 1.5px solid rgba(255, 255, 255, .18); border-radius: 999px;
+  color: #cfcac0; font: 600 .85rem/1 'Inter', sans-serif; padding: .6rem 1.1rem; cursor: pointer;
+  transition: border-color .2s, color .2s, background .2s;
+}
+.area-chip:hover { border-color: rgba(212, 169, 74, .4); }
+.area-chip.selected { background: rgba(212, 169, 74, .12); border-color: #D4A94A; color: #D4A94A; }
+
+.btn-submit {
+  width: 100%; margin-top: .6rem; background: linear-gradient(135deg, #D4A94A, #B8862E); color: #0F1117;
+  font-weight: 700; font-size: .98rem; border: none; border-radius: 999px; padding: .95rem 1.5rem; cursor: pointer;
+  box-shadow: 0 10px 26px -8px rgba(212, 169, 74, .5); transition: transform .2s, opacity .2s;
+}
+.btn-submit:hover:not(:disabled) { transform: translateY(-2px); }
+.btn-submit:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+
+.pitch-sent { text-align: center; padding: 1.5rem 0; }
+.sent-icon {
+  width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 1.2rem;
+  background: rgba(74, 155, 110, .12); border: 2px solid rgba(74, 155, 110, .4); color: #4A9B6E;
+  font-size: 1.8rem; font-weight: 800; display: flex; align-items: center; justify-content: center;
+}
+.pitch-sent h2 { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.6rem; margin-bottom: .5rem; }
+.pitch-sent p { color: #A39D8F; font-size: .92rem; line-height: 1.55; max-width: 44ch; margin: 0 auto 1.6rem; }
+.btn-ghost {
+  background: transparent; color: #fff; font-weight: 700; font-size: .92rem;
+  border: 1.5px solid rgba(255, 255, 255, .18); border-radius: 999px; padding: .8rem 1.6rem; cursor: pointer;
+}
+.btn-ghost:hover { border-color: #D4A94A; color: #D4A94A; }
+
+@media (max-width: 640px) {
+  .hero { padding: 3.5rem 1.2rem 3rem; }
+  .pitch-card { padding: 1.8rem 1.4rem; }
+}

@@ -1,0 +1,145 @@
+// Host Dashboard — merges the styles of the two pages this replaces
+// (Bidding Events + Submitted Bids), plus a tab bar. Kept the wider
+// 1200px container from Bidding Events since the opportunity grid needs
+// the room; the bid list (simple stacked rows) looks equally fine there.
+.nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.1rem 2.4rem; border-bottom: 1px solid rgba(255, 255, 255, .06);
+  position: sticky; top: 0; background: rgba(15, 17, 23, .92);
+  backdrop-filter: blur(10px); z-index: 100;
+}
+.nav-logo { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.4rem; color: #fff; }
+.nav-logo .dot { color: #D4A94A; }
+
+.page-body { background: #0F1117; min-height: 100vh; padding: 2rem; }
+.page-container { max-width: 1200px; margin: 0 auto; }
+
+.page-header {
+  display: flex; align-items: center; justify-content: flex-end; gap: 1.5rem;
+  flex-wrap: wrap; margin-bottom: 1.6rem;
+}
+
+.header-stats { display: flex; gap: .8rem; }
+.header-stat {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: #151822; border: 1.5px solid rgba(255, 255, 255, .08); border-radius: 14px;
+  padding: .8rem 1.3rem; flex-shrink: 0;
+}
+.header-stat-v { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.6rem; color: #D4A94A; }
+.header-stat-k { font-size: .66rem; color: #8B8478; text-transform: uppercase; letter-spacing: .05em; white-space: nowrap; }
+// Won count gets its own accent color, distinct from the amber used for
+// "attention" stats (strong matches, awaiting response) — green reads
+// as "resolved and good," matching the same win/pending/declined color
+// language already used on the status badges below.
+.header-stat--won .header-stat-v { color: #4A9B6E; }
+
+// ── Tab bar — the actual fix for "two dashboards, clumsy to check both" ──
+// One page, one set of stats, one click to switch context instead of a
+// full navigation and page reload to check the other list.
+.tab-bar { display: flex; gap: .6rem; margin-bottom: 1.8rem; border-bottom: 1px solid rgba(255,255,255,.08); }
+.tab-btn {
+  display: flex; align-items: center; gap: .5rem; background: none; border: none;
+  border-bottom: 2px solid transparent; color: #8B8478; font: 700 .92rem/1 'Inter', sans-serif;
+  padding: .8rem .3rem 1rem; cursor: pointer; transition: color .15s, border-color .15s;
+}
+.tab-btn:hover { color: #cfcac0; }
+.tab-btn--active { color: #D4A94A; border-color: #D4A94A; }
+.tab-count {
+  background: rgba(255,255,255,.08); color: #A39D8F; font-size: .74rem; font-weight: 700;
+  padding: .1rem .5rem; border-radius: 999px;
+}
+.tab-btn--active .tab-count { background: rgba(212,169,74,.18); color: #D4A94A; }
+
+.loading-state { display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 4rem 0; color: #8B8478; }
+.spinner { width: 32px; height: 32px; border-radius: 50%; border: 3px solid rgba(255,255,255,.1); border-top-color: #D4A94A; animation: hd-spin .8s linear infinite; }
+@keyframes hd-spin { to { transform: rotate(360deg); } }
+
+// ── Opportunities tab ──
+.opportunity-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.4rem; }
+.opp-card {
+  background: #151822; border: 1.5px solid rgba(255, 255, 255, .08); border-radius: 18px;
+  padding: 1.4rem; display: flex; flex-direction: column; gap: .7rem;
+  transition: transform .25s, border-color .25s;
+}
+.opp-card:hover { transform: translateY(-3px); border-color: rgba(212, 169, 74, .3); }
+.opp-card-top { display: flex; align-items: center; justify-content: space-between; }
+.opp-icon { font-size: 1.6rem; }
+.match-pill { font-size: .68rem; font-weight: 800; padding: .22rem .6rem; border-radius: 999px; white-space: nowrap; }
+.match-high { color: #4A9B6E; background: rgba(74, 155, 110, .12); border: 1px solid rgba(74, 155, 110, .3); }
+.match-medium { color: #F0DCA0; background: rgba(212, 169, 74, .12); border: 1px solid rgba(212, 169, 74, .3); }
+.match-low { color: #8B8478; background: rgba(255, 255, 255, .06); border: 1px solid rgba(255, 255, 255, .12); }
+
+.opp-name { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.15rem; color: #fff; }
+
+// ── Shared detail grid/chips/row — same values as the Foodie dashboard's
+// event-card.scss, reused rather than reinvented so an opportunity card
+// and a Foodie's own event card read as the same visual language.
+.details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .55rem 1rem; margin: .6rem 0; }
+.detail-cell, .detail-row { display: flex; align-items: center; gap: .5rem; min-width: 0; }
+.detail-row { margin-bottom: .6rem; }
+.detail-row--empty { min-height: 1.2rem; }
+.detail-icon { font-size: .9rem; flex-shrink: 0; }
+.detail-text { font-size: .8rem; color: #A39D8F; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.location-cell { margin-bottom: .7rem; }
+
+.cuisine-chips {
+  display: flex; flex-wrap: wrap; align-items: flex-start; align-content: flex-start;
+  gap: .4rem; margin-bottom: .7rem; min-height: 1.9rem;
+}
+.cuisine-chip {
+  align-self: flex-start; flex-shrink: 0; font-size: .72rem; font-weight: 600;
+  background: #1C1F2A; border: 1px solid rgba(255, 255, 255, .1); border-radius: 999px;
+  padding: .3rem .65rem; color: #fff;
+}
+.cuisine-chip--more { background: transparent; border-style: dashed; border-color: rgba(212, 169, 74, .4); color: #D4A94A; }
+
+.opp-footer { margin-top: auto; padding-top: .8rem; border-top: 1px solid rgba(255, 255, 255, .06); display: flex; align-items: center; justify-content: space-between; gap: .6rem; flex-wrap: wrap; }
+.opp-footer-left { display: flex; flex-direction: column; gap: .2rem; }
+.closing-text { font-size: .76rem; font-weight: 700; color: #D4A94A; }
+.budget-text { font-size: .76rem; color: #A39D8F; }
+.btn-submit-bid {
+  padding: .55rem 1.1rem; border: none; border-radius: 999px;
+  background: linear-gradient(135deg, #D4A94A, #B8862E); color: #0F1117;
+  font-family: 'Inter', sans-serif; font-size: .8rem; font-weight: 700; cursor: pointer;
+  transition: transform .2s;
+}
+.btn-submit-bid:hover { transform: translateY(-1px); }
+
+// ── Bids tab — redesigned to match the opportunity cards' visual
+// language rather than sit as flat, dense rows next to them. Splitting
+// the meta into separate icon-prefixed fields (matching .opp-meta)
+// instead of one dot-joined string, and moving the status badge to the
+// same top-right position the match-pill occupies, makes switching
+// between tabs feel like the same page rather than two different ones.
+.bid-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.4rem; }
+.bid-card {
+  background: #151822; border: 1.5px solid rgba(255, 255, 255, .08); border-radius: 18px;
+  padding: 1.4rem; display: flex; flex-direction: column; gap: .7rem;
+  transition: transform .25s, border-color .25s;
+}
+.bid-card:hover { transform: translateY(-3px); border-color: rgba(212, 169, 74, .2); }
+.bid-card-top { display: flex; align-items: center; justify-content: space-between; }
+.bid-icon { font-size: 1.6rem; }
+.bid-name { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.15rem; color: #fff; }
+
+.bid-footer { margin-top: auto; padding-top: .8rem; border-top: 1px solid rgba(255, 255, 255, .06); display: flex; align-items: baseline; justify-content: space-between; }
+.bid-amount-label { font-size: .74rem; color: #8B8478; }
+.bid-amount { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.15rem; color: #D4A94A; }
+
+.status-badge { font-size: .66rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; padding: .25rem .65rem; border-radius: 999px; flex-shrink: 0; white-space: nowrap; }
+.status-won { color: #4A9B6E; background: rgba(74, 155, 110, .12); border: 1px solid rgba(74, 155, 110, .3); }
+.status-pending { color: #F0DCA0; background: rgba(212, 169, 74, .12); border: 1px solid rgba(212, 169, 74, .3); }
+.status-declined { color: #e2726c; background: rgba(226, 114, 108, .1); border: 1px solid rgba(226, 114, 108, .3); }
+
+.empty-state { grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; color: #8B8478; }
+.empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+
+footer { border-top: 1px solid rgba(255, 255, 255, .06); background: #151822; }
+.foot-inner { max-width: 1200px; margin: 0 auto; padding: 2rem 2.4rem; text-align: center; color: #8B8478; font-size: .85rem; }
+
+@media (max-width: 640px) {
+  .page-body { padding: 1.2rem; }
+  .header-stats { flex-wrap: wrap; }
+  .tab-bar { overflow-x: auto; }
+  .tab-btn { white-space: nowrap; }
+}

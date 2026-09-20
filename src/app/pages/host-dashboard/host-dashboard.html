@@ -1,0 +1,185 @@
+<app-header />
+
+<div class="page-body">
+  <div class="page-container">
+
+    <header class="page-header">
+      <div class="header-stats">
+        <div class="header-stat"><span class="header-stat-v">{{ highMatchCount() }}</span><span class="header-stat-k">Strong Matches</span></div>
+        <div class="header-stat"><span class="header-stat-v">{{ pendingCount() }}</span><span class="header-stat-k">Awaiting Response</span></div>
+        <div class="header-stat header-stat--won"><span class="header-stat-v">{{ wonCount() }}</span><span class="header-stat-k">Won</span></div>
+      </div>
+    </header>
+
+    <div class="tab-bar" role="tablist">
+      <button
+        type="button" role="tab" class="tab-btn" [class.tab-btn--active]="activeTab() === 'opportunities'"
+        (click)="selectTab('opportunities')">
+        🎯 New Opportunities <span class="tab-count">{{ opportunities().length }}</span>
+      </button>
+      <button
+        type="button" role="tab" class="tab-btn" [class.tab-btn--active]="activeTab() === 'bids'"
+        (click)="selectTab('bids')">
+        📋 My Bids <span class="tab-count">{{ bids().length }}</span>
+      </button>
+    </div>
+
+    @if (isLoading()) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Loading your dashboard...</p>
+      </div>
+    }
+
+    @if (!isLoading() && activeTab() === 'opportunities') {
+      <div class="opportunity-grid">
+        @for (opp of opportunities(); track opp.id) {
+          <article class="opp-card">
+            <div class="opp-card-top">
+              <span class="opp-icon">{{ opp.icon }}</span>
+              <span class="match-pill match-{{ matchTier(opp.matchScore) }}">{{ opp.matchScore }}% fit</span>
+            </div>
+            <h3 class="opp-name">{{ opp.eventName }}</h3>
+
+            <!-- Same 4-cell grid as the Foodie dashboard's event-card:
+                 date+timezone, guests, time, ambience - always 4 cells so
+                 a card without ambience doesn't silently shrink. -->
+            <div class="details-grid">
+              <div class="detail-cell">
+                <span class="detail-icon">📅</span>
+                <span class="detail-text">{{ opp.eventDate | date:'MMM d, y' }}@if (opp.eventTimezone) {&nbsp;{{ opp.eventTimezone }}}</span>
+              </div>
+              <div class="detail-cell">
+                <span class="detail-icon">👥</span>
+                <span class="detail-text">{{ opp.guestCount }} guests</span>
+              </div>
+              <div class="detail-cell">
+                <span class="detail-icon">⏰</span>
+                <span class="detail-text">{{ opp.eventTime }}</span>
+              </div>
+              @if (ambienceFor(opp.eventAmbience); as amb) {
+                <div class="detail-cell">
+                  <span class="detail-icon">{{ amb.icon }}</span>
+                  <span class="detail-text">{{ amb.label }}</span>
+                </div>
+              } @else {
+                <div class="detail-cell" aria-hidden="true">&nbsp;</div>
+              }
+            </div>
+
+            <div class="detail-cell location-cell">
+              <span class="detail-icon">📍</span>
+              <span class="detail-text">{{ opp.location }}</span>
+            </div>
+
+            <div class="cuisine-chips">
+              @for (cuisine of visibleCuisines(opp.preferredCuisines); track cuisine) {
+                <span class="cuisine-chip">{{ cuisineIcon(cuisine) }} {{ cuisine | titlecase }}</span>
+              }
+              @if (hiddenCuisineCount(opp.preferredCuisines) > 0) {
+                <span class="cuisine-chip cuisine-chip--more">+{{ hiddenCuisineCount(opp.preferredCuisines) }}</span>
+              }
+            </div>
+
+            @if (opp.dietaryPreferences.length > 0) {
+              <div class="detail-row">
+                <span class="detail-icon">🥗</span>
+                <span class="detail-text">{{ dietaryText(opp.dietaryPreferences) }}</span>
+              </div>
+            } @else {
+              <div class="detail-row detail-row--empty" aria-hidden="true">&nbsp;</div>
+            }
+
+            <div class="opp-footer">
+              <div class="opp-footer-left">
+                <span class="closing-text">⏳ {{ closingMessage(opp.bidClosingAt) }}</span>
+                <span class="budget-text">💰 {{ formatBudget(opp.budgetPerPerson, opp.budgetCurrency) }}</span>
+              </div>
+              <button type="button" class="btn-submit-bid" (click)="submitBid(opp)">Submit Bid →</button>
+            </div>
+          </article>
+        } @empty {
+          <div class="empty-state">
+            <div class="empty-icon">🎭</div>
+            <h3>No open opportunities right now</h3>
+            <p>Check back soon - new events matched to you will appear here.</p>
+          </div>
+        }
+      </div>
+    }
+
+    @if (!isLoading() && activeTab() === 'bids') {
+      <div class="bid-grid">
+        @for (bid of bids(); track bid.id) {
+          <article class="bid-card">
+            <div class="bid-card-top">
+              <span class="bid-icon">{{ bid.icon }}</span>
+              <span class="status-badge status-{{ bid.status }}">{{ statusLabels[bid.status] }}</span>
+            </div>
+            <h3 class="bid-name">{{ bid.eventName }}</h3>
+
+            <div class="details-grid">
+              <div class="detail-cell">
+                <span class="detail-icon">📅</span>
+                <span class="detail-text">{{ bid.eventDate | date:'MMM d, y' }}@if (bid.eventTimezone) {&nbsp;{{ bid.eventTimezone }}}</span>
+              </div>
+              <div class="detail-cell">
+                <span class="detail-icon">👥</span>
+                <span class="detail-text">{{ bid.guestCount }} guests</span>
+              </div>
+              <div class="detail-cell">
+                <span class="detail-icon">⏰</span>
+                <span class="detail-text">{{ bid.eventTime }}</span>
+              </div>
+              @if (ambienceFor(bid.eventAmbience); as amb) {
+                <div class="detail-cell">
+                  <span class="detail-icon">{{ amb.icon }}</span>
+                  <span class="detail-text">{{ amb.label }}</span>
+                </div>
+              } @else {
+                <div class="detail-cell" aria-hidden="true">&nbsp;</div>
+              }
+            </div>
+
+            <div class="detail-cell location-cell">
+              <span class="detail-icon">📍</span>
+              <span class="detail-text">{{ bid.location }}</span>
+            </div>
+
+            <div class="cuisine-chips">
+              @for (cuisine of visibleCuisines(bid.preferredCuisines); track cuisine) {
+                <span class="cuisine-chip">{{ cuisineIcon(cuisine) }} {{ cuisine | titlecase }}</span>
+              }
+              @if (hiddenCuisineCount(bid.preferredCuisines) > 0) {
+                <span class="cuisine-chip cuisine-chip--more">+{{ hiddenCuisineCount(bid.preferredCuisines) }}</span>
+              }
+            </div>
+
+            @if (bid.dietaryPreferences.length > 0) {
+              <div class="detail-row">
+                <span class="detail-icon">🥗</span>
+                <span class="detail-text">{{ dietaryText(bid.dietaryPreferences) }}</span>
+              </div>
+            } @else {
+              <div class="detail-row detail-row--empty" aria-hidden="true">&nbsp;</div>
+            }
+
+            <div class="bid-footer">
+              <span class="bid-amount-label">Your bid</span>
+              <span class="bid-amount">{{ formatBudget(bid.bidAmountPerPerson, bid.bidCurrency) }}</span>
+            </div>
+          </article>
+        } @empty {
+          <div class="empty-state">
+            <div class="empty-icon">📋</div>
+            <h3>No bids submitted yet</h3>
+            <p>Bids you place from New Opportunities will show up here.</p>
+          </div>
+        }
+      </div>
+    }
+
+  </div>
+</div>
+
+<app-footer />

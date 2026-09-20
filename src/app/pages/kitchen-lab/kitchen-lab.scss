@@ -1,0 +1,165 @@
+// Kitchen Lab — same ink/amber/indigo system as every other page. Colors
+// hardcoded, not CSS custom properties in a local :root block — Angular
+// scopes :root inside component-scoped styles in a way that silently
+// breaks every var() reference (confirmed directly, repeatedly, in this
+// project). Nav and footer come from the shared Header/Footer components.
+
+:host { display: block; background: #0F1117; color: #F5F3EE; }
+
+// ── Hero ──
+.hero { position: relative; overflow: hidden; max-width: 900px; margin: 0 auto; padding: 4.5rem 2.4rem 3rem; text-align: center; }
+.glow { position: absolute; border-radius: 50%; filter: blur(120px); pointer-events: none; z-index: 0; }
+.glow--amber { width: 460px; height: 460px; background: #D4A94A; opacity: .13; top: -18%; left: -12%; }
+.glow--indigo { width: 420px; height: 420px; background: #6C5DD3; opacity: .15; bottom: -30%; right: -14%; }
+.hero-inner { position: relative; z-index: 1; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: .5rem;
+  background: rgba(212, 169, 74, .1); border: 1px solid rgba(212, 169, 74, .3);
+  color: #F0DCA0; font-weight: 700; font-size: .76rem; letter-spacing: .02em;
+  padding: .5rem 1rem; border-radius: 999px; margin-bottom: 1.6rem;
+}
+.hero-title { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: clamp(2.2rem, 5.2vw, 3.6rem); line-height: 1.15; margin-bottom: 1.3rem; }
+.hl-amber { background: linear-gradient(135deg, #D4A94A, #B8862E); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero-sub { color: #A39D8F; font-size: 1.08rem; line-height: 1.7; max-width: 58ch; margin: 0 auto; }
+// A <button> now, not an <a> - the destination depends on whether this
+// click also needs to detour through the login modal first (see
+// KitchenLab.goToSubmitRecipeDirect()), which a plain routerLink can't
+// express. border/font/cursor reset here replaces what the anchor tag
+// gave for free.
+.hero-cta {
+  display: inline-flex; align-items: center; gap: .5rem; margin-top: 1.6rem;
+  background: linear-gradient(135deg, #D4A94A, #B8862E); color: #0F1117; font-weight: 700; font-size: .95rem;
+  padding: .9rem 1.8rem; border-radius: 999px; text-decoration: none; box-shadow: 0 10px 26px -8px rgba(212,169,74,.5);
+  transition: transform .2s; border: none; cursor: pointer; font-family: inherit;
+}
+.hero-cta:hover { transform: translateY(-2px); }
+
+// ── Section shell ──
+.section { max-width: 1080px; margin: 0 auto; padding: 4rem 2.4rem; }
+.section-head { text-align: center; margin-bottom: 3rem; }
+.section-head--tight { margin-bottom: 1.5rem; }
+.section-kicker { color: #D4A94A; font-weight: 700; font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; margin-bottom: .6rem; }
+.section-kicker.ai { color: #B5ABF0; }
+.section-title { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: clamp(1.8rem, 3.5vw, 2.5rem); }
+.section-sub { color: #A39D8F; font-size: 1rem; line-height: 1.6; margin-top: .7rem; max-width: 60ch; margin-left: auto; margin-right: auto; }
+
+// ── Lifecycle ──
+.lifecycle { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+.stage { background: #151822; border: 1.5px solid rgba(255, 255, 255, .08); border-radius: 20px; padding: 1.6rem 1.4rem; position: relative; }
+.stage-num { position: absolute; top: 1.2rem; right: 1.3rem; font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.6rem; color: #262B3A; }
+.stage-icon { font-size: 1.8rem; margin-bottom: .8rem; }
+.stage-title { font-size: 1.05rem; font-weight: 700; margin-bottom: .5rem; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ai-tag { font-size: .62rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: #B5ABF0; background: rgba(108, 93, 211, .12); border: 1px solid rgba(108, 93, 211, .3); border-radius: 999px; padding: .2rem .55rem; }
+.stage-desc { color: #A39D8F; font-size: .88rem; line-height: 1.55; }
+@media (max-width: 860px) { .lifecycle { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { .lifecycle { grid-template-columns: 1fr; } }
+
+// ── Interactive demo ──
+.skills-band { background: #151822; border-top: 1px solid rgba(255, 255, 255, .06); border-bottom: 1px solid rgba(255, 255, 255, .06); }
+.skills-panel { display: flex; flex-direction: column; gap: 1.4rem; max-width: 640px; margin: 0 auto; }
+.kitchen-choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem; }
+.kitchen-card {
+  background: #1C1F2A; border: 1.5px solid rgba(255, 255, 255, .18); border-radius: 16px; padding: 1.3rem 1.1rem;
+  text-align: left; cursor: pointer; color: inherit; font-family: inherit; display: flex; flex-direction: column; gap: .4rem;
+}
+.kitchen-card:hover { border-color: rgba(212, 169, 74, .35); }
+.kitchen-card.selected { border-color: #D4A94A; background: rgba(212, 169, 74, .07); }
+.kc-icon { font-size: 1.6rem; }
+.kc-title { font-weight: 700; font-size: .95rem; }
+.kc-desc { color: #8B8478; font-size: .8rem; line-height: 1.4; }
+
+.btn-cta {
+  width: 100%; font-weight: 700; font-size: .95rem; color: #0F1117; background: linear-gradient(135deg, #D4A94A, #B8862E);
+  padding: .95rem; border-radius: 50px; border: none; cursor: pointer; box-shadow: 0 10px 26px -8px rgba(212, 169, 74, .5);
+  transition: transform .2s;
+}
+.btn-cta:disabled { opacity: .35; cursor: not-allowed; box-shadow: none; }
+.btn-cta:not(:disabled):hover { transform: translateY(-2px); }
+.demo-hint { text-align: center; font-size: .82rem; color: #8B8478; margin-top: -.6rem; }
+@media (max-width: 560px) {
+  .kitchen-choice-grid { grid-template-columns: 1fr; }
+}
+
+// Numbered step labels above each stage of the picker - "1 · Choose..."
+// then "2 · You're All Set" above the button - so the two-step shape
+// reads at a glance rather than looking like one flat block of controls.
+.step-label {
+  color: #D4A94A; font-weight: 800; font-size: .74rem; letter-spacing: .08em; text-transform: uppercase;
+  margin-bottom: -.4rem;
+}
+
+// Booking-request confirmation, shown inline in place of the picker once
+// "Book a Kitchen" + Submit is used - not a modal, since nothing has
+// navigated away and the person may still want to add recipe details or
+// change their mind right here.
+.booking-confirmed { text-align: center; display: flex; flex-direction: column; align-items: center; gap: .7rem; padding: 1rem 0; }
+.booking-confirmed__icon {
+  width: 56px; height: 56px; border-radius: 50%; background: rgba(74, 155, 110, .15); border: 2px solid #4A9B6E;
+  color: #4A9B6E; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; font-weight: 800;
+  margin-bottom: .3rem;
+}
+.booking-confirmed__title { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 700; color: #fff; margin: 0; }
+.booking-confirmed__sub { color: #A39D8F; font-size: .9rem; line-height: 1.6; max-width: 46ch; margin: 0; }
+
+// ── Match criteria ──
+.criteria-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+.criterion-card { background: #151822; border: 1.5px solid rgba(108, 93, 211, .22); border-radius: 20px; padding: 1.7rem 1.5rem; }
+.criterion-icon {
+  width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; background: linear-gradient(135deg, #B5ABF0, #6C5DD3); margin-bottom: 1rem;
+  box-shadow: 0 8px 20px -8px rgba(108, 93, 211, .6);
+}
+.criterion-card h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 700; margin-bottom: .5rem; }
+.criterion-card p { color: #A39D8F; font-size: .88rem; line-height: 1.55; }
+@media (max-width: 860px) { .criteria-grid { grid-template-columns: 1fr; } }
+
+// ── Royalty ──
+.royalty-band { background: #151822; border-top: 1px solid rgba(255, 255, 255, .06); border-bottom: 1px solid rgba(255, 255, 255, .06); }
+.royalty-chain { max-width: 520px; margin: 0 auto 2.2rem; display: flex; flex-direction: column; }
+.royalty-step { display: flex; gap: 1.1rem; align-items: flex-start; background: #1C1F2A; border: 1px solid rgba(255, 255, 255, .08); border-radius: 16px; padding: 1.2rem 1.4rem; }
+.royalty-num {
+  width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #D4A94A, #B8862E); color: #0F1117;
+  font-weight: 800; font-size: .95rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.royalty-body h4 { font-size: .98rem; font-weight: 700; margin-bottom: .25rem; }
+.royalty-body p { color: #A39D8F; font-size: .86rem; line-height: 1.5; }
+.royalty-arrow { text-align: center; color: #8B8478; font-size: 1.1rem; padding: .4rem 0; }
+.royalty-example {
+  max-width: 640px; margin: 0 auto; text-align: center; padding: 1.4rem 1.6rem; border-radius: 16px;
+  background: rgba(212, 169, 74, .07); border: 1px solid rgba(212, 169, 74, .22);
+}
+.royalty-example-label { display: block; font-size: .7rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: #8B8478; margin-bottom: .6rem; }
+.royalty-example p { color: #A39D8F; font-size: .92rem; line-height: 1.6; }
+.royalty-example strong { color: #D4A94A; font-weight: 800; }
+
+// ── Stats ──
+.stats-strip { background: #0F1117; }
+.stats-inner { max-width: 1080px; margin: 0 auto; padding: 3rem 2.4rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; text-align: center; }
+.stat-v { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 2.2rem; color: #fff; }
+.stat-k { color: #8B8478; font-size: .82rem; margin-top: .3rem; }
+@media (max-width: 640px) { .stats-inner { grid-template-columns: 1fr; } }
+
+// ── FAQ ──
+.faq { max-width: 760px; margin: 0 auto; }
+.faq-item { border-bottom: 1px solid rgba(255, 255, 255, .08); }
+.faq-q {
+  width: 100%; text-align: left; background: none; border: none; color: #fff; font-family: 'Inter', sans-serif;
+  font-size: 1.02rem; font-weight: 600; padding: 1.3rem 0; cursor: pointer;
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+}
+.faq-q .plus { color: #D4A94A; font-size: 1.3rem; transition: transform .25s; flex-shrink: 0; }
+.faq-item.open .faq-q .plus { transform: rotate(45deg); }
+.faq-a { max-height: 0; overflow: hidden; transition: max-height .3s ease; }
+.faq-a p { color: #A39D8F; font-size: .92rem; line-height: 1.6; padding: 0 0 1.3rem; }
+
+// ── Closing ──
+.closing { text-align: center; padding: 5rem 2.4rem 6rem; position: relative; overflow: hidden; }
+.closing .glow--amber { bottom: -40%; left: 50%; top: auto; transform: translateX(-50%); opacity: .1; }
+.closing-title { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-style: italic; font-size: clamp(1.8rem, 4vw, 2.6rem); margin-bottom: 1rem; position: relative; }
+.closing-sub { color: #A39D8F; max-width: 48ch; margin: 0 auto 2rem; font-size: 1rem; line-height: 1.6; position: relative; }
+.btn-primary {
+  background: linear-gradient(135deg, #D4A94A, #B8862E); color: #0F1117; font-weight: 700; border: none; border-radius: 999px;
+  padding: 1rem 2rem; font-size: .95rem; cursor: pointer; box-shadow: 0 14px 34px -10px rgba(212, 169, 74, .45);
+  position: relative; transition: transform .2s;
+}
+.btn-primary:hover { transform: translateY(-2px); }

@@ -1,0 +1,54 @@
+<nav class="nav" aria-label="Primary">
+  <a routerLink="/" class="nav-logo" aria-label="Tarbuuz home">tarbuuz<span class="dot">.</span></a>
+
+  <ul class="nav-links hide-sm">
+    @for (link of navLinks(); track link.path) {
+      <li><a [routerLink]="link.path" (click)="onNavLinkClick()" routerLinkActive="current" [routerLinkActiveOptions]="{ exact: true }">{{ link.label }}</a></li>
+    }
+  </ul>
+
+  <div class="nav-right">
+    @if (cartHasItems()) {
+      <button
+        type="button"
+        class="cart-btn"
+        (click)="toggleCartDrawer()"
+        aria-haspopup="dialog"
+        [attr.aria-expanded]="cartDrawerOpen()"
+        aria-controls="cart-drawer"
+        [attr.aria-label]="'Open cart, ' + cartItemCount() + ' items'"
+      >
+        <svg class="cart-btn__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 4h2l1.6 10.6a2 2 0 0 0 2 1.7h8.4a2 2 0 0 0 2-1.6L20.4 8H6.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="9.5" cy="20" r="1.4" fill="currentColor"/>
+          <circle cx="17.5" cy="20" r="1.4" fill="currentColor"/>
+        </svg>
+        <span class="cart-btn__badge" aria-hidden="true">{{ cartItemCount() }}</span>
+      </button>
+    }
+    <app-user-menu />
+    <button
+      type="button"
+      class="hamburger-btn show-sm"
+      [class.hamburger-btn--open]="mobileMenuOpen()"
+      (click)="toggleMobileMenu()"
+      aria-controls="mobile-nav-panel"
+      [attr.aria-expanded]="mobileMenuOpen()"
+      aria-label="Toggle navigation menu"
+    >
+      <span class="hamburger-bar"></span>
+      <span class="hamburger-bar"></span>
+      <span class="hamburger-bar"></span>
+    </button>
+  </div>
+</nav>
+
+<div id="mobile-nav-panel" class="mobile-nav-panel show-sm" [class.mobile-nav-panel--open]="mobileMenuOpen()">
+  <ul class="mobile-nav-links">
+    @for (link of navLinks(); track link.path) {
+      <li><a [routerLink]="link.path" (click)="onNavLinkClick()" routerLinkActive="current" [routerLinkActiveOptions]="{ exact: true }">{{ link.label }}</a></li>
+    }
+  </ul>
+</div>
+
+<app-cart-drawer [open]="cartDrawerOpen()" (closed)="closeCartDrawer()" />

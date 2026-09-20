@@ -1,0 +1,746 @@
+<app-header />
+
+<div class="tou-page">
+
+  <!-- ── Hero ── -->
+  <section class="tou-hero">
+    <div class="tou-hero__inner">
+      <div class="tou-hero__eyebrow">Legal</div>
+      <h1 class="tou-hero__title">Terms of <span class="tou-hero__title--accent">Use</span></h1>
+      <p class="tou-hero__meta">
+        <span class="tou-hero__badge tou-hero__badge--effective">Effective: May 1, 2026</span>
+        <span class="tou-hero__badge tou-hero__badge--updated">Last Updated: May 1, 2026</span>
+      </p>
+      <p class="tou-hero__intro">
+        These Terms govern your access to and use of the Tarbuuz.ai platform.
+        Please read them carefully before using our services.
+      </p>
+    </div>
+    <div class="tou-hero__orb tou-hero__orb--1" aria-hidden="true"></div>
+    <div class="tou-hero__orb tou-hero__orb--2" aria-hidden="true"></div>
+  </section>
+
+  <!-- ── Important Notice ── -->
+  <div class="tou-notice">
+    <div class="tou-notice__inner">
+      <span class="tou-notice__icon" aria-hidden="true">⚠️</span>
+      <p>
+        <strong>Important Legal Notice:</strong> These Terms contain an arbitration agreement and class action waiver
+        that affect your legal rights. Please read
+        <button class="tou-notice__link" (click)="scrollTo('arbitration')">Section 16</button> and
+        <button class="tou-notice__link" (click)="scrollTo('classaction')">Section 17</button> carefully.
+        By accessing the platform, you agree to be bound by these Terms.
+      </p>
+    </div>
+  </div>
+
+  <!-- ── Layout: TOC + Content ── -->
+  <div class="tou-layout">
+
+    <!-- Table of Contents -->
+    <aside class="tou-toc" aria-label="Table of contents">
+      <div class="tou-toc__inner">
+        <h2 class="tou-toc__heading">Contents</h2>
+        <nav>
+          <ul class="tou-toc__list">
+            @for (s of sections; track s.id) {
+              <li class="tou-toc__item">
+                <button
+                  class="tou-toc__btn"
+                  [class.tou-toc__btn--active]="activeSection() === s.id"
+                  (click)="scrollTo(s.id)">
+                  {{ s.label }}
+                </button>
+              </li>
+            }
+          </ul>
+        </nav>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="tou-content" aria-label="Terms of Use content">
+
+      <!-- 1 -->
+      <section id="acceptance" class="tou-section">
+        <div class="tou-section__number">01</div>
+        <h2 class="tou-section__title">Acceptance of Terms</h2>
+        <p>These Terms of Use ("Terms") constitute a legally binding agreement between you ("you," "your," or "User") and Tarbuuz.ai LLC. ("Tarbuuz.ai," "we," "us," or "our") governing your access to and use of:</p>
+        <ul class="tou-list">
+          <li>The Tarbuuz.ai website located at <strong>tarbuuz.ai</strong></li>
+          <li>The Tarbuuz.ai mobile applications (iOS and Android)</li>
+          <li>All related services, features, content, and functionality (collectively, the "Platform")</li>
+        </ul>
+        <p>By creating an account, accessing the Platform, or using any of our services, you acknowledge that you have read, understood, and agreed to be bound by these Terms and our Privacy Policy, which is incorporated herein by reference.</p>
+        <p>If you are using the Platform on behalf of a business, organization, or other entity, you represent and warrant that you have the authority to bind that entity to these Terms, and "you" refers to both you individually and the entity you represent.</p>
+      </section>
+
+      <!-- 2 -->
+      <section id="eligibility" class="tou-section">
+        <div class="tou-section__number">02</div>
+        <h2 class="tou-section__title">Eligibility</h2>
+
+        <h3 class="tou-subsection">2.1 Age Requirements</h3>
+        <p>You must be at least <strong>18 years old</strong> to use the Platform. By using the Platform, you represent and warrant that:</p>
+        <ul class="tou-list">
+          <li>You are at least 18 years of age</li>
+          <li>You have the legal capacity to enter into a binding contract</li>
+          <li>You are not barred from using the Platform under applicable law</li>
+        </ul>
+
+        <h3 class="tou-subsection">2.2 Geographic Restrictions</h3>
+        <p>The Platform is currently available <strong>only in the United States</strong>. You may not access or use the Platform from outside the United States, or use the Platform to facilitate services in jurisdictions where we do not operate.</p>
+
+        <h3 class="tou-subsection">2.3 Account Suspension or Termination</h3>
+        <p>We reserve the right to refuse service, terminate accounts, or remove or edit content at our sole discretion, including if we determine that you have violated these Terms.</p>
+      </section>
+
+      <!-- 3 -->
+      <section id="services" class="tou-section">
+        <div class="tou-section__number">03</div>
+        <h2 class="tou-section__title">Description of Services</h2>
+        <p>Tarbuuz.ai operates an online marketplace platform that connects event Foodies, verified Hosts, and Suppliers through a suite of purpose-built AI agents.</p>
+
+        <h3 class="tou-subsection">3.1 Platform User Roles</h3>
+
+        <div class="tou-card-grid">
+          <div class="tou-card">
+            <div class="tou-card__icon">🍽️</div>
+            <div class="tou-card__title">Foodie (Food Enthusiasts)</div>
+            <p class="tou-card__desc">Create events and approve AI-suggested menus, browse and order specialty offerings directly from Suppliers, access ingredients and prepared foods at reduced prices, support sustainability and reduce food waste, and review and rate events after completion.</p>
+          </div>
+          <div class="tou-card">
+            <div class="tou-card__icon">🎉</div>
+            <div class="tou-card__title">Hosts (Event Hosts)</div>
+            <p class="tou-card__desc">Review event requirements and custom menu proposals, submit competitive bids for event requests, host events after winning bids, and review and rate event menus after completion.</p>
+          </div>
+          <div class="tou-card">
+            <div class="tou-card__icon">🏪</div>
+            <div class="tou-card__title">Suppliers (Event Suppliers)</div>
+            <p class="tou-card__desc">List specialty offerings — cakes, tableware, décor, entertainment, and other event extras — for Foodies to browse and order directly, fulfil requests for Specialty Organic Produce &amp; Ingredients, and review and rate event menus after completion.</p>
+          </div>
+        </div>
+
+        <h3 class="tou-subsection">3.2 Food Marketplace</h3>
+        <p>Suppliers can list inventory of products for sale, manage or supply inventory, pricing, and pickup windows, and connect with consumers seeking food products.</p>
+
+        <h3 class="tou-subsection">3.3 AI-Powered Features</h3>
+        <ul class="tou-list">
+          <li>Smart Menu — generates complete, costed draft menus from a plain-language description of the occasion</li>
+          <li>Agentic Chef — validates the Smart Menu, flags dietary and allergen conflicts, and proposes a signature dish</li>
+          <li>Intelligent Bidding — ranks competing Host bids by true value: price, ratings, distance, and fit</li>
+          <li>Predictive Analytics — forecasts headcount, spend, and timing from patterns across past events</li>
+          <li>Dietary Intelligence — flags allergens and adapts dishes for vegan, halal, gluten-free, and other needs</li>
+          <li>Budget Optimizer — rebalances menu, staffing, and Host selection to hit a target budget</li>
+        </ul>
+
+        <div class="tou-callout tou-callout--info">
+          <span class="tou-callout__icon" aria-hidden="true">ℹ️</span>
+          <div>
+            <strong>Platform Role:</strong> Tarbuuz.ai is a technology platform that facilitates connections between users.
+            We are NOT a catering company or food service provider, a party to any agreements between Foodies and Hosts,
+            responsible for the quality, safety, or legality of services provided through the Platform, or an employer of Hosts, Suppliers, or other users.
+          </div>
+        </div>
+      </section>
+
+      <!-- 4 -->
+      <section id="account" class="tou-section">
+        <div class="tou-section__number">04</div>
+        <h2 class="tou-section__title">Account Registration and Security</h2>
+
+        <h3 class="tou-subsection">4.1 Account Creation</h3>
+        <p>To use certain features of the Platform, you must create an account. When creating an account, you agree to:</p>
+        <ul class="tou-list">
+          <li>Provide accurate, current, and complete information</li>
+          <li>Maintain and promptly update your account information</li>
+          <li>Maintain the security of your account credentials</li>
+          <li>Notify us immediately of any unauthorized access or security breach</li>
+          <li>Accept responsibility for all activities under your account</li>
+        </ul>
+
+        <h3 class="tou-subsection">4.2 Account Types</h3>
+        <div class="tou-card-grid">
+          <div class="tou-card">
+            <div class="tou-card__icon">🍽️</div>
+            <div class="tou-card__title">Foodie</div>
+            <p class="tou-card__desc">Valid email address, valid phone number, and payment method on file.</p>
+          </div>
+          <div class="tou-card">
+            <div class="tou-card__icon">🎉</div>
+            <div class="tou-card__title">Host</div>
+            <p class="tou-card__desc">Business name and address, tax identification number, professional certifications and licenses, food handler permits and insurance, bank account for payment processing, and background check consent.</p>
+          </div>
+          <div class="tou-card">
+            <div class="tou-card__icon">🏪</div>
+            <div class="tou-card__title">Supplier</div>
+            <p class="tou-card__desc">Business license and health permits, food safety certifications, tax identification number, and bank account for payments.</p>
+          </div>
+        </div>
+
+        <h3 class="tou-subsection">4.3 Verification</h3>
+        <p>We reserve the right to verify any information you provide, including identity verification, business license validation, professional credential checking, criminal background checks (for Hosts), and credit checks (for certain account types). You authorize us to obtain such verification through third-party services.</p>
+
+        <h3 class="tou-subsection">4.4 Account Security</h3>
+        <p>You are responsible for keeping your account secure, restricting access to your account, all activities conducted through your account, and immediately notifying us of unauthorized access. We are not liable for any loss or damage arising from unauthorized account access due to your failure to maintain account security.</p>
+      </section>
+
+      <!-- 5 -->
+      <section id="conduct" class="tou-section">
+        <div class="tou-section__number">05</div>
+        <h2 class="tou-section__title">User Conduct and Prohibited Activities</h2>
+
+        <h3 class="tou-subsection">5.1 Acceptable Use</h3>
+        <p>You agree to use the Platform only for lawful purposes and in accordance with these Terms. You agree NOT to:</p>
+
+        <div class="tou-prohibition-grid">
+          <div class="tou-prohibition">
+            <div class="tou-prohibition__head">Fraudulent Activity</div>
+            <ul class="tou-list tou-list--compact">
+              <li>Provide false, inaccurate, or misleading information</li>
+              <li>Impersonate any person or entity</li>
+              <li>Create multiple accounts to manipulate ratings or reviews</li>
+              <li>Engage in any form of fraud or deceptive practice</li>
+            </ul>
+          </div>
+          <div class="tou-prohibition">
+            <div class="tou-prohibition__head">Harmful Conduct</div>
+            <ul class="tou-list tou-list--compact">
+              <li>Harass, threaten, or harm other users</li>
+              <li>Discriminate based on race, ethnicity, religion, gender, age, disability, or sexual orientation</li>
+              <li>Post offensive, defamatory, or inappropriate content</li>
+              <li>Engage in any illegal activity</li>
+            </ul>
+          </div>
+          <div class="tou-prohibition">
+            <div class="tou-prohibition__head">Platform Abuse</div>
+            <ul class="tou-list tou-list--compact">
+              <li>Circumvent or manipulate our fee structure</li>
+              <li>Use automated systems (bots, scrapers) without authorization</li>
+              <li>Reverse engineer or attempt to access our source code</li>
+              <li>Interfere with Platform operation or security</li>
+              <li>Use the Platform to compete with Tarbuuz.ai</li>
+            </ul>
+          </div>
+          <div class="tou-prohibition">
+            <div class="tou-prohibition__head">Off-Platform Transactions</div>
+            <ul class="tou-list tou-list--compact">
+              <li>Encourage payments outside the Platform to avoid fees</li>
+              <li>Share contact information to circumvent the booking system</li>
+              <li>Complete transactions initiated on the Platform off-Platform</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3 class="tou-subsection">5.2 Food Safety and Legal Compliance</h3>
+        <p>Hosts and Suppliers must maintain all required licenses, permits, and insurance; comply with local health and safety regulations; follow food safety best practices; accurately represent ingredients and allergens; and comply with all applicable employment and tax laws.</p>
+
+        <h3 class="tou-subsection">5.3 Consequences of Violation</h3>
+        <p>Violations may result in a warning or temporary suspension, permanent account termination, withholding of payments, legal action and liability for damages, or reporting to law enforcement where applicable.</p>
+      </section>
+
+      <!-- 6 -->
+      <section id="bookings" class="tou-section">
+        <div class="tou-section__number">06</div>
+        <h2 class="tou-section__title">Bookings and Transactions</h2>
+
+        <h3 class="tou-subsection">6.1 Binding Agreements</h3>
+        <p>When a Foodie accepts a winning bid, a binding service agreement ("Booking Agreement") is formed between the Foodie and the Host. Tarbuuz.ai is NOT a party to this agreement.</p>
+
+        <h3 class="tou-subsection">6.3 Payment Terms</h3>
+        <p>Foodies pay a deposit (typically 25–50%) upon booking, held in escrow pending service completion. Typical payment schedule is 50% deposit and 50% upon completion. All payments are processed through third-party processors. We do not store full credit card information.</p>
+
+        <h3 class="tou-subsection">6.4 Service Fees</h3>
+        <div class="tou-fee-table">
+          <div class="tou-fee-row tou-fee-row--header">
+            <span>User Type</span><span>Fee</span>
+          </div>
+          <div class="tou-fee-row">
+            <span>Foodie</span><span>No service fee</span>
+          </div>
+          <div class="tou-fee-row">
+            <span>Hosts</span><span>2% commission (deducted before payout)</span>
+          </div>
+          <div class="tou-fee-row">
+            <span>Suppliers</span><span>No service fee</span>
+          </div>
+        </div>
+        <p class="tou-note">Premium subscriptions are available with reduced commission rates. Payment processing fees are additional and vary by payment method.</p>
+
+        <h3 class="tou-subsection">6.5 Cancellation and Refunds</h3>
+        <div class="tou-fee-table">
+          <div class="tou-fee-row tou-fee-row--header">
+            <span>Notice Period (Cancellation by Foodie)</span><span>Refund</span>
+          </div>
+          <div class="tou-fee-row">
+            <span>More than 15 days before event</span><span>Full refund minus processing fees</span>
+          </div>
+          <div class="tou-fee-row">
+            <span>2–5 days before event</span><span>50% refund</span>
+          </div>
+          <div class="tou-fee-row">
+            <span>Less than 2 days before event</span><span>No refund</span>
+          </div>
+          <div class="tou-fee-row">
+            <span>Force majeure events</span><span>Case-by-case review</span>
+          </div>
+        </div>
+        <p>Cancellation by a Host with 15+ days notice incurs no penalty. Less than 15 days notice incurs penalty fees and may affect account standing. Repeated cancellations may result in account suspension or termination.</p>
+
+        <h3 class="tou-subsection">6.6 Modifications to Bookings</h3>
+        <p>Changes to confirmed bookings require mutual agreement between parties. Significant changes — such as changes to date, guest count greater than 20%, or a menu overhaul — may be treated as new bookings.</p>
+      </section>
+
+      <!-- 7 -->
+      <section id="surplus" class="tou-section">
+        <div class="tou-section__number">07</div>
+        <h2 class="tou-section__title">Surplus Food Marketplace</h2>
+
+        <h3 class="tou-subsection">7.1 Supplier Responsibilities</h3>
+        <p>Suppliers listing surplus food must ensure all food is safe for consumption, accurately describe items, ingredients, and allergens, provide accurate pickup windows, maintain proper food storage temperatures, comply with all food safety regulations, and not sell expired or unsafe food.</p>
+
+        <h3 class="tou-subsection">7.2 Foodie Responsibilities</h3>
+        <p>Purchasers of surplus food agree to pick up food during designated windows, inspect food upon pickup, refrigerate or freeze items promptly, assume responsibility for food after pickup, and not resell surplus food purchased through the Platform.</p>
+
+        <div class="tou-callout tou-callout--warning">
+          <span class="tou-callout__icon" aria-hidden="true">⚠️</span>
+          <div>
+            <strong>Food Safety Disclaimer:</strong> Surplus food is sold "AS IS" without warranties. Surplus food may have a shorter shelf life than retail items. You are responsible for proper storage after pickup. Tarbuuz.ai is not liable for foodborne illness. Always inspect food before consumption. "Best by" dates are for quality, not safety.
+          </div>
+        </div>
+
+        <h3 class="tou-subsection">7.4 No-Show Policy</h3>
+        <ul class="tou-list">
+          <li><strong>First offense:</strong> Warning</li>
+          <li><strong>Second offense:</strong> 30-day suspension from surplus marketplace</li>
+          <li><strong>Third offense:</strong> Permanent ban from surplus marketplace</li>
+          <li>No refunds for no-shows</li>
+        </ul>
+      </section>
+
+      <!-- 8 -->
+      <section id="reviews" class="tou-section">
+        <div class="tou-section__number">08</div>
+        <h2 class="tou-section__title">Ratings, Reviews, and User-Generated Content</h2>
+
+        <h3 class="tou-subsection">8.1 Review System</h3>
+        <p>Users may leave reviews and ratings for Foodies rating Hosts, Hosts rating Foodies, Foodies rating surplus food Suppliers, and general platform experience.</p>
+
+        <h3 class="tou-subsection">8.2 Review Guidelines</h3>
+        <p>Reviews must be based on actual experience, be honest and factual, not contain profanity or hate speech, not include personally identifiable information, and not violate any laws. Reviews must NOT be posted by competitors, contain threats or harassment, be posted in exchange for compensation, include irrelevant information, or violate the privacy of others.</p>
+
+        <h3 class="tou-subsection">8.3 Content Ownership and License</h3>
+        <p>You retain ownership of content you post (reviews, photos, menus, etc.), but grant Tarbuuz.ai a worldwide, non-exclusive, royalty-free, transferable license to use, reproduce, modify, display, sublicense, and create derivative works from your content, including in marketing and promotional materials. This license survives account termination.</p>
+
+        <h3 class="tou-subsection">8.4 Content Moderation</h3>
+        <p>We reserve the right to remove content that violates these Terms or that we deem inappropriate, suspend or terminate accounts for policy violations, and edit or refuse to publish certain content. We are not obligated to monitor all user content but may do so at our discretion.</p>
+
+        <h3 class="tou-subsection">8.5 Prohibited Content</h3>
+        <p>You may not post content that infringes intellectual property rights, contains viruses, malware, or harmful code, violates privacy or publicity rights, is obscene or sexually explicit, promotes violence or illegal activities, contains false or misleading information, or violates any applicable law.</p>
+      </section>
+
+      <!-- 9 -->
+      <section id="ip" class="tou-section">
+        <div class="tou-section__number">09</div>
+        <h2 class="tou-section__title">Intellectual Property Rights</h2>
+
+        <h3 class="tou-subsection">9.1 Tarbuuz.ai IP</h3>
+        <p>The Platform and all content, features, and functionality — including software, text, displays, images, video, audio, design, selection, and arrangement — are owned by Tarbuuz.ai, its licensors, or other providers and are protected by United States and international copyright, trademark, patent, and trade secret laws.</p>
+
+        <h3 class="tou-subsection">9.2 Trademarks</h3>
+        <p>Tarbuuz.ai, the Tarbuuz.ai logo, and all related names, logos, product and service names, designs, and slogans are trademarks of Tarbuuz.ai Inc. or its affiliates. You may not use these marks without our prior written permission.</p>
+
+        <h3 class="tou-subsection">9.3 Limited License to Users</h3>
+        <p>We grant you a limited, non-exclusive, non-transferable, revocable license to access and use the Platform for its intended purpose, download the mobile application on your personal devices, and print or download materials for personal, non-commercial use. You may NOT modify, copy, use materials for commercial purposes, remove copyright notices, transfer materials to another person, or reproduce, sell, or exploit any Platform content.</p>
+
+        <h3 class="tou-subsection">9.4 AI and Machine Learning</h3>
+        <p>Our AI systems including software architecture, training data and methodologies, algorithm designs and prompts, and model weights and configurations constitute proprietary trade secrets and confidential information owned by Tarbuuz.ai. You may not attempt to reverse engineer our AI systems, extract or replicate our algorithms, use our AI outputs to train competing systems, or misrepresent AI generated content as independently created.</p>
+      </section>
+
+      <!-- 10 -->
+      <section id="privacy" class="tou-section">
+        <div class="tou-section__number">10</div>
+        <h2 class="tou-section__title">Privacy and Data Collection</h2>
+
+        <h3 class="tou-subsection">10.1 Privacy Policy</h3>
+        <p>Your use of the Platform is subject to our Privacy Policy, which explains how we collect, use, and protect your personal information. By using the Platform, you consent to our data practices as described in the Privacy Policy.</p>
+
+        <h3 class="tou-subsection">10.2 Data We Collect</h3>
+        <div class="tou-prohibition-grid">
+          <div class="tou-prohibition">
+            <div class="tou-prohibition__head">Account Information</div>
+            <ul class="tou-list tou-list--compact">
+              <li>Name, email address, phone number</li>
+              <li>Business name and address</li>
+              <li>Tax identification numbers</li>
+              <li>Payment information</li>
+              <li>Professional credentials and licenses</li>
+            </ul>
+          </div>
+          <div class="tou-prohibition">
+            <div class="tou-prohibition__head">Event &amp; Booking Data</div>
+            <ul class="tou-list tou-list--compact">
+              <li>Event details, requirements, and preferences</li>
+              <li>Menu proposals and pricing</li>
+              <li>Messages and communications</li>
+              <li>Booking history and transaction records</li>
+              <li>Reviews and ratings</li>
+            </ul>
+          </div>
+          <div class="tou-prohibition">
+            <div class="tou-prohibition__head">Usage &amp; Location Data</div>
+            <ul class="tou-list tou-list--compact">
+              <li>Device information (IP address, browser, device type)</li>
+              <li>Platform activity (pages viewed, features used)</li>
+              <li>Search queries and navigation patterns</li>
+              <li>Approximate location (from IP address)</li>
+              <li>Precise location (with your permission)</li>
+            </ul>
+          </div>
+          <div class="tou-prohibition">
+            <div class="tou-prohibition__head">Verification Data</div>
+            <ul class="tou-list tou-list--compact">
+              <li>Government-issued ID</li>
+              <li>Background check results</li>
+              <li>Business licenses and permits</li>
+              <li>Insurance certificates</li>
+              <li>Photos, portfolio images, and event media</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3 class="tou-subsection">10.5 Your Data Rights</h3>
+        <ul class="tou-list">
+          <li>Access your personal data</li>
+          <li>Correct inaccurate information</li>
+          <li>Request deletion of your data (subject to legal retention requirements)</li>
+          <li>Opt-out of marketing communications</li>
+          <li>Export your data in portable format</li>
+          <li>Withdraw consent where consent is the legal basis</li>
+        </ul>
+        <p>To exercise these rights, contact <a class="tou-link" href="mailto:info@tarbuuz.ai">info&#64;tarbuuz.ai</a>.</p>
+
+        <h3 class="tou-subsection">10.6 Data Retention</h3>
+        <p>Active accounts retain data while the account is active. Deleted accounts have most data removed within 30 days. Transaction records are retained for 7 years to meet tax and accounting requirements. Anonymized analytics data is retained indefinitely.</p>
+
+        <h3 class="tou-subsection">10.7 Cookies and Tracking</h3>
+        <p>We use cookies and similar technologies to remember your preferences, authenticate sessions, analyze Platform usage, deliver personalized content, and measure effectiveness. You can control cookies through browser settings, but some Platform features may not function properly without them.</p>
+
+        <h3 class="tou-subsection">10.9 Children's Privacy</h3>
+        <p>The Platform is not intended for children under 18. We do not knowingly collect information from children. If we learn we have collected data from a child, we will delete it immediately.</p>
+      </section>
+
+      <!-- 11 -->
+      <section id="ai" class="tou-section">
+        <div class="tou-section__number">11</div>
+        <h2 class="tou-section__title">AI-Powered Services and Disclaimers</h2>
+
+        <h3 class="tou-subsection">11.1 AI System Description</h3>
+        <p>Our AI-powered features use machine learning and large language models to draft and validate menus for dietary compliance, nutrition, and cost; rank and recommend Host bids; optimize pricing and budgets; and identify seasonal and sustainable options.</p>
+
+        <div class="tou-callout tou-callout--info">
+          <span class="tou-callout__icon" aria-hidden="true">🤖</span>
+          <div>
+            <strong>AI Recommendations Are Not Guarantees.</strong> AI suggestions are based on algorithms and historical data. Results may not be perfect or suitable for every situation. Human judgment should supplement AI recommendations at all times.
+          </div>
+        </div>
+
+        <h3 class="tou-subsection">11.2 Key Acknowledgements</h3>
+        <ul class="tou-list">
+          <li>AI menu analysis provides guidance, not certification — Hosts remain responsible for menu safety and quality</li>
+          <li>We do not warrant AI systems are error-free; algorithms may produce unexpected or incorrect results</li>
+          <li>AI training data may contain biases or limitations; system performance may vary</li>
+          <li>You are solely responsible for decisions based on AI recommendations</li>
+          <li>Always verify critical information independently; consult professionals for health, safety, or legal matters</li>
+          <li>Do not rely solely on AI for food safety or allergen information</li>
+        </ul>
+
+        <h3 class="tou-subsection">11.3 Continuous Improvement</h3>
+        <p>Our AI systems continuously learn and improve. By using AI features, you acknowledge that your interactions help train and improve our systems, feedback data is used to refine algorithms, and AI behavior may change over time as models improve.</p>
+
+        <h3 class="tou-subsection">11.4 No Professional Advice</h3>
+        <p>AI recommendations do not constitute professional medical or nutritional advice, legal advice regarding food safety or liability, financial or accounting advice, or a guarantee of event success or customer satisfaction.</p>
+      </section>
+
+      <!-- 12 -->
+      <section id="payments" class="tou-section">
+        <div class="tou-section__number">12</div>
+        <h2 class="tou-section__title">Payment Processing and Financial Terms</h2>
+
+        <h3 class="tou-subsection">12.1 Accepted Payment Methods</h3>
+        <ul class="tou-list">
+          <li>Major credit cards (Visa, Mastercard, American Express, Discover)</li>
+          <li>Debit cards</li>
+          <li>ACH bank transfers</li>
+          <li>Other methods as made available</li>
+        </ul>
+
+        <h3 class="tou-subsection">12.3 Payment Processing</h3>
+        <p>All payments are processed through third-party payment processors. We do not store complete credit card information. Your payment information is subject to the processor's terms and privacy policy.</p>
+
+        <h3 class="tou-subsection">12.4 Taxes</h3>
+        <p>Foodies are responsible for applicable sales tax calculated based on event location. Hosts and Suppliers are responsible for reporting and paying all income taxes. We provide tax reporting (1099 forms) as required by law. You are an independent contractor, not an employee.</p>
+
+        <h3 class="tou-subsection">12.5 Currency and Pricing</h3>
+        <p>All prices and transactions are in <strong>United States Dollars (USD)</strong>. We reserve the right to change fees and pricing at any time with advance notice for material changes. Changes do not affect existing Booking Agreements.</p>
+
+        <h3 class="tou-subsection">12.7 Failed Payments</h3>
+        <p>If payment fails, we will attempt to process payment again. Your account may be suspended, additional fees may apply, and services may be interrupted until payment is resolved.</p>
+      </section>
+
+      <!-- 13 -->
+      <section id="liability" class="tou-section">
+        <div class="tou-section__number">13</div>
+        <h2 class="tou-section__title">Disclaimers and Limitations of Liability</h2>
+
+        <div class="tou-callout tou-callout--legal">
+          <span class="tou-callout__icon" aria-hidden="true">⚖️</span>
+          <div>
+            <strong>Platform Provided "AS IS."</strong> The Platform and all content, materials, information, software, products, and services are provided on an "AS IS" and "AS AVAILABLE" basis without warranties of any kind. We disclaim all warranties, express or implied, including merchantability, fitness for a particular purpose, non-infringement, title, accuracy or reliability of content, and uninterrupted or error-free operation.
+          </div>
+        </div>
+
+        <h3 class="tou-subsection">13.2 No Guarantee of Results</h3>
+        <p>We do not warrant or guarantee successful events or satisfactory services, quality, safety, or legality of services provided by users, accuracy of user-provided information, availability of surplus food items, AI system accuracy or reliability, or the absence of viruses or harmful components.</p>
+
+        <h3 class="tou-subsection">13.4 Limitation of Liability</h3>
+        <p>To the maximum extent permitted by law, Tarbuuz.ai shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including lost profits, lost revenue, lost data, business interruption, personal injury, property damage, foodborne illness, or event cancellation or disruption.</p>
+        <p>Our total liability for any claims arising from or related to the Platform shall not exceed the greater of <strong>$100</strong>, or the amount of fees you paid to Tarbuuz.ai in the 12 months preceding the claim. These limitations apply regardless of the legal theory and even if we have been advised of the possibility of such damages.</p>
+
+        <h3 class="tou-subsection">13.6 Food Safety Disclaimer</h3>
+        <div class="tou-callout tou-callout--warning">
+          <span class="tou-callout__icon" aria-hidden="true">⚠️</span>
+          <div>
+            Tarbuuz.ai is NOT responsible for food safety or quality, foodborne illness or allergic reactions, accuracy of ingredient or allergen information, compliance with food safety regulations, or proper food handling, storage, or preparation. You use the Platform and consume food purchased or served through the Platform at your own risk.
+          </div>
+        </div>
+      </section>
+
+      <!-- 14 -->
+      <section id="indemnification" class="tou-section">
+        <div class="tou-section__number">14</div>
+        <h2 class="tou-section__title">Indemnification</h2>
+
+        <h3 class="tou-subsection">14.1 Your Indemnification Obligation</h3>
+        <p>You agree to indemnify, defend, and hold harmless Tarbuuz.ai, its affiliates, officers, directors, employees, agents, licensors, and service providers from and against any and all claims, liabilities, damages, losses, costs, expenses, or fees (including reasonable attorneys' fees) arising from or relating to:</p>
+        <ul class="tou-list">
+          <li>Your use or misuse of the Platform</li>
+          <li>Your violation of these Terms or any applicable law or regulation</li>
+          <li>Your violation of any third-party rights (including intellectual property, privacy, or publicity rights)</li>
+          <li>Content you submit or make available through the Platform</li>
+          <li>Services you provide as a Host or Supplier</li>
+          <li>Food safety issues, foodborne illness, or allergic reactions related to services or products you provide</li>
+          <li>Disputes with other users or your negligence or willful misconduct</li>
+        </ul>
+
+        <h3 class="tou-subsection">14.2 Defense of Claims</h3>
+        <p>We reserve the right to assume exclusive defense and control of any matter subject to indemnification by you. You agree to cooperate with our defense of such claims. We will provide notice of any claim for which we seek indemnification.</p>
+      </section>
+
+      <!-- 15 -->
+      <section id="termination" class="tou-section">
+        <div class="tou-section__number">15</div>
+        <h2 class="tou-section__title">Termination</h2>
+
+        <h3 class="tou-subsection">15.1 Termination by You</h3>
+        <p>You may terminate your account at any time by using account settings to deactivate, contacting customer support, or sending written notice to <a class="tou-link" href="mailto:info@tarbuuz.ai">info&#64;tarbuuz.ai</a>. Account closure does not cancel existing Booking Agreements, relieve you of payment obligations, or entitle you to refunds unless otherwise specified.</p>
+
+        <h3 class="tou-subsection">15.2 Termination by Tarbuuz.ai</h3>
+        <p>We may suspend or terminate your account immediately, without notice, for violation of these Terms, fraudulent or illegal activity, providing false information, excessive disputes or chargebacks, abuse of other users or the Platform, repeated cancellations or no-shows, or any conduct we deem harmful to the Platform or users.</p>
+
+        <h3 class="tou-subsection">15.3 Effect of Termination</h3>
+        <p>Upon termination, your right to access the Platform ends immediately. Outstanding payments remain due. Active Booking Agreements remain in effect. Your data is handled according to our Privacy Policy.</p>
+
+        <h3 class="tou-subsection">15.4 Survival</h3>
+        <p>Sections 9 (Intellectual Property), 10 (Privacy), 13 (Disclaimers and Liability), 14 (Indemnification), 16 (Dispute Resolution), and 18 (General Provisions) survive termination of these Terms.</p>
+      </section>
+
+      <!-- 16 -->
+      <section id="arbitration" class="tou-section">
+        <div class="tou-section__number">16</div>
+        <h2 class="tou-section__title">Dispute Resolution and Arbitration</h2>
+
+        <h3 class="tou-subsection">16.1 Informal Resolution</h3>
+        <p>Before filing a claim, you agree to contact us at <a class="tou-link" href="mailto:info@tarbuuz.ai">info&#64;tarbuuz.ai</a> and attempt to resolve the dispute informally by providing a brief description of the dispute and your desired resolution. We will attempt to resolve the matter within 60 days.</p>
+
+        <div class="tou-callout tou-callout--legal">
+          <span class="tou-callout__icon" aria-hidden="true">⚖️</span>
+          <div>
+            <strong>Mandatory Arbitration.</strong> If informal resolution fails, any dispute arising from or relating to these Terms or the Platform shall be resolved through binding arbitration — not in court — administered by the American Arbitration Association (AAA) under its Commercial Arbitration Rules and Supplementary Procedures for Consumer Related Disputes. Exceptions include small claims court, intellectual property disputes, and injunctive relief requests.
+          </div>
+        </div>
+
+        <h3 class="tou-subsection">16.3 Arbitration Rules</h3>
+        <p>Arbitration shall take place in Portland, Oregon, or another mutually agreed location. Each party pays their own costs, except Tarbuuz.ai will pay filing fees exceeding small claims court filing fees for consumer claims. Proceedings are confidential, discovery is limited, and the award is final and binding with limited grounds for appeal.</p>
+
+        <h3 class="tou-subsection">16.6 Opt-Out</h3>
+        <p>You may opt out of this arbitration agreement by sending written notice within <strong>30 days</strong> of first accepting these Terms to:</p>
+        <address class="tou-address">
+          Tarbuuz.ai Inc.<br>
+          Attn: Arbitration Opt-Out<br>
+          Portland, Oregon<br>
+          Email: <a class="tou-link" href="mailto:info@tarbuuz.ai">info&#64;tarbuuz.ai</a>
+        </address>
+        <p>Include your name, address, email, and a statement that you opt out of arbitration. Opt-out does not affect other Terms provisions.</p>
+      </section>
+
+      <!-- 17 -->
+      <section id="classaction" class="tou-section">
+        <div class="tou-section__number">17</div>
+        <h2 class="tou-section__title">Class Action Waiver</h2>
+
+        <div class="tou-callout tou-callout--legal">
+          <span class="tou-callout__icon" aria-hidden="true">⚖️</span>
+          <div>
+            <strong>Individual Basis Only.</strong> Disputes will be resolved on an individual basis only, not as a class action, representative action, or consolidated proceeding. You may not participate in class actions against Tarbuuz.ai, serve as class representative or class member, or participate in consolidated arbitration involving multiple parties.
+          </div>
+        </div>
+
+        <h3 class="tou-subsection">17.2 Severability</h3>
+        <p>If a court finds this class action waiver unenforceable, the arbitration agreement in Section 16 is void. However, all other Terms provisions remain enforceable.</p>
+
+        <h3 class="tou-subsection">17.3 No Representative Actions</h3>
+        <p>You waive any right to bring a claim on behalf of others, whether as a class representative, private attorney general, or in any representative capacity.</p>
+      </section>
+
+      <!-- 18 -->
+      <section id="general" class="tou-section">
+        <div class="tou-section__number">18</div>
+        <h2 class="tou-section__title">General Provisions</h2>
+
+        <h3 class="tou-subsection">18.1 Governing Law</h3>
+        <p>These Terms are governed by the laws of the <strong>State of Oregon</strong>, without regard to its conflict of law principles. To the extent arbitration does not apply, you consent to exclusive jurisdiction in the state and federal courts located in Oregon.</p>
+
+        <h3 class="tou-subsection">18.2 Changes to Terms</h3>
+        <p>We may modify these Terms at any time by posting revised Terms on the Platform and updating the "Last Updated" date. We will notify you via email or Platform notification for material changes. Changes are effective immediately for new users and 30 days after notice for existing users. Continued use after changes constitutes acceptance.</p>
+
+        <h3 class="tou-subsection">18.3 Entire Agreement</h3>
+        <p>These Terms, together with our Privacy Policy, constitute the entire agreement between you and Tarbuuz.ai regarding the Platform and supersede all prior agreements, understandings, and communications.</p>
+
+        <h3 class="tou-subsection">18.4–18.6 Severability, Waiver, and Assignment</h3>
+        <p>If any provision is found invalid, it will be limited to the minimum extent necessary and remaining provisions remain in full force. Our failure to enforce any provision does not waive our right to enforce it in the future. You may not assign these Terms without our prior written consent. We may assign these Terms without restriction.</p>
+
+        <h3 class="tou-subsection">18.7 Force Majeure</h3>
+        <p>We are not liable for delays or failures in performance resulting from circumstances beyond our reasonable control, including acts of God, natural disasters, war or terrorism, labor disputes, government actions, internet or telecommunications failures, and pandemics or public health emergencies.</p>
+
+        <h3 class="tou-subsection">18.9 No Agency</h3>
+        <p>No agency, partnership, joint venture, or employment relationship is created between you and Tarbuuz.ai by these Terms. You have no authority to bind Tarbuuz.ai in any respect.</p>
+
+        <h3 class="tou-subsection">18.14 Feedback</h3>
+        <p>By submitting feedback, comments, or suggestions, you grant us a non-exclusive, worldwide, perpetual, irrevocable, royalty-free license to use, modify, and incorporate that feedback into our products and services without any obligation to you.</p>
+
+        <h3 class="tou-subsection">18.15 Contact Information</h3>
+        <address class="tou-address">
+          Tarbuuz.ai Inc.<br>
+          11862 NW Weaver Ln<br>
+          Portland, Oregon 97229<br>
+          Email: <a class="tou-link" href="mailto:info@tarbuuz.ai">info&#64;tarbuuz.ai</a><br>
+          Customer Support Hours: Monday–Friday, 9 AM – 6 PM Pacific Time
+        </address>
+      </section>
+
+      <!-- 19 -->
+      <section id="hostterms" class="tou-section">
+        <div class="tou-section__number">19</div>
+        <h2 class="tou-section__title">Additional Terms for Hosts</h2>
+
+        <h3 class="tou-subsection">19.1 Independent Contractor Status</h3>
+        <p>You are an independent contractor, not an employee, agent, or partner of Tarbuuz.ai. You determine how to perform your services, pay your own taxes and insurance, are not entitled to employee benefits, control your own schedule and pricing, and may work with other platforms or clients.</p>
+
+        <h3 class="tou-subsection">19.2 Professional Requirements</h3>
+        <p>You represent and warrant that you hold all required licenses and permits, carry adequate liability insurance, comply with all food safety regulations, have authority to operate your business, and will maintain certifications throughout your use of the Platform.</p>
+
+        <h3 class="tou-subsection">19.3 Background Checks</h3>
+        <p>You consent to background checks, which may include criminal history, sex offender registry check, motor vehicle records (if delivery services are offered), and professional license verification. Certain criminal convictions may disqualify you from the Platform.</p>
+
+        <h3 class="tou-subsection">19.4 Service Standards</h3>
+        <ul class="tou-list">
+          <li>Provide services as described in accepted proposals</li>
+          <li>Maintain professional conduct and respond to inquiries within 24 hours</li>
+          <li>Arrive on time for events and use quality ingredients</li>
+          <li>Follow all food safety protocols</li>
+          <li>Provide accurate allergen information</li>
+        </ul>
+
+        <h3 class="tou-subsection">19.5 Commission and Payments</h3>
+        <div class="tou-fee-table">
+          <div class="tou-fee-row tou-fee-row--header">
+            <span>Item</span><span>Detail</span>
+          </div>
+          <div class="tou-fee-row">
+            <span>Commission</span><span>2% of booking value (deducted before payout)</span>
+          </div>
+          <div class="tou-fee-row">
+            <span>Payout schedule</span><span>Within 3 business days after event completion</span>
+          </div>
+          <div class="tou-fee-row">
+            <span>Payment method</span><span>Direct deposit to verified bank account</span>
+          </div>
+          <div class="tou-fee-row">
+            <span>Tax forms</span><span>W-9 required; 1099 issued annually</span>
+          </div>
+          <div class="tou-fee-row">
+            <span>Chargebacks</span><span>You may be liable for disputed charges</span>
+          </div>
+        </div>
+
+        <h3 class="tou-subsection">19.6 Equipment and Supplies</h3>
+        <p>You are responsible for all cooking equipment and tools, transportation, ingredients and supplies, staff and labor costs, licenses and permits, and insurance and bonding.</p>
+      </section>
+
+      <!-- 20 -->
+      <section id="foodieterms" class="tou-section">
+        <div class="tou-section__number">20</div>
+        <h2 class="tou-section__title">Additional Terms for Foodies</h2>
+
+        <h3 class="tou-subsection">20.1 Event Information Accuracy</h3>
+        <p>You agree to provide accurate guest counts, complete dietary restriction information, correct event date, time, and location, reasonable facility access, and accurate budget information.</p>
+
+        <h3 class="tou-subsection">20.2 Venue Requirements</h3>
+        <p>You represent that the event venue has adequate kitchen facilities (if required by your Host), meets health and safety standards, has necessary permits for food service, and is accessible to the Host and staff.</p>
+
+        <h3 class="tou-subsection">20.3 Your Responsibilities</h3>
+        <p>You are responsible for event permits and licenses (if required), venue rental and setup, service staff (unless contracted with your Host), beverages (unless included in the winning bid), rentals such as tables, chairs, and linens (unless included), and guest safety and conduct.</p>
+
+        <h3 class="tou-subsection">20.4 Changes and Communication</h3>
+        <p>You agree to notify your Host immediately of any changes, respond to Host communications within <strong>48 hours</strong>, provide the final guest count at least <strong>7 days before</strong> the event, and coordinate logistics directly with your Host.</p>
+      </section>
+
+      <!-- 21 -->
+      <section id="suppliers" class="tou-section">
+        <div class="tou-section__number">21</div>
+        <h2 class="tou-section__title">Additional Terms for Suppliers (Surplus Marketplace)</h2>
+
+        <h3 class="tou-subsection">21.1 Food Safety Obligations</h3>
+        <p>As a surplus food supplier, you represent and warrant that all food is safe for human consumption, meets all health and safety standards, is properly stored at safe temperatures, is accurately described and labeled, and has complete allergen information.</p>
+
+        <h3 class="tou-subsection">21.2 Prohibited Items</h3>
+        <ul class="tou-list">
+          <li>Expired food or food recalled by manufacturers</li>
+          <li>Food stored at unsafe temperatures</li>
+          <li>Food with visible contamination</li>
+          <li>Alcohol or tobacco products</li>
+          <li>Prescription or controlled substances</li>
+        </ul>
+
+        <h3 class="tou-subsection">21.3 Liability</h3>
+        <p>You acknowledge that you are solely responsible for food safety, Tarbuuz.ai is not liable for foodborne illness, you indemnify Tarbuuz.ai for any claims related to your food, and you carry adequate product liability insurance.</p>
+
+        <h3 class="tou-subsection">21.4 Pricing and Inventory</h3>
+        <p>You agree to set reasonable prices (typically 30–70% off retail), update inventory in real-time, honor all confirmed purchases, provide accurate pickup windows, and not discriminate in pricing or availability.</p>
+      </section>
+
+      <!-- Acceptance Footer -->
+      <div class="tou-acceptance">
+        <div class="tou-acceptance__icon" aria-hidden="true">✦</div>
+        <h2 class="tou-acceptance__title">Acknowledgment &amp; Acceptance</h2>
+        <p>By clicking "I Accept," creating an account, or using the Platform, you acknowledge that you have read and understood these Terms, agree to be bound by them, meet all eligibility requirements, consent to our Privacy Policy and data practices, agree to mandatory arbitration and the class action waiver, understand Tarbuuz.ai's role as a platform — not a service provider — and accept all risks associated with using the Platform.</p>
+        <p>If you do not agree to these Terms, you must not access or use the Platform.</p>
+        <p class="tou-acceptance__version">Version 1.0 &nbsp;·&nbsp; Effective May 1, 2026 &nbsp;·&nbsp; © 2026 Tarbuuz.ai LLC. All Rights Reserved.</p>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<app-footer />

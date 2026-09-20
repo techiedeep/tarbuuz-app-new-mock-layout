@@ -1,0 +1,212 @@
+<app-header />
+
+<div class="submit-recipe-page">
+  <div class="page-container">
+
+    <a class="back-link" (click)="goToKitchenLab()">← Back to Kitchen Lab</a>
+
+    @if (!showSuccess()) {
+      <header class="page-head">
+        <span class="page-eyebrow">🧑‍🍳 Kitchen Lab</span>
+        <h1 class="page-title">Submit Your Recipe</h1>
+        <p class="page-sub">Upload a video of your dish and the complete recipe. Once submitted, it's added to the Kitchen Lab repository — a Foodie can add it to their event manually, and Smart Menu's AI can suggest it automatically when it fits an event's cuisine or dietary preferences.</p>
+      </header>
+
+      <form class="recipe-form" (ngSubmit)="submit()" [formGroup]="form" novalidate>
+
+        <div class="form-grid">
+        <!-- LEFT COLUMN: video + instructions -->
+        <div class="form-col form-col--media">
+
+        <!-- ═══ VIDEO UPLOAD ═══ -->
+        <section class="form-card">
+          <h2 class="form-card__title">📹 Recipe Video <span class="required">*</span></h2>
+          <p class="form-card__hint">A short video of the dish — plating, a key step, or the finished result. Max 100MB.</p>
+
+          @if (!videoPreviewUrl()) {
+            <label class="video-drop-zone">
+              <input type="file" accept="video/*" (change)="onVideoSelected($event)" hidden>
+              <span class="video-drop-icon">🎬</span>
+              <span class="video-drop-text">Click to upload a video</span>
+              <span class="video-drop-sub">MP4, MOV, or WebM — up to 100MB</span>
+            </label>
+          } @else {
+            <div class="video-preview-wrap">
+              <video [src]="videoPreviewUrl()" controls class="video-preview"></video>
+              <button type="button" class="video-remove-btn" (click)="removeVideo()">✕ Remove video</button>
+            </div>
+          }
+          @if (videoError()) {
+            <div class="field-error show" role="alert">{{ videoError() }}</div>
+          }
+        </section>
+
+        <!-- ═══ INSTRUCTIONS ═══ -->
+        <section class="form-card form-card--instructions">
+          <h2 class="form-card__title">👨‍🍳 Instructions <span class="required">*</span></h2>
+          <div class="form-group">
+            <textarea class="form-textarea" rows="10" formControlName="instructions"
+              [class.error]="hasError('instructions')" placeholder="Walk through the full recipe step by step..."></textarea>
+            @if (hasError('instructions')) { <div class="field-error show">{{ getErrorMessage('instructions') }}</div> }
+          </div>
+        </section>
+
+        </div><!-- /form-col--media -->
+
+        <!-- RIGHT COLUMN: all remaining fields -->
+        <div class="form-col form-col--details">
+
+        <!-- ═══ RECIPE BASICS ═══ -->
+        <section class="form-card">
+          <h2 class="form-card__title">📝 Recipe Details</h2>
+
+          <div class="form-group">
+            <label class="form-label" for="recipeName">Recipe Name <span class="required">*</span></label>
+            <input type="text" id="recipeName" class="form-input" formControlName="name"
+              [class.error]="hasError('name')" placeholder="e.g. Grandma's Samosas">
+            @if (hasError('name')) { <div class="field-error show">{{ getErrorMessage('name') }}</div> }
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="recipeDescription">Short Description <span class="required">*</span></label>
+            <textarea id="recipeDescription" class="form-textarea" rows="2" formControlName="description"
+              [class.error]="hasError('description')" placeholder="One or two sentences a Foodie would see when browsing this dish"></textarea>
+            @if (hasError('description')) { <div class="field-error show">{{ getErrorMessage('description') }}</div> }
+          </div>
+
+          <div class="form-row form-row--3">
+            <div class="form-group">
+              <label class="form-label" for="courseType">Course <span class="required">*</span></label>
+              <select id="courseType" class="form-select" formControlName="courseType" [class.error]="hasError('courseType')">
+                <option value="">Select course</option>
+                @for (opt of courseTypeOptions; track opt.value) {
+                  <option [value]="opt.value">{{ opt.label }}</option>
+                }
+              </select>
+              @if (hasError('courseType')) { <div class="field-error show">{{ getErrorMessage('courseType') }}</div> }
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="cuisine">Cuisine <span class="required">*</span></label>
+              <input type="text" id="cuisine" class="form-input" formControlName="cuisine"
+                [class.error]="hasError('cuisine')" placeholder="e.g. Indian, Italian">
+              @if (hasError('cuisine')) { <div class="field-error show">{{ getErrorMessage('cuisine') }}</div> }
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="price">Price / Serving <span class="required">*</span></label>
+              <div class="input-with-prefix">
+                <span class="input-prefix">$</span>
+                <input type="number" id="price" class="form-input form-input--prefixed" formControlName="price"
+                  [class.error]="hasError('price')" min="0.01" step="0.01" placeholder="0.00">
+              </div>
+              @if (hasError('price')) { <div class="field-error show">{{ getErrorMessage('price') }}</div> }
+            </div>
+          </div>
+
+          <div class="form-row form-row--3">
+            <div class="form-group">
+              <label class="form-label" for="servings">Servings <span class="required">*</span></label>
+              <input type="number" id="servings" class="form-input" formControlName="servings"
+                [class.error]="hasError('servings')" min="1" placeholder="4">
+              @if (hasError('servings')) { <div class="field-error show">{{ getErrorMessage('servings') }}</div> }
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="prepTime">Prep Time (min) <span class="required">*</span></label>
+              <input type="number" id="prepTime" class="form-input" formControlName="prepTimeMinutes"
+                [class.error]="hasError('prepTimeMinutes')" min="0" placeholder="20">
+              @if (hasError('prepTimeMinutes')) { <div class="field-error show">{{ getErrorMessage('prepTimeMinutes') }}</div> }
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="cookTime">Cook Time (min) <span class="required">*</span></label>
+              <input type="number" id="cookTime" class="form-input" formControlName="cookTimeMinutes"
+                [class.error]="hasError('cookTimeMinutes')" min="0" placeholder="30">
+              @if (hasError('cookTimeMinutes')) { <div class="field-error show">{{ getErrorMessage('cookTimeMinutes') }}</div> }
+            </div>
+          </div>
+        </section>
+
+        <!-- ═══ INGREDIENTS ═══ -->
+        <section class="form-card">
+          <h2 class="form-card__title">🥕 Ingredients <span class="required">*</span></h2>
+          @for (ingredient of ingredients(); track $index) {
+            <div class="ingredient-row">
+              <input type="text" class="form-input" [value]="ingredient"
+                (input)="updateIngredient($index, $any($event.target).value)"
+                [placeholder]="'Ingredient ' + ($index + 1)">
+              @if (ingredients().length > 1) {
+                <button type="button" class="ingredient-remove-btn" (click)="removeIngredientRow($index)" aria-label="Remove ingredient">✕</button>
+              }
+            </div>
+          }
+          <button type="button" class="btn-add-ingredient" (click)="addIngredientRow()">+ Add Ingredient</button>
+          @if (ingredientErrorShown()) {
+            <div class="field-error show">Add at least one ingredient</div>
+          }
+        </section>
+
+        <!-- ═══ DIETARY & ALLERGENS ═══ -->
+        <section class="form-card">
+          <h2 class="form-card__title">🏷️ Dietary &amp; Allergen Info</h2>
+          <p class="form-card__hint">Helps the AI match this recipe to a Foodie's dietary preferences automatically.</p>
+
+          <div class="tag-group">
+            <span class="tag-group__label">Dietary tags</span>
+            <div class="tag-row">
+              @for (tag of dietaryOptions; track tag) {
+                <button type="button" class="tag-chip" [class.selected]="selectedTags().includes(tag)" (click)="toggleTag(tag)">
+                  {{ tag }}
+                </button>
+              }
+            </div>
+          </div>
+
+          <div class="tag-group">
+            <span class="tag-group__label">Allergen-free</span>
+            <div class="tag-row">
+              @for (tag of allergenFreeOptions; track tag) {
+                <button type="button" class="tag-chip tag-chip--allergen" [class.selected]="selectedAllergenFree().includes(tag)" (click)="toggleAllergenFree(tag)">
+                  {{ tag }}
+                </button>
+              }
+            </div>
+          </div>
+        </section>
+
+        <!-- ═══ CHEF INFO ═══ -->
+        <section class="form-card">
+          <h2 class="form-card__title">👤 About You</h2>
+          <div class="form-group">
+            <label class="form-label" for="chefName">Your Name <span class="required">*</span></label>
+            <input type="text" id="chefName" class="form-input" formControlName="chefName"
+              [class.error]="hasError('chefName')" placeholder="How you'd like to be credited">
+            @if (hasError('chefName')) { <div class="field-error show">{{ getErrorMessage('chefName') }}</div> }
+          </div>
+        </section>
+
+        </div><!-- /form-col--details -->
+        </div><!-- /form-grid -->
+
+        <div class="form-actions">
+          <button type="button" class="cancel-btn" (click)="clearForm()" [disabled]="isSubmitting()">Cancel</button>
+          <button type="submit" class="submit-btn" [disabled]="isSubmitting()">
+            {{ isSubmitting() ? 'Submitting…' : 'Submit Recipe →' }}
+          </button>
+        </div>
+        <p class="form-footnote">By submitting, your recipe becomes available to Foodies planning events on Tarbuuz — you'll be credited by name whenever it's served.</p>
+      </form>
+
+    } @else {
+      <div class="success-panel">
+        <div class="success-icon">✓</div>
+        <h2 class="success-title">"{{ submittedRecipeName() }}" is submitted!</h2>
+        <p class="success-sub">Your recipe is now part of the Kitchen Lab repository. A Foodie can add it to their event manually from the Smart Menu picker, and it's available for the AI to suggest automatically when an event's cuisine or dietary preferences are a good fit.</p>
+        <div class="success-actions">
+          <button type="button" class="btn-secondary" (click)="submitAnother()">Submit Another Recipe</button>
+          <button type="button" class="btn-primary" (click)="goToKitchenLab()">Back to Kitchen Lab</button>
+        </div>
+      </div>
+    }
+
+  </div>
+</div>
+
+<app-footer />

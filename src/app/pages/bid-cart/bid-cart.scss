@@ -1,0 +1,165 @@
+/**
+ * Rebuilt from scratch after discovering the previous version of this
+ * file was copied from an earlier, differently-named standalone preview
+ * (score-ring, venue-top, summary-lines, etc.) rather than written
+ * against this component's own actual class names (cart-ring,
+ * cart-venue__top, cart-summary__lines, etc.). The mismatch meant almost
+ * none of bid-cart.html's real classes had any matching rule at all -
+ * exactly what produced the broken layout (an unconstrained, native-size
+ * SVG ring; no spacing on the score/metrics/event sections; summary
+ * lines running together with no line breaks). Every selector below was
+ * checked against the real, current bid-cart.html directly, not assumed
+ * from memory.
+ */
+
+.cart-page { padding: 2rem; min-height: 100vh; }
+.cart-empty { text-align: center; padding: 5rem 1rem; color: #8B8478; }
+
+/* ═══ PAGE HEADER ═══ */
+.cart-page__header { max-width: 1200px; margin: 0 auto 1.6rem; }
+.cart-back-btn { background: none; border: none; color: #8B8478; font-weight: 600; font-size: .85rem; cursor: pointer; margin-bottom: 1rem; padding: 0; }
+.cart-back-btn:hover { color: #D4A94A; }
+.cart-page__title-group { display: flex; align-items: center; gap: 1rem; }
+.cart-page__icon { width: 48px; height: 48px; border-radius: 14px; background: #151822; border: 1.5px solid rgba(255,255,255,.08); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; }
+.cart-page__title { font-family: 'Cormorant Garamond', serif; font-size: 1.7rem; color: #fff; margin-bottom: .1rem; }
+.cart-page__subtitle { color: #8B8478; font-size: .88rem; }
+
+/* ═══ LAYOUT ═══ */
+.cart-layout { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1.4fr 1fr; gap: 1.4rem; align-items: start; }
+@media (max-width: 980px) { .cart-layout { grid-template-columns: 1fr; } }
+.cart-left { display: flex; flex-direction: column; gap: 1.4rem; }
+
+/* ═══ CARD BASE ═══ */
+.cart-card { background: #151822; border: 1.5px solid rgba(255,255,255,.08); border-radius: 20px; padding: 1.6rem; }
+.cart-card__section-title { display: flex; align-items: center; gap: .5rem; font-size: 1.1rem; margin-bottom: 1.1rem; }
+
+/* ═══ VENUE CARD ═══ */
+.cart-card__badge {
+  display: inline-flex; align-items: center; gap: .5rem; background: rgba(212,169,74,.12); border: 1px solid rgba(212,169,74,.3);
+  color: #D4A94A; font-weight: 700; font-size: .78rem; padding: .4rem .9rem; border-radius: 999px; margin-bottom: 1.3rem;
+}
+.badge-icon { font-size: .9rem; }
+.badge-rank { background: rgba(255,255,255,.08); color: #cfcac0; padding: .1rem .5rem; border-radius: 999px; font-size: .7rem; }
+
+.cart-venue__top { display: flex; gap: 1.4rem; align-items: center; margin-bottom: 1.5rem; }
+.cart-ring-wrap { flex-shrink: 0; }
+// The actual bug: this rule didn't exist at all before, so the SVG
+// rendered at whatever size its own intrinsic/viewport dimensions
+// implied - effectively unbounded, which is exactly the huge ring seen
+// in the broken screenshot.
+.cart-ring { width: 84px; height: 84px; display: block; }
+.cart-ring__val { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 20px; fill: #fff; }
+.cart-ring__sub { font-size: 8px; fill: #8B8478; font-weight: 600; }
+
+.cart-venue__identity { min-width: 0; }
+.cart-venue__name { font-size: 1.4rem; margin-bottom: .2rem; }
+.cart-venue__type { display: inline-block; font-size: .74rem; font-weight: 700; color: #B5ABF0; background: rgba(108,93,211,.12); padding: .18rem .6rem; border-radius: 999px; margin-bottom: .6rem; }
+.cart-venue__proposal { font-size: .85rem; color: #A39D8F; line-height: 1.55; }
+
+/* ═══ AI SCORE BREAKDOWN ═══ */
+.cart-scores { border-top: 1px solid rgba(255,255,255,.07); padding-top: 1.2rem; margin-bottom: 1.3rem; }
+.cart-scores__title { font-size: .82rem; text-transform: uppercase; letter-spacing: .04em; color: #8B8478; margin-bottom: .9rem; }
+.cart-score-row { display: flex; align-items: center; gap: .8rem; margin-bottom: .7rem; }
+.cart-score-row:last-child { margin-bottom: 0; }
+.cart-score-label { font-size: .8rem; color: #cfcac0; width: 150px; flex-shrink: 0; }
+.cart-score-track { flex: 1; height: 7px; background: #1C1F2A; border-radius: 999px; overflow: hidden; }
+.cart-score-fill { height: 100%; background: linear-gradient(90deg, #D4A94A, #B8862E); border-radius: 999px; }
+.cart-score-num { font-size: .8rem; font-weight: 700; color: #fff; width: 30px; text-align: right; flex-shrink: 0; }
+
+/* ═══ KEY METRICS ═══ */
+.cart-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: .9rem; border-top: 1px solid rgba(255,255,255,.07); padding-top: 1.2rem; }
+.cart-metric { display: flex; flex-direction: column; gap: .3rem; }
+.cart-metric__label { font-size: .68rem; color: #8B8478; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; }
+.cart-metric__value { font-size: .92rem; color: #fff; font-weight: 600; }
+.cart-metric__value--verdict-within { color: #4A9B6E; }
+.cart-metric__value--verdict-over { color: #e2726c; }
+.cart-metric__value--verdict-under { color: #D4A94A; }
+
+/* ═══ EVENT DETAILS GRID ═══ */
+.cart-event-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.1rem; }
+@media (max-width: 480px) { .cart-event-grid { grid-template-columns: 1fr; } }
+.cart-event-item { display: flex; flex-direction: column; gap: .25rem; }
+.cart-event-label { font-size: .68rem; color: #8B8478; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; }
+.cart-event-value { font-size: .88rem; color: #cfcac0; font-weight: 500; }
+.cart-event-value--highlight { color: #D4A94A; font-weight: 700; }
+
+/* ═══ RIGHT COLUMN ═══ */
+.cart-right { position: sticky; top: 90px; display: flex; flex-direction: column; gap: 1.1rem; }
+@media (max-width: 980px) { .cart-right { position: static; } }
+.cart-summary-card { background: #151822; border: 1.5px solid rgba(255,255,255,.08); border-radius: 20px; padding: 1.6rem; }
+.cart-summary__title { display: flex; align-items: center; gap: .5rem; font-size: 1.1rem; margin-bottom: 1.1rem; }
+
+.cart-summary__lines { margin-bottom: 1.3rem; }
+.cart-summary__line { display: flex; align-items: center; justify-content: space-between; gap: .8rem; font-size: .85rem; color: #A39D8F; padding: .55rem 0; }
+.cart-summary__line-label { display: flex; align-items: center; gap: .35rem; }
+.cart-summary__line-value { color: #fff; font-weight: 600; white-space: nowrap; }
+.cart-summary__line-value--guests { color: #fff; }
+.cart-summary__divider { height: 1px; background: rgba(255,255,255,.08); margin: .3rem 0; }
+.cart-summary__line--total { font-size: .98rem; }
+.cart-summary__line--total .cart-summary__line-label { color: #fff; font-weight: 700; }
+.cart-summary__line-value--total { color: #D4A94A; font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 700; }
+
+.cart-summary__venue-callout { display: flex; align-items: center; gap: .7rem; background: #1C1F2A; border-radius: 12px; padding: .8rem 1rem; margin-bottom: 1.2rem; }
+.callout-dot { width: 8px; height: 8px; border-radius: 50%; background: #4A9B6E; flex-shrink: 0; }
+.cart-summary__venue-callout > div:not(.callout-dot) { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.cart-summary__venue-callout strong { font-size: .85rem; color: #fff; }
+.callout-type { font-size: .72rem; color: #8B8478; }
+.callout-badge { background: rgba(212,169,74,.15); color: #D4A94A; font-size: .7rem; font-weight: 800; padding: .15rem .5rem; border-radius: 999px; }
+
+/* ═══ PROCEED / PAY CTA ═══ */
+.btn-proceed {
+  width: 100%; display: flex; align-items: center; justify-content: center; gap: .5rem;
+  background: linear-gradient(135deg, #D4A94A, #B8862E); color: #0F1117; font-weight: 700; font-size: .95rem;
+  border: none; border-radius: 999px; padding: .95rem; cursor: pointer; box-shadow: 0 10px 26px -8px rgba(212,169,74,.5);
+  transition: transform .2s; margin-bottom: 1.1rem;
+}
+.btn-proceed:hover { transform: translateY(-2px); }
+.btn-proceed:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+.btn-proceed__icon, .btn-proceed__arrow { font-size: .95rem; }
+
+.cart-trust { display: flex; flex-direction: column; gap: .5rem; font-size: .74rem; color: #8B8478; }
+.trust-item { display: block; }
+
+/* ═══ AI TRADE-OFF INSIGHT CARD ═══ */
+.cart-insight-card { background: linear-gradient(160deg, rgba(108,93,211,.1), rgba(21,24,34,.4)); border: 1.5px solid rgba(108,93,211,.25); border-radius: 18px; padding: 1.3rem; }
+.cart-insight__title { display: flex; align-items: center; gap: .5rem; font-size: .95rem; margin-bottom: .6rem; }
+.insight-icon { font-size: 1rem; }
+.cart-insight__text { font-size: .82rem; color: #A39D8F; line-height: 1.55; }
+
+/* ═══ PAYMENT STEP ═══ */
+.cart-right--payment { }
+.payment-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: .5rem; }
+.payment-back-btn { background: none; border: none; color: #8B8478; font-size: .82rem; font-weight: 600; cursor: pointer; padding: 0; }
+.payment-back-btn:hover { color: #D4A94A; }
+.payment-amount-recap { display: flex; flex-direction: column; gap: .2rem; text-align: right; }
+.payment-amount-label { font-size: .74rem; color: #8B8478; }
+.payment-amount-value { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.8rem; color: #D4A94A; }
+.payment-amount-sub { font-size: .78rem; color: #8B8478; }
+
+.cart-body { }
+.payment-error { background: rgba(226,114,108,.1); border: 1px solid rgba(226,114,108,.3); color: #e2726c; font-size: .85rem; padding: .8rem 1rem; border-radius: 10px; margin-bottom: 1rem; }
+
+/* ═══ SUCCESS MODAL ═══ */
+.modal-overlay { position: fixed; inset: 0; background: rgba(8,9,13,.78); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; padding: 1.5rem; z-index: 400; animation: bidcart-fade-in .2s ease; }
+@keyframes bidcart-fade-in { from { opacity: 0; } to { opacity: 1; } }
+.modal.success-modal { background: #151822; border: 1.5px solid rgba(74,155,110,.3); border-radius: 24px; max-width: 440px; width: 100%; padding: 2.4rem 2rem 2rem; text-align: center; animation: bidcart-pop-in .25s cubic-bezier(.34,1.56,.64,1); }
+@keyframes bidcart-pop-in { from { opacity: 0; transform: scale(.92) translateY(8px); } to { opacity: 1; transform: none; } }
+.modal-icon-wrap { display: flex; justify-content: center; margin-bottom: 1.1rem; }
+.modal-icon { width: 62px; height: 62px; border-radius: 50%; background: rgba(74,155,110,.15); border: 2px solid #4A9B6E; color: #4A9B6E; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: 800; }
+.modal-title { font-size: 1.5rem; margin-bottom: .6rem; }
+.modal-sub { font-size: .88rem; color: #A39D8F; line-height: 1.6; margin-bottom: 1.3rem; }
+.modal-sub b { color: #fff; }
+.btn-primary-full { width: 100%; background: linear-gradient(135deg, #D4A94A, #B8862E); color: #0F1117; font-weight: 700; font-size: .92rem; border: none; border-radius: 999px; padding: .9rem; cursor: pointer; }
+
+/* ═══ FADE-IN ANIMATION (applied to every card via .fade-in) ═══ */
+.fade-in { animation: bidcart-fade-in-up .35s ease both; }
+@keyframes bidcart-fade-in-up { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* ═══ RESPONSIVE ═══ */
+@media (max-width: 640px) {
+  .cart-page { padding: 1.2rem; }
+  .cart-card, .cart-summary-card, .cart-insight-card { padding: 1.2rem; }
+  .cart-venue__top { flex-direction: column; align-items: flex-start; }
+  .cart-score-label { width: 110px; }
+  .form-row { grid-template-columns: 1fr; }
+}

@@ -1,0 +1,332 @@
+<app-header />
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="glow glow--amber"></div>
+  <div class="glow glow--indigo"></div>
+
+  <div class="hero-copy">
+    <span class="hero-badge"><span class="pulse-dot"></span> AI-Powered Food Marketplace</span>
+    <h1 class="hero-title">
+      Plan the event.<br>
+      Let <span class="hl-indigo it">AI</span> match the <span class="hl-amber">rest</span>.
+    </h1>
+    <p class="hero-sub">
+      Tarbuuz pairs your event with the right <b>chefs, hosts, and suppliers</b> in seconds -
+      powered by a suite of AI that plans menus, runs bids, and predicts every detail.
+    </p>
+    <div class="hero-ctas">
+      <button class="btn-primary" type="button" (click)="openCreateEvent()">Create Your Event →</button>
+      <button class="btn-ghost" type="button" (click)="seeHowItWorks()">See How It Works</button>
+    </div>
+    <div class="hero-inline-stats">
+      <div class="his"><div class="v">10K+</div><div class="k">Events planned</div></div>
+      <div class="his"><div class="v">500+</div><div class="k">Verified suppliers</div></div>
+      <div class="his"><div class="v">2 min</div><div class="k">To first match</div></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <div class="panel-title">
+        Inside Tarbuuz Events
+        <small>Priya's Wedding · 120 guests · Chicago</small>
+      </div>
+      <div class="panel-score"><div class="num">96%</div><div class="lbl">Match score</div></div>
+    </div>
+
+    <div>
+      @for (cap of heroCapabilities; track cap.name; let i = $index) {
+        <div class="cap-row" [class.active]="activeCapIndex() === i">
+          <div class="cap-ic">{{ cap.icon }}</div>
+          <div class="cap-tx">
+            <div class="cap-nm">{{ cap.name }}</div>
+            <div class="cap-st">{{ cap.status }}</div>
+          </div>
+          <div class="cap-check">✓</div>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- AI OFFERINGS -->
+<section class="section">
+  <div class="section-head">
+    <div class="section-kicker ai">✨ The Intelligence around Events</div>
+    <h2 class="section-title">Six ways AI does the heavy lifting</h2>
+    <p class="section-sub">Every event on Tarbuuz runs on a stack of purpose-built AI - so you spend minutes deciding, not weeks coordinating.</p>
+  </div>
+  <div class="ai-grid">
+    @for (card of aiCapabilities; track card.title) {
+      <div class="ai-card">
+        <span class="ai-tag">✨ AI</span>
+        <div class="ai-ic">{{ card.icon }}</div>
+        <h3>{{ card.title }}</h3>
+        <p>{{ card.description }}</p>
+      </div>
+    }
+  </div>
+</section>
+
+<!-- INTERACTIVE DEMO -->
+<div class="demo">
+  <div class="demo-inner">
+    <div class="section-head">
+      <div class="section-kicker">See it in action</div>
+      <h2 class="section-title">One flow, from idea to booked</h2>
+    </div>
+
+    <div class="tabs" role="tablist">
+      @for (demo of tabDemos; track demo.label; let i = $index) {
+        <button
+          class="tab"
+          type="button"
+          role="tab"
+          [class.active]="activeTabIndex() === i"
+          [attr.aria-selected]="activeTabIndex() === i"
+          (click)="selectTab(i)"
+        >{{ demo.icon }} {{ demo.label }}</button>
+      }
+    </div>
+
+    <div class="tab-body">
+      <div
+        class="tab-visual"
+        role="button"
+        tabindex="0"
+        [attr.aria-label]="'Enlarge image: ' + activeTabDemo().imageAlt"
+        (mouseenter)="openHoverPreview(activeTabDemo().image, activeTabDemo().imageAlt)"
+        (mouseleave)="onPreviewTriggerLeave()"
+        (click)="openPinnedPreview(activeTabDemo().image, activeTabDemo().imageAlt)"
+        (keydown.enter)="openPinnedPreview(activeTabDemo().image, activeTabDemo().imageAlt); $event.preventDefault()"
+        (keydown.space)="openPinnedPreview(activeTabDemo().image, activeTabDemo().imageAlt); $event.preventDefault()"
+      >
+        <img
+          class="tab-visual__img"
+          [src]="activeTabDemo().image"
+          [alt]="activeTabDemo().imageAlt"
+          width="1100"
+          height="733"
+          decoding="async"
+          draggable="false"
+        />
+      </div>
+
+      <div>
+        <!-- keying on activeTabIndex() forces this node to be recreated on
+             every tab switch, which replays the fade-in CSS animation -
+             without this, Angular would just patch the existing node's
+             text/bindings in place and the animation would only ever play
+             once, on first render. -->
+        @for (demo of [activeTabDemo()]; track activeTabIndex()) {
+          <div class="tab-panel">
+            <h3>{{ demo.title }}</h3>
+            <p>{{ demo.description }}</p>
+            <ul>
+              @for (feature of demo.features; track feature) {
+                <li>{{ feature }}</li>
+              }
+            </ul>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STEPS -->
+<div class="band-inner">
+  @for (step of flowSteps; track step.number) {
+    <div class="flow">
+      <div class="flow-num">{{ step.number }}</div>
+      <h3>{{ step.title }}</h3>
+      <p>{{ step.description }}</p>
+    </div>
+  }
+</div>
+
+<!-- PRODUCTS -->
+<section class="section">
+  <div class="section-head">
+    <div class="section-kicker">Three products, one platform</div>
+    <h2 class="section-title">Everything for the event, matched intelligently</h2>
+  </div>
+
+  @for (product of products; track product.name) {
+    <div class="zig">
+      <div
+        class="zig-visual"
+        [class]="product.visualClass"
+        role="button"
+        tabindex="0"
+        [attr.aria-label]="'Enlarge image: ' + product.imageAlt"
+        (mouseenter)="openHoverPreview(product.image, product.imageAlt)"
+        (mouseleave)="onPreviewTriggerLeave()"
+        (click)="openPinnedPreview(product.image, product.imageAlt)"
+        (keydown.enter)="openPinnedPreview(product.image, product.imageAlt); $event.preventDefault()"
+        (keydown.space)="openPinnedPreview(product.image, product.imageAlt); $event.preventDefault()"
+      >
+        <img
+          class="zig-visual__img"
+          [src]="product.image"
+          [alt]="product.imageAlt"
+          width="1100"
+          height="614"
+          loading="lazy"
+          decoding="async"
+          draggable="false"
+        />
+      </div>
+      <div>
+        <span class="zig-tag" [class.tag-ai]="product.tagVariant === 'ai'" [class.tag-plain]="product.tagVariant === 'plain'">
+          {{ product.tagLabel }}
+        </span>
+        <h3>{{ product.name }}</h3>
+        <p>{{ product.description }}</p>
+        <ul>
+          @for (feature of product.features; track feature) {
+            <li>{{ feature }}</li>
+          }
+        </ul>
+        @if (product.ctaPath === buuzPath || product.ctaPath === kitchenLabPath || product.ctaPath === eventsPath) {
+          <a (click)="navigateAndScrollToTop(product.ctaPath)" class="link-amber" style="cursor: pointer;">{{ product.ctaLabel }}</a>
+        } @else {
+          <a [routerLink]="product.ctaPath" class="link-amber">{{ product.ctaLabel }}</a>
+        }
+      </div>
+    </div>
+  }
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stats-inner">
+    @for (stat of stats; track stat.label) {
+      <div>
+        <div class="stat-v" [class.amber]="stat.variant === 'amber'" [class.indigo]="stat.variant === 'indigo'">{{ stat.value }}</div>
+        <div class="stat-k">{{ stat.label }}</div>
+      </div>
+    }
+  </div>
+</div>
+
+<!-- QUOTE -->
+<section class="quote">
+  <blockquote>
+    <span class="mark">&ldquo;</span>{{ testimonial.quote }}<span class="mark">&rdquo;</span>
+  </blockquote>
+  <div class="quote-by">
+    <div class="quote-ava">{{ testimonial.authorInitials }}</div>
+    <div class="quote-byline-text">
+      <div class="quote-name">{{ testimonial.authorName }}</div>
+      <div class="quote-role">{{ testimonial.authorRole }}</div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq">
+  <div class="section-head section-head--tight">
+    <div class="section-kicker">Good to know</div>
+    <h2 class="section-title">Questions, answered</h2>
+  </div>
+
+  @for (item of faqItems; track item.question; let i = $index) {
+    <div class="faq-item" [class.open]="openFaqIndex() === i">
+      <button
+        class="faq-q"
+        type="button"
+        [attr.aria-expanded]="openFaqIndex() === i"
+        [attr.aria-controls]="'faq-answer-' + i"
+        (click)="toggleFaq(i)"
+      >
+        {{ item.question }}
+        <span class="plus">+</span>
+      </button>
+      <div class="faq-a" [id]="'faq-answer-' + i" [attr.aria-hidden]="openFaqIndex() !== i">
+        <p>{{ item.answer }}</p>
+      </div>
+    </div>
+  }
+</section>
+
+<!-- CLOSING -->
+<section class="closing">
+  <div class="glow glow--amber"></div>
+  <h2 class="closing-title">Ready to plan something great?</h2>
+  <p class="closing-sub">Create your event, let AI find the right match, and see what Tarbuuz can put together for you.</p>
+  @if (!isLoggedInAsNonFoodie()) {
+    <button class="btn-primary" type="button" (click)="getStarted()">Get Started - It's Free →</button>
+  }
+</section>
+
+<app-footer />
+
+<!-- ═══ ACCESS-DENIED POPUP ═══
+     Was an inline banner near the hero only - which meant a click from
+     anywhere else on the page (or, before this, a click while signed in
+     as a non-Foodie from the closing CTA) showed the message far from
+     where the person actually clicked, reading as an unrelated, broken
+     error. A centered popup fixes this regardless of scroll position or
+     which button triggered it. -->
+@if (accessMessage()) {
+  <div class="drawer-backdrop" (click)="dismissAccessMessage()"></div>
+  <div class="access-popup" role="alertdialog" aria-modal="true">
+    <button type="button" class="access-popup__dismiss" (click)="dismissAccessMessage()" aria-label="Dismiss">✕</button>
+    <p class="access-popup__message">{{ accessMessage() }}</p>
+
+    @if (accessAction() === 'sign-in') {
+      <button type="button" class="btn-primary access-popup__action" (click)="signInFromAccessMessage()">Sign In</button>
+    }
+
+    @if (accessAction() === 'switch') {
+      <button type="button" class="access-popup__switch-btn" (click)="switchToFoodieAndCreateEvent()">
+        <span>🍽️ Switch to Foodie</span>
+        <span class="access-popup__switch-arrow">→</span>
+      </button>
+    }
+
+    @if (accessAction() === 'enable') {
+      @if (enableError()) {
+        <p class="access-popup__error" role="alert">{{ enableError() }}</p>
+      }
+      <button
+        type="button"
+        class="access-popup__enable-btn"
+        [disabled]="isEnablingFoodie()"
+        (click)="enableFoodieAndCreateEvent()"
+      >
+        {{ isEnablingFoodie() ? 'Enabling…' : '＋ Enable Foodie Profile' }}
+      </button>
+    }
+  </div>
+}
+
+<!-- IMAGE PREVIEW OVERLAY -->
+<!-- Hover mode is pointer-events:none (see home.scss) so it can't steal the
+     hover and flicker; pinned mode (click/tap/keyboard) turns pointer events
+     on so the backdrop click and close button work. object-fit:contain keeps
+     the whole image - text and all - visible regardless of aspect ratio. -->
+@if (preview(); as p) {
+  <div
+    class="img-preview"
+    [class.img-preview--pinned]="previewPinned()"
+    [attr.role]="previewPinned() ? 'dialog' : null"
+    [attr.aria-modal]="previewPinned() ? 'true' : null"
+    [attr.aria-label]="previewPinned() ? p.alt : null"
+    (click)="closePreview()"
+  >
+    <figure class="img-preview__frame">
+      <img class="img-preview__img" [src]="p.src" [alt]="p.alt" />
+    </figure>
+    @if (previewPinned()) {
+      <button
+        type="button"
+        class="img-preview__close"
+        aria-label="Close preview"
+        (click)="closePreview(); $event.stopPropagation()"
+      >×</button>
+    }
+  </div>
+}

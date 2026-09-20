@@ -1,0 +1,64 @@
+@if (open) {
+  <div class="drawer-backdrop" (click)="close()" aria-hidden="true"></div>
+}
+
+<aside role="dialog" aria-modal="true" aria-label="Add a recipe from Kitchen Lab" class="kl-drawer" [class.kl-drawer--open]="open">
+  <div class="kl-drawer__header">
+    <div class="kl-drawer__title-group">
+      <div class="header-logo" aria-hidden="true">🧪</div>
+      <div>
+        <h2 class="kl-drawer__title">Add from Kitchen Lab</h2>
+        <p class="kl-drawer__subtitle">Real recipes, submitted by real home cooks</p>
+      </div>
+    </div>
+    <button type="button" class="kl-drawer__close" (click)="close()" aria-label="Close">✕</button>
+  </div>
+
+  <div class="kl-drawer__controls">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" class="search-input" placeholder="Search recipes or chefs..." [formControl]="searchControl">
+    </div>
+    <div class="filter-row">
+      @for (f of courseFilters; track f.id) {
+        <button type="button" class="filter-chip" [class.active]="activeFilter() === f.id" (click)="setFilter(f.id)">{{ f.label }}</button>
+      }
+    </div>
+  </div>
+
+  <div class="kl-drawer__body">
+    @if (isLoading()) {
+      <div class="kl-loading">
+        <div class="spinner"></div>
+        <p>Loading the repository...</p>
+      </div>
+    }
+
+    @if (!isLoading()) {
+      <div class="recipe-grid">
+        @for (recipe of filteredRecipes(); track recipe.id) {
+          <div class="recipe-card">
+            <div class="recipe-card__top">
+              <span class="recipe-course-tag">{{ courseLabels[recipe.courseType] }}</span>
+              <span class="recipe-rating">★ {{ recipe.rating }}</span>
+            </div>
+            <h3 class="recipe-name">{{ recipe.name }}</h3>
+            <p class="recipe-desc">{{ recipe.description }}</p>
+            <div class="recipe-tags">
+              @for (tag of recipe.tags; track tag) { <span class="recipe-tag">{{ tag }}</span> }
+            </div>
+            <div class="recipe-card__footer">
+              <div class="recipe-chef">
+                <span class="chef-avatar">{{ recipe.chefName.charAt(0) }}</span>
+                <span>{{ recipe.chefName }} · {{ recipe.timesServed }} served</span>
+              </div>
+              <button type="button" class="btn-add" (click)="pick(recipe)">+ ${{ recipe.price }}</button>
+            </div>
+          </div>
+        } @empty {
+          <div class="recipe-empty">No recipes match your search.</div>
+        }
+      </div>
+    }
+  </div>
+</aside>

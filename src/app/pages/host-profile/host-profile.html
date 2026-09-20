@@ -1,0 +1,278 @@
+<app-header />
+
+<div class="cover"></div>
+
+<div class="header-wrap">
+  <div class="profile-header">
+    <div class="avatar-lg">🏛️</div>
+    <div class="header-info">
+      <div class="header-name">{{ profile()?.venueInfo?.venueName || (session()?.firstName + ' ' + session()?.lastName) }}</div>
+      <p class="header-tagline">{{ profile()?.venueInfo?.description || 'Tell Foodies what makes your venue worth booking.' }}</p>
+      <div class="header-facts">
+        <span class="rating">★ New</span>
+        <span>· 0 reviews</span>
+        @if (profile()?.venueInfo?.address) {
+          <span>📍 {{ profile()?.venueInfo?.address }}</span>
+        }
+      </div>
+    </div>
+    <div class="header-actions">
+      <div class="switcher-wrap">
+        <button class="switcher-pill" type="button" [class.open]="switcherOpen()" (click)="toggleSwitcher()">
+          <span>👤 Host</span>
+          <span class="chev" [class.expanded]="switcherOpen()">›</span>
+        </button>
+        @if (switcherOpen()) {
+          <ul class="profile-switcher-list">
+            <li>
+              <div class="ps-item ps-item--active">
+                <span class="ps-item__name">🏛️ Host</span>
+                <span class="ps-item__badge">Primary</span>
+                <span class="ps-item__check">✓</span>
+              </div>
+            </li>
+            <li><button class="ps-enable-btn" type="button">＋ Enable Foodie</button></li>
+            <li><button class="ps-enable-btn" type="button">＋ Enable Supplier</button></li>
+          </ul>
+        }
+      </div>
+      <a class="btn btn-secondary" routerLink="/host-dashboard">
+        <span>🎉</span><span>Dashboard</span>
+      </a>
+      @if (!isEditing()) {
+        <button class="btn btn-primary" type="button" (click)="enableEdit()" [disabled]="isLoading()">
+          <span>✏️</span><span>Edit Profile</span>
+        </button>
+      }
+    </div>
+  </div>
+</div>
+
+<div class="tab-strip-wrap">
+  <div class="tab-strip">
+    @for (tab of tabs; track tab.id) {
+      <button
+        type="button"
+        class="tab-btn"
+        [class.active]="activeTab() === tab.id"
+        (click)="scrollToTab(tab.id)">
+        {{ tab.label }}
+      </button>
+    }
+  </div>
+</div>
+
+<div class="profile-completeness-bar">
+  <div class="completeness-row"><span>Profile completeness</span><b>60%</b></div>
+  <div class="completeness-track"><div class="completeness-fill" style="width:60%"></div></div>
+</div>
+
+<div class="body-wrap">
+  <div class="col-left">
+    <div class="card">
+      <div class="card-title">Intro</div>
+      <p class="intro-bio">{{ profile()?.venueInfo?.description || 'Add a venue description to introduce yourself to Foodies.' }}</p>
+      @if (profile()?.venueInfo?.venueType) {
+        <div class="fact-row"><span class="ico">🌾</span><span><b>{{ getVenueTypeLabel(profile()!.venueInfo.venueType) }}</b></span></div>
+      }
+      @if (profile()?.venueInfo?.address) {
+        <div class="fact-row"><span class="ico">📍</span><span>{{ profile()?.venueInfo?.address }}</span></div>
+      }
+      <div class="fact-row"><span class="ico">🎉</span><span><b>0</b> events hosted</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Photos</div>
+      <div class="preview-grid">
+        <div class="preview-tile pg1">🌾</div>
+        <div class="preview-tile pg2">🍽️</div>
+        <div class="preview-tile pg3">🥂</div>
+      </div>
+      <a class="see-all-link" (click)="scrollToTab('gallery')">See all photos</a>
+    </div>
+  </div>
+
+  <div class="col-right">
+
+    <!-- ═══ OVERVIEW ═══ -->
+    <div class="section-panel" #sectionEl>
+      <div class="section-head"><div><div class="section-title">Overview</div><div class="section-sub">How your profile performs in the marketplace</div></div></div>
+      <div class="stat-strip">
+        <div><div class="stat-v">0</div><div class="stat-k">Events Hosted</div></div>
+        <div><div class="stat-v">—</div><div class="stat-k">Avg Rating</div></div>
+        <div><div class="stat-v">—</div><div class="stat-k">Capacity</div></div>
+        <div><div class="stat-v">—</div><div class="stat-k">Response Time</div></div>
+      </div>
+    </div>
+
+    <!-- ═══ VENUE INFO ═══ -->
+    <div class="section-panel" #sectionEl>
+      <div class="section-head"><div><div class="section-title">Venue Info</div><div class="section-sub">Manage your venue details and contact information</div></div></div>
+
+      @if (isLoading()) {
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <p>Loading profile...</p>
+        </div>
+      }
+
+      @if (!isLoading()) {
+        <form [formGroup]="venueForm" (ngSubmit)="saveVenueInfo()">
+          @if (error()) {
+            <div class="info-message" role="alert" style="color:var(--danger); border-color:rgba(226,114,108,.3); background:rgba(226,114,108,.08);">
+              <span>⚠️</span><span>{{ error() }}</span>
+            </div>
+          }
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Venue Name <span class="required">*</span></label>
+              <input type="text" class="form-input" formControlName="venueName" placeholder="Enter Venue Name">
+              @if (hasError('venueName')) { <div class="form-error">{{ getErrorMessage('venueName') }}</div> }
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Venue Type <span class="required">*</span></label>
+              @if (!isEditing()) {
+                <input type="text" class="form-input" [value]="getVenueTypeLabel(venueForm.get('venueType')?.value)" readonly>
+              } @else {
+                <select class="form-select" formControlName="venueType">
+                  <option value="" disabled>Select Venue Type</option>
+                  @for (type of venueTypeOptions; track type.value) {
+                    <option [value]="type.value">{{ type.label }}</option>
+                  }
+                </select>
+              }
+              @if (hasError('venueType')) { <div class="form-error">{{ getErrorMessage('venueType') }}</div> }
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Address <span class="required">*</span></label>
+              <input type="text" class="form-input" formControlName="address" placeholder="Address, City, State, Country, Zip">
+              @if (hasError('address')) { <div class="form-error">{{ getErrorMessage('address') }}</div> }
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">First Name <span class="required">*</span></label>
+              <input type="text" class="form-input" formControlName="firstName" autocomplete="given-name" placeholder="Enter First Name">
+              @if (hasError('firstName')) { <div class="form-error">{{ getErrorMessage('firstName') }}</div> }
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Last Name <span class="required">*</span></label>
+              <input type="text" class="form-input" formControlName="lastName" autocomplete="family-name" placeholder="Enter Last Name">
+              @if (hasError('lastName')) { <div class="form-error">{{ getErrorMessage('lastName') }}</div> }
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Email <span class="required">*</span></label>
+              <input type="email" class="form-input" formControlName="email" placeholder="Enter Email">
+              @if (hasError('email')) { <div class="form-error">{{ getErrorMessage('email') }}</div> }
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Phone Number <span class="required">*</span></label>
+              <input type="tel" class="form-input" formControlName="phoneNumber" placeholder="+1 5551234567">
+              <div class="form-hint">Include country code (e.g. +1 5551234567 or +44 7911 123456)</div>
+              @if (hasError('phoneNumber')) { <div class="form-error">{{ getErrorMessage('phoneNumber') }}</div> }
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Website</label>
+              <input type="url" class="form-input" formControlName="website" placeholder="Enter Website (optional)">
+              @if (hasError('website')) { <div class="form-error">{{ getErrorMessage('website') }}</div> }
+            </div>
+          </div>
+
+          <div class="form-group description-group">
+            <label class="form-label">Venue Description</label>
+            <textarea class="form-textarea" formControlName="description" rows="4" maxlength="500" placeholder="Enter Venue Description"></textarea>
+            <div class="helper-text">{{ descriptionLength() }} / 500 characters</div>
+            @if (hasError('description')) { <div class="form-error">{{ getErrorMessage('description') }}</div> }
+          </div>
+
+          @if (isEditing()) {
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" [disabled]="!canSave() || isSaving()">
+                <span>{{ isSaving() ? '' : '💾' }}</span>
+                @if (isSaving()) { <span class="spinner-small"></span> }
+                <span>{{ isSaving() ? 'Saving…' : 'Save Changes' }}</span>
+              </button>
+              <button type="button" class="btn btn-secondary" (click)="cancelEdit()" [disabled]="isSaving()">Cancel</button>
+            </div>
+          } @else {
+            <div class="info-message"><span class="info-icon">💡</span><span>Click "Edit" to update your venue information</span></div>
+          }
+        </form>
+      }
+    </div>
+
+    <!-- ═══ FEATURES ═══ -->
+    <div class="section-panel" #sectionEl>
+      <div class="section-head"><div><div class="section-title">Features</div><div class="section-sub">Amenities Foodies see when comparing venues</div></div></div>
+      <div class="chip-row">
+        @for (feature of featureOptions; track feature) {
+          <button type="button" class="chip" [class.selected]="isFeatureSelected(feature)" (click)="toggleFeature(feature)">
+            {{ feature }}
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- ═══ GALLERY ═══ -->
+    <div class="section-panel" #sectionEl>
+      <div class="section-head">
+        <div><div class="section-title">Photo Gallery</div><div class="section-sub">The first thing Foodies see when they find you</div></div>
+        <button type="button" class="btn-ghost-sm">＋ Add Photo</button>
+      </div>
+      <div class="gallery-grid">
+        <div class="gallery-tile g1 big">🌾<span class="gallery-caption">Add your first photo</span></div>
+        <div class="gallery-tile g2">🍽️</div>
+        <div class="gallery-tile g3">🥂</div>
+        <div class="gallery-tile g4">🌻</div>
+        <div class="gallery-tile g5">🕯️</div>
+      </div>
+    </div>
+
+    <!-- ═══ SETTINGS ═══ -->
+    <div class="section-panel" #sectionEl>
+      <div class="section-head"><div><div class="section-title">Settings</div><div class="section-sub">Notifications and account preferences</div></div></div>
+      <div class="setting-row">
+        <div class="setting-text"><b>New bid opportunity alerts</b><span>Get notified when a nearby event fits your venue</span></div>
+        <label class="toggle">
+          <input type="checkbox" [checked]="profile()?.settings?.newBidAlerts" (change)="toggleSetting('newBidAlerts')">
+          <span class="toggle-track"></span><span class="toggle-thumb"></span>
+        </label>
+      </div>
+      <div class="setting-row">
+        <div class="setting-text"><b>SMS notifications</b><span>Time-sensitive alerts only</span></div>
+        <label class="toggle">
+          <input type="checkbox" [checked]="profile()?.settings?.smsNotifications" (change)="toggleSetting('smsNotifications')">
+          <span class="toggle-track"></span><span class="toggle-thumb"></span>
+        </label>
+      </div>
+      <div class="setting-row">
+        <div class="setting-text"><b>Public profile</b><span>Let Foodies browse your gallery</span></div>
+        <label class="toggle">
+          <input type="checkbox" [checked]="profile()?.settings?.publicProfile" (change)="toggleSetting('publicProfile')">
+          <span class="toggle-track"></span><span class="toggle-thumb"></span>
+        </label>
+      </div>
+      <div class="danger-zone">
+        <button type="button" class="danger-link">Deactivate account</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+@if (showSuccessModal()) {
+  <div class="modal-backdrop">
+    <div class="modal-content">
+      <div class="modal-icon-lg">✅</div>
+      <div class="modal-message">Venue information saved successfully!</div>
+      <button class="btn btn-primary" type="button" (click)="closeSuccessModal()">OK</button>
+    </div>
+  </div>
+}
+
+<app-footer />

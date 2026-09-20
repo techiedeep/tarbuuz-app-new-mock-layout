@@ -1,0 +1,149 @@
+// Privacy Policy — same structure and palette as Terms of Use for
+// consistency between the two legal pages, plus a few grid variants this
+// document specifically needs (cookie categories, security pillars,
+// the who-sees-what sharing table).
+:host { display: block; background: #0F1117; color: #cfcac0; }
+
+// ── Hero ──
+.pp-hero { position: relative; overflow: hidden; padding: 4.5rem 2rem 3rem; text-align: center; }
+.pp-hero__inner { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; }
+.pp-hero__eyebrow { color: #D4A94A; font-weight: 700; font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; margin-bottom: .8rem; }
+.pp-hero__title { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: clamp(2.4rem, 5vw, 3.6rem); color: #F5F3EE; margin-bottom: 1.2rem; }
+.pp-hero__title--accent { color: #D4A94A; font-style: italic; }
+.pp-hero__meta { display: flex; justify-content: center; gap: .7rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
+.pp-hero__badge { font-size: .78rem; font-weight: 600; padding: .35rem .9rem; border-radius: 999px; background: #1C1F2A; border: 1.5px solid rgba(255,255,255,.12); color: #A39D8F; }
+.pp-hero__badge--effective { border-color: rgba(212,169,74,.35); color: #D4A94A; }
+.pp-hero__intro { color: #A39D8F; font-size: 1rem; line-height: 1.6; }
+.pp-hero__orb { position: absolute; border-radius: 50%; filter: blur(70px); pointer-events: none; }
+.pp-hero__orb--1 { width: 420px; height: 420px; background: #6C5DD3; opacity: .12; top: -20%; right: -8%; }
+.pp-hero__orb--2 { width: 380px; height: 380px; background: #D4A94A; opacity: .1; bottom: -30%; left: -8%; }
+
+// ── Consent notice ──
+.pp-notice { background: rgba(108, 93, 211, .08); border-top: 1px solid rgba(108,93,211,.25); border-bottom: 1px solid rgba(108,93,211,.25); padding: 1rem 2rem; }
+.pp-notice__inner { max-width: 900px; margin: 0 auto; display: flex; gap: .8rem; align-items: flex-start; }
+.pp-notice__icon { font-size: 1.1rem; flex-shrink: 0; }
+.pp-notice p { font-size: .88rem; line-height: 1.6; color: #cfcac0; margin: 0; }
+
+// ── Layout: TOC + content ──
+.pp-layout { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 260px 1fr; gap: 3rem; padding: 3rem 2rem 6rem; align-items: start; }
+
+.pp-toc { position: sticky; top: 1.5rem; align-self: start; max-height: calc(100vh - 3rem); overflow-y: auto; }
+.pp-toc__inner { background: #151822; border: 1.5px solid rgba(255,255,255,.08); border-radius: 16px; padding: 1.3rem; }
+.pp-toc__heading { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.05rem; color: #fff; margin-bottom: .8rem; }
+.pp-toc__list { list-style: none; margin: 0; padding: 0; }
+.pp-toc__item { margin-bottom: .1rem; }
+.pp-toc__btn {
+  display: block; width: 100%; text-align: left; background: none; border: none; border-radius: 8px;
+  color: #A39D8F; font: 500 .82rem/1.4 'Inter', sans-serif; padding: .5rem .6rem; cursor: pointer;
+  transition: background .15s, color .15s;
+}
+.pp-toc__btn:hover { background: rgba(255,255,255,.04); color: #cfcac0; }
+.pp-toc__btn--active { background: rgba(212,169,74,.1); color: #D4A94A; font-weight: 700; }
+
+.pp-content { min-width: 0; }
+
+// ── Sections ──
+.pp-section { padding: 2.2rem 0; border-bottom: 1px solid rgba(255,255,255,.06); scroll-margin-top: 1.5rem; }
+.pp-section:last-of-type { border-bottom: none; }
+.pp-section__number { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.1rem; color: #D4A94A; margin-bottom: .3rem; }
+.pp-section__title { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.6rem; color: #F5F3EE; margin-bottom: 1rem; }
+.pp-subsection { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 1rem; color: #F5F3EE; margin: 1.4rem 0 .6rem; }
+.pp-section p { font-size: .92rem; line-height: 1.7; margin-bottom: .9rem; }
+.pp-section strong { color: #F5F3EE; font-weight: 700; }
+.pp-list { padding-left: 1.3rem; margin-bottom: .9rem; }
+.pp-list li { font-size: .92rem; line-height: 1.7; margin-bottom: .5rem; }
+.pp-ordered-list { padding-left: 1.3rem; margin-top: .6rem; }
+.pp-ordered-list li { font-size: .88rem; line-height: 1.7; margin-bottom: .3rem; }
+.pp-link { color: #D4A94A; text-decoration: underline; text-underline-offset: 2px; }
+.pp-note { color: #8B8478; font-size: .82rem; font-style: italic; }
+
+// ── Info-category cards (1.1) ──
+.pp-card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 1rem 0 1.4rem; }
+.pp-card { background: #151822; border: 1.5px solid rgba(255,255,255,.08); border-radius: 14px; padding: 1.2rem; }
+.pp-card__icon { font-size: 1.5rem; margin-bottom: .5rem; }
+.pp-card__title { font-weight: 700; color: #F5F3EE; font-size: .95rem; margin-bottom: .5rem; }
+.pp-card__desc { color: #A39D8F; font-size: .85rem; line-height: 1.6; margin: 0; }
+
+// ── Use-case grid (2.1) ──
+.pp-use-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin: 1rem 0 1.4rem; }
+.pp-use-item { background: #1C1F2A; border: 1.5px solid rgba(255,255,255,.08); border-radius: 14px; padding: 1.1rem 1.2rem; }
+.pp-use-item__head { font-weight: 700; color: #D4A94A; font-size: .85rem; margin-bottom: .5rem; }
+.pp-use-item p { font-size: .85rem; line-height: 1.6; color: #A39D8F; margin: 0; }
+
+// ── Sharing table (3.1) ──
+.pp-share-table { border: 1.5px solid rgba(255,255,255,.1); border-radius: 12px; overflow: hidden; margin: 1rem 0 1.4rem; }
+.pp-share-row { display: grid; grid-template-columns: 220px 1fr; gap: 1rem; padding: .85rem 1rem; font-size: .85rem; line-height: 1.55; border-bottom: 1px solid rgba(255,255,255,.06); }
+.pp-share-row:last-child { border-bottom: none; }
+.pp-share-row--header { background: #1C1F2A; font-weight: 700; color: #F5F3EE; font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; }
+.pp-share-row span:first-child { font-weight: 600; color: #F5F3EE; }
+@media (max-width: 640px) { .pp-share-row { grid-template-columns: 1fr; gap: .3rem; } }
+
+// ── Callouts ──
+.pp-callout { display: flex; gap: .8rem; align-items: flex-start; border-radius: 14px; padding: 1.1rem 1.2rem; margin: 1rem 0 1.4rem; font-size: .88rem; line-height: 1.6; }
+.pp-callout__icon { font-size: 1.1rem; flex-shrink: 0; }
+.pp-callout--info { background: rgba(108, 93, 211, .08); border: 1.5px solid rgba(108,93,211,.3); }
+.pp-callout--warning { background: rgba(212, 169, 74, .08); border: 1.5px solid rgba(212,169,74,.3); }
+.pp-callout--highlight { background: rgba(74, 155, 110, .08); border: 1.5px solid rgba(74,155,110,.3); }
+
+// ── Fee-style tables (retention, response times) ──
+.pp-fee-table { border: 1.5px solid rgba(255,255,255,.1); border-radius: 12px; overflow: hidden; margin: 1rem 0 .6rem; }
+.pp-fee-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; padding: .7rem 1rem; font-size: .87rem; border-bottom: 1px solid rgba(255,255,255,.06); }
+.pp-fee-row:last-child { border-bottom: none; }
+.pp-fee-row--header { background: #1C1F2A; font-weight: 700; color: #F5F3EE; font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; }
+@media (max-width: 640px) { .pp-fee-row { grid-template-columns: 1fr; gap: .2rem; } }
+
+// ── Security pillars (5) ──
+.pp-security-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1rem; margin: 1rem 0 1.4rem; }
+.pp-security-item { background: #151822; border: 1.5px solid rgba(255,255,255,.08); border-radius: 14px; padding: 1.2rem; }
+.pp-security-item__icon { font-size: 1.4rem; margin-bottom: .5rem; }
+.pp-security-item__title { font-weight: 700; color: #F5F3EE; font-size: .92rem; margin-bottom: .5rem; }
+.pp-security-item p { color: #A39D8F; font-size: .82rem; line-height: 1.6; margin: 0; }
+
+// ── Cookie category cards (8) ──
+.pp-cookie-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 1rem 0 1.4rem; }
+.pp-cookie-item { background: #1C1F2A; border: 1.5px solid rgba(255,255,255,.08); border-radius: 14px; padding: 1.1rem 1.2rem; }
+.pp-cookie-item__type { display: inline-block; font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; padding: .2rem .6rem; border-radius: 999px; margin-bottom: .6rem; }
+.pp-cookie-item__type--required { background: rgba(226,114,108,.15); color: #e2726c; }
+.pp-cookie-item__type--functional { background: rgba(212,169,74,.15); color: #D4A94A; }
+.pp-cookie-item__type--analytics { background: rgba(108,93,211,.15); color: #B5ABF0; }
+.pp-cookie-item__type--ads { background: rgba(74,155,110,.15); color: #4A9B6E; }
+.pp-cookie-item__title { font-weight: 700; color: #F5F3EE; font-size: .9rem; margin-bottom: .5rem; }
+.pp-cookie-item p { color: #A39D8F; font-size: .82rem; line-height: 1.6; margin: 0; }
+
+// ── Contact: one prominent email, not six repeated addresses ──
+// The source draft's six contact cards each showed a different
+// department address (privacy@, dpo@, security@...). Consolidating to
+// one real inbox (info@tarbuuz.ai) made repeating it six times pointless
+// — the useful information was never "which address" but "how fast will
+// I hear back," which is what the table below actually communicates.
+.pp-email-banner {
+  display: flex; align-items: center; gap: 1.1rem; background: #151822;
+  border: 1.5px solid rgba(212,169,74,.3); border-radius: 18px; padding: 1.4rem 1.6rem; margin: 1.2rem 0 1.6rem;
+}
+.pp-email-banner__icon { font-size: 1.8rem; flex-shrink: 0; }
+.pp-email-banner__text { display: flex; flex-direction: column; gap: .3rem; }
+.pp-email-banner__label { font-size: .8rem; color: #A39D8F; }
+.pp-email-banner__address { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.4rem; color: #D4A94A; text-decoration: none; }
+.pp-email-banner__address:hover { text-decoration: underline; }
+@media (max-width: 480px) { .pp-email-banner { flex-direction: column; text-align: center; } }
+
+// ── Final acceptance block ──
+.pp-acceptance { text-align: center; background: #151822; border: 1.5px solid rgba(212,169,74,.3); border-radius: 20px; padding: 2.4rem 2rem; margin-top: 2.5rem; }
+.pp-acceptance__icon { color: #D4A94A; font-size: 1.6rem; margin-bottom: .8rem; }
+.pp-acceptance__title { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.5rem; color: #F5F3EE; margin-bottom: 1rem; }
+.pp-acceptance p { max-width: 640px; margin: 0 auto 1rem; font-size: .88rem; line-height: 1.7; color: #A39D8F; }
+.pp-acceptance__version { font-size: .78rem; color: #8B8478; margin-top: 1.4rem; }
+
+// ── Responsive ──
+@media (max-width: 960px) {
+  .pp-layout { grid-template-columns: 1fr; gap: 1.5rem; padding: 2rem 1.4rem 4rem; }
+  .pp-toc { position: static; max-height: none; }
+  .pp-toc__list { display: flex; flex-wrap: wrap; gap: .3rem; }
+  .pp-toc__item { margin-bottom: 0; }
+  .pp-toc__btn { width: auto; padding: .45rem .75rem; border: 1px solid rgba(255,255,255,.1); border-radius: 999px; }
+}
+@media (max-width: 640px) {
+  .pp-hero { padding: 3rem 1.2rem 2rem; }
+  .pp-notice { padding: .9rem 1.2rem; }
+  .pp-section__title { font-size: 1.35rem; }
+}

@@ -1,0 +1,85 @@
+<div class="bid-card" [class.bid-card--selected]="selected()" (click)="select.emit(bid())">
+  <div class="bid-card__top">
+    <div class="bid-card__ring-wrap">
+      <svg class="bid-card__ring" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="38" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="9" />
+        <circle
+          cx="50" cy="50" r="38" fill="none"
+          stroke="url(#bidScoreGrad)"
+          stroke-width="9"
+          stroke-linecap="round"
+          [attr.stroke-dasharray]="ringCircumference"
+          [attr.stroke-dashoffset]="ringDashoffset()"
+          transform="rotate(-90 50 50)"
+        />
+        <text x="50" y="46" text-anchor="middle" class="bid-ring__val">{{ bid().compositeScore | number:'1.1-1' }}</text>
+        <text x="50" y="61" text-anchor="middle" class="bid-ring__sub">Score</text>
+      </svg>
+      <span class="bid-card__rank" [attr.data-rank]="bid().rank">#{{ bid().rank }}</span>
+    </div>
+
+    <div class="bid-card__top-right">
+      <div class="bid-card__header-row">
+        <div class="bid-card__identity">
+          <h3 class="bid-card__name">{{ bid().bidderName }}</h3>
+          <span class="bid-card__biz-type">{{ businessTypeLabel() }}</span>
+        </div>
+        <div class="bid-card__sel-dot" [class.bid-card__sel-dot--active]="selected()">
+          @if (selected()) { <span>✓</span> }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bid-card__scores">
+    <h4 class="bid-card__scores-title">AI Score Breakdown</h4>
+    @for (row of bid().scoreRows; track row.label) {
+      <div class="bid-card__score-row">
+        <span class="bid-card__score-label">{{ row.label }}</span>
+        <div class="bid-card__score-track">
+          <div class="bid-card__score-fill" [style.width.%]="row.percent"></div>
+        </div>
+        <span class="bid-card__score-num">{{ row.value | number:'1.1-1' }}</span>
+      </div>
+    }
+  </div>
+
+  <div class="bid-card__metrics">
+    <div class="bid-card__metric">
+      <span class="bid-card__metric-label">Amount / Person</span>
+      <span class="bid-card__metric-value">{{ bid().bidAmount }} {{ bid().currency }}</span>
+    </div>
+    <div class="bid-card__metric">
+      <span class="bid-card__metric-label">Capacity</span>
+      <span class="bid-card__metric-value">{{ bid().serviceCapacity }}</span>
+    </div>
+    @if (bid().normalisedCpp !== null) {
+      <div class="bid-card__metric">
+        <span class="bid-card__metric-label">Norm. CPP</span>
+        <span class="bid-card__metric-value">{{ bid().normalisedCpp | number:'1.2-2' }}</span>
+      </div>
+    }
+    <div class="bid-card__metric">
+      <span class="bid-card__metric-label">Est. Completion</span>
+      <span class="bid-card__metric-value">{{ bid().estimatedCompletionDate | date:'mediumDate' }}</span>
+    </div>
+    <div class="bid-card__metric">
+      <span class="bid-card__metric-label">Event</span>
+      <span class="bid-card__metric-value">{{ bid().eventName }}</span>
+    </div>
+    @if (totalAmount() !== null) {
+      <div class="bid-card__metric">
+        <span class="bid-card__metric-label">Total Amount</span>
+        <span class="bid-card__metric-value">{{ totalAmount() | number:'1.0-0' }} {{ bid().currency }}</span>
+      </div>
+    }
+    @if (bid().budgetVerdict) {
+      <div class="bid-card__metric">
+        <span class="bid-card__metric-label">Budget Verdict</span>
+        <span class="bid-card__metric-value" [class]="'bid-card__metric-value--verdict-' + bid().budgetVerdict">{{ bid().budgetVerdict | titlecase }}</span>
+      </div>
+    }
+  </div>
+
+  <p class="bid-card__proposal">{{ bid().proposal }}</p>
+</div>

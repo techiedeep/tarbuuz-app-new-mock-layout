@@ -1,0 +1,111 @@
+<app-header />
+
+<!-- HERO -->
+<section class="hero">
+  <div class="glow glow--amber"></div>
+  <div class="glow glow--indigo"></div>
+  <div class="hero-inner">
+    <span class="hero-badge">✨ Our Story</span>
+    <h1 class="hero-title">What if food wasn't a <em>transaction</em>...<br>but a <span class="hl-amber">journey</span>?</h1>
+    <p class="hero-sub">
+      Every meal you've ever shared has a hidden story - the searching, the guessing, the settling.
+      <b>Our Founder</b> started Tarbuuz to ask one uncomfortable question: why does something
+      this joyful involve so much friction?
+    </p>
+  </div>
+</section>
+
+<!-- FOUNDER -->
+<section class="founder">
+  <div class="founder-portrait">
+    <div class="halo"></div>
+    <span class="initials">{{ founder.initials }}</span>
+  </div>
+  <div>
+    <div class="founder-kicker">The Person Behind The Question</div>
+    <p class="founder-quote">
+      <span class="mark">&ldquo;</span>{{ founder.quote }}<span class="mark">&rdquo;</span>
+    </p>
+    <div class="founder-name">{{ founder.name }}</div>
+    <div class="founder-role">{{ founder.role }}</div>
+  </div>
+</section>
+
+<!-- THE JOURNEY -->
+<section class="section">
+  <div class="section-head">
+    <div class="section-kicker">The Journey Called Food</div>
+    <h2 class="section-title">Five broken moments. Five honest questions.</h2>
+    <p class="section-sub">Our Founder didn't map a product roadmap first - she mapped the journey itself, moment by moment, and asked why each one still felt this hard.</p>
+  </div>
+
+  <div class="journey">
+    @for (stage of journeyStages; track stage.number) {
+      <div class="stage">
+        <div class="stage-num">{{ stage.number }}</div>
+        <div>
+          <p class="stage-question">&quot;{{ stage.question }}&quot;</p>
+          <div class="stage-answer" [class.ai]="stage.isAi">
+            <div class="stage-answer-icon">{{ stage.answerIcon }}</div>
+            <div class="stage-answer-text">
+              <b>
+                {{ stage.productName }}
+                @if (stage.productTag) {
+                  <span class="stage-product-tag" [class.ai]="stage.productTagIsAi">{{ stage.productTag }}</span>
+                }
+              </b>
+              <span>{{ stage.description }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</section>
+
+<!-- MANIFESTO -->
+<section class="manifesto">
+  <div class="manifesto-kicker">What Our Founder Believes</div>
+  <p class="manifesto-text">
+    "Food was never supposed to be <span class="hl">this much work</span>.
+    We didn't build an app to sell you dinner - we built a way to
+    give you back <span class="hl">the part of food you actually wanted</span>
+    all along: the moment itself."
+  </p>
+</section>
+
+<!-- ORIGIN -->
+<div class="origin">
+  <div class="origin-inner">
+    <div class="section-head section-head--tight">
+      <div class="section-kicker">How It Started</div>
+      <h2 class="section-title">A question, asked five times over</h2>
+    </div>
+
+    @for (milestone of originMilestones; track milestone.label) {
+      <div class="origin-line">
+        <div class="origin-dot"></div>
+        <div>
+          <div class="origin-year">{{ milestone.label }}</div>
+          <div class="origin-text">
+            @for (seg of milestone.segments; track $index) {
+              @if (seg.bold) {<b>{{ seg.text }}</b>} @else {{{ seg.text }}}
+            }
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>
+
+<!-- CLOSING -->
+<section class="closing">
+  <div class="glow glow--amber"></div>
+  <h2 class="closing-title">What question will you skip next?</h2>
+  <p class="closing-sub">Let Tarbuuz take the part of food you never wanted to do - so you keep the part you always did.</p>
+  @if (!isLoggedIn()) {
+    <button class="btn-primary" type="button" (click)="startYourJourney()">Start Your Journey - It's Free →</button>
+  }
+</section>
+
+<app-footer />

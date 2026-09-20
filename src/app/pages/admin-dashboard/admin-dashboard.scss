@@ -1,0 +1,288 @@
+// Admin Dashboard — ported near-verbatim from the standalone HTML/CSS
+// mockup this component replaces. Colors hardcoded rather than referencing
+// global CSS custom properties, matching kitchen-lab.scss's own documented
+// workaround for the confirmed Angular component-style-scoping bug with
+// :root-declared var() references.
+//
+// The mockup's own sidebar + standalone topbar shell is gone - this page
+// now sits under the shared <app-header>/<app-footer> like every other
+// page in the app (see admin-dashboard.ts's doc comment), so there's no
+// second nav/brand competing with the real one, and "Back to App" lives
+// in the shared header's logo instead of a sidebar button.
+
+:host { display: block; font-family: 'Inter', sans-serif; background: #0F1117; color: #cfcac0; }
+h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 700; color: #fff; margin: 0; }
+button { font-family: inherit; }
+
+/* ═══ PAGE ═══ */
+.admin-page { min-height: 60vh; }
+.admin-main { display: flex; flex-direction: column; }
+
+/* ═══ TOPBAR ═══ (page-local title row, not a second sticky nav - the
+   shared header above already owns that job) */
+// Same 2.4rem side padding as the shared header's own .nav (see
+// header.scss) rather than this page's own separate padding value - so
+// the title/bell/cards below line up with the header's logo and nav
+// links directly above them instead of sitting at a different inset.
+.topbar {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  padding: 1.4rem 2.4rem; border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.topbar-left { display: flex; align-items: center; gap: .8rem; min-width: 0; }
+.admin-tag { font-size: .62rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: #8B8478; background: rgba(255,255,255,.06); padding: .2rem .5rem; border-radius: 6px; flex-shrink: 0; }
+.page-title { font-size: 1.35rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.topbar-right { display: flex; align-items: center; gap: .8rem; flex-shrink: 0; }
+
+.icon-btn { position: relative; background: #1C1F2A; border: 1.5px solid rgba(255,255,255,.1); border-radius: 10px; width: 40px; height: 40px; font-size: 1.05rem; cursor: pointer; }
+.notif-wrapper { position: relative; }
+.notif-dot { position: absolute; top: 4px; right: 4px; background: #e2726c; width: 8px; height: 8px; border-radius: 50%; }
+.notif-dropdown { position: absolute; top: calc(100% + 10px); right: 0; width: 320px; background: #151822; border: 1.5px solid rgba(255,255,255,.12); border-radius: 16px; box-shadow: 0 20px 50px -12px rgba(0,0,0,.6); z-index: 60; overflow: hidden; }
+.notif-header { display: flex; align-items: center; justify-content: space-between; padding: .9rem 1.1rem; border-bottom: 1px solid rgba(255,255,255,.08); color: #fff; }
+.notif-close { background: none; border: none; color: #8B8478; cursor: pointer; font-size: .9rem; }
+.notif-item { display: flex; gap: .7rem; padding: .8rem 1.1rem; border-bottom: 1px solid rgba(255,255,255,.05); }
+.notif-item:last-child { border-bottom: none; }
+.notif-icon { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .95rem; flex-shrink: 0; }
+.notif-body p { font-size: .8rem; color: #cfcac0; line-height: 1.4; margin: 0; }
+.notif-body span { font-size: .7rem; color: #8B8478; }
+
+/* ═══ SECTIONS ═══ */
+// Same 2.4rem side padding as .topbar above (and the shared header's own
+// .nav) - full-width, no max-width/margin:auto column-centering, per the
+// user's explicit correction: the old left-stuck layout just needed equal
+// padding on both sides, not a narrower centered column.
+.section-content { padding: 1.8rem 2.4rem; }
+
+/* ── Stats grid ──
+   Smaller, denser cards than the original mockup - no sparkline (it read
+   as visual noise once the cards were reviewed at real size), tighter
+   padding/icon/value sizing, and a smaller grid minmax so more cards fit
+   per row before wrapping, on any viewport. */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: .8rem; margin-bottom: 1.1rem; }
+.stat-card { background: #151822; border: 1.5px solid rgba(255,255,255,.08); border-radius: 14px; padding: .9rem 1rem; display: flex; align-items: flex-start; gap: .7rem; }
+.stat-icon-wrap { width: 34px; height: 34px; border-radius: 10px; background: rgba(255,255,255,.06); display: flex; align-items: center; justify-content: center; font-size: .95rem; flex-shrink: 0; }
+.stat-users .stat-icon-wrap { background: rgba(108,93,211,.15); }
+.stat-events .stat-icon-wrap { background: rgba(74,155,110,.15); }
+.stat-bids .stat-icon-wrap { background: rgba(212,169,74,.15); }
+.stat-accepted-bids .stat-icon-wrap { background: rgba(74,155,110,.15); }
+.stat-menu-validations .stat-icon-wrap { background: rgba(212,169,74,.15); }
+.stat-subs .stat-icon-wrap { background: rgba(181,171,240,.15); }
+.stat-body { min-width: 0; }
+.stat-label { font-size: .7rem; color: #8B8478; font-weight: 600; margin-bottom: .15rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.stat-value { font-size: 1.3rem; margin-bottom: .2rem; }
+.stat-sub { font-size: .68rem; color: #A39D8F; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.trend-up { color: #4A9B6E; font-weight: 700; }
+
+/* ── Quick stats (was a full-width "secondary stats" row of its own;
+   now a vertical stack living inside the charts row instead, in the
+   space freed up by the other cards' tighter padding - see
+   .chart-card--quick-stats below) ── */
+.quick-stats-list { display: flex; flex-direction: column; gap: .7rem; }
+.sec-stat { background: #1C1F2A; border: 1.5px solid rgba(255,255,255,.08); border-radius: 14px; padding: .8rem 1rem; display: flex; align-items: center; gap: .7rem; }
+.sec-icon { font-size: 1.05rem; }
+.sec-label { font-size: .7rem; color: #8B8478; font-weight: 600; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sec-value { font-size: 1.05rem; font-weight: 700; color: #fff; font-family: 'Cormorant Garamond', serif; margin: 0; }
+
+/* ── Charts row ──
+   Named grid areas instead of auto-fit/minmax: with 3 cards, auto-fit
+   fit 2 per row across a wide middle range of viewport widths
+   (roughly 650-945px), leaving User Distribution alone on its own row
+   with a wide empty gap to its right. Explicit breakpoints avoid that
+   orphan entirely at every width instead of only at the ones we happen
+   to test:
+     - wide (>945px): all three side by side.
+     - 651-945px: Quick Stats and Weekly Activity share a row, User
+       Distribution spans the full second row (no leftover gap).
+     - <=650px: all three stacked in one column. */
+.charts-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-areas: "quick weekly donut";
+  gap: .9rem;
+  margin-bottom: 1.1rem;
+}
+.chart-card--quick-stats { grid-area: quick; }
+.chart-card--bars { grid-area: weekly; }
+.chart-card--donut { grid-area: donut; }
+@media (max-width: 945px) {
+  .charts-row {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: "quick weekly" "donut donut";
+  }
+}
+@media (max-width: 650px) {
+  .charts-row {
+    grid-template-columns: 1fr;
+    grid-template-areas: "quick" "weekly" "donut";
+  }
+}
+.chart-card { background: #151822; border: 1.5px solid rgba(255,255,255,.08); border-radius: 18px; padding: 1.1rem; }
+.chart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: .9rem; }
+.chart-header h3 { font-size: 1rem; }
+.chart-badge { font-size: .68rem; font-weight: 700; color: #8B8478; background: rgba(255,255,255,.05); padding: .2rem .55rem; border-radius: 999px; }
+
+// No left/right padding on this card specifically - the bars now run
+// the full width of the card (only the header keeps a side inset, via
+// its own padding below) instead of sitting in a padded box with bare
+// margins on both sides.
+.chart-card--bars { padding-left: 0; padding-right: 0; }
+.chart-card--bars .chart-header { padding: 0 1.1rem; }
+// Bars spread across the card's full width (space-between) rather than
+// clustering in a fixed-width group in the middle - now that the card
+// has no side padding, this uses that full width instead of leaving
+// bare margins on both sides of a centered cluster.
+.bar-chart { display: flex; align-items: flex-end; justify-content: space-between; gap: .5rem; height: 150px; padding: 0 1.1rem; }
+.bar-group { display: flex; flex-direction: column; align-items: center; gap: .5rem; width: 30px; flex: 0 0 auto; height: 100%; }
+.bar-track { flex: 1; width: 100%; display: flex; align-items: flex-end; justify-content: center; }
+.bar-fill { width: 100%; background: linear-gradient(180deg, #D4A94A, #B8862E); border-radius: 5px 5px 0 0; min-height: 4px; }
+.bar-label { font-size: .68rem; color: #8B8478; }
+
+// Smaller padding than the default .chart-card, and a bigger donut +
+// bigger center digits - the ring read as small relative to the card's
+// empty margins, so grow the visual and shrink the frame around it.
+.chart-card--donut { padding: .8rem; }
+// flex-wrap so a narrow card drops the legend to its own centered line
+// below the donut instead of squeezing it - the legend has flex-shrink:
+// 0 below specifically so it wraps to a new line at full size rather
+// than shrinking down and ellipsis-truncating "Foodies"/"Hosts"/
+// "Suppliers" into single letters, which happened on cards narrower
+// than roughly donut + gap + 168px (mid-width layouts and phones).
+.donut-wrapper { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1.4rem; }
+.donut-svg { width: 150px; height: 150px; flex-shrink: 0; transform: rotate(-90deg); }
+.donut-ring { fill: none; stroke: rgba(255,255,255,.06); stroke-width: 12; }
+.donut-segment { fill: none; stroke-width: 12; stroke-linecap: round; }
+.donut-center-text, .donut-center-sub { transform: rotate(90deg); transform-origin: center; fill: #fff; font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 20px; }
+.donut-center-sub { fill: #8B8478; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 10px; }
+.donut-legend { flex: 0 0 168px; display: flex; flex-direction: column; gap: .6rem; min-width: 0; }
+.legend-item { display: flex; align-items: center; gap: .5rem; font-size: .8rem; }
+.legend-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.legend-label { color: #cfcac0; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.legend-count { color: #8B8478; }
+.legend-pct { color: #fff; font-weight: 700; min-width: 32px; text-align: right; }
+
+.tier-list { display: flex; flex-direction: column; gap: .6rem; margin-bottom: .9rem; }
+.tier-row { display: flex; align-items: center; gap: .7rem; }
+.tier-info { display: flex; align-items: center; gap: .5rem; font-size: .8rem; width: 90px; flex-shrink: 0; }
+.tier-dot { width: 9px; height: 9px; border-radius: 50%; }
+.tier-enterprise { background: #B5ABF0; } .tier-bar-enterprise { background: #B5ABF0; }
+.tier-professional { background: #D4A94A; } .tier-bar-professional { background: #D4A94A; }
+.tier-basic { background: #4A9B6E; } .tier-bar-basic { background: #4A9B6E; }
+.tier-bar-track { flex: 1; height: 7px; background: rgba(255,255,255,.06); border-radius: 999px; overflow: hidden; }
+.tier-bar-fill { height: 100%; border-radius: 999px; }
+.tier-count { font-size: .78rem; color: #8B8478; width: 44px; text-align: right; flex-shrink: 0; }
+.revenue-highlight { border-top: 1px solid rgba(255,255,255,.08); padding-top: 1rem; }
+.rev-label { font-size: .72rem; color: #8B8478; font-weight: 600; margin: 0; }
+.rev-value { font-size: 1.5rem; color: #D4A94A; font-family: 'Cormorant Garamond', serif; font-weight: 700; margin: 0; }
+
+/* ── Insights row (Subscription Tiers / Recent Activity / Quick Actions) ──
+   One grid with named areas instead of Tiers ending the charts row and
+   Activity/Actions sitting in their own separate row below - at medium
+   viewport widths the charts row could only fit 3 of its 4 cards per
+   line, stranding Tiers alone with a wide empty gap next to it. This
+   grid reflows as a unit at each width instead:
+     - wide (>1240px): all three side by side, Activity given the most
+       width since it holds the longest content.
+     - medium (<=1240px, covers the previously-broken ~945-1240px
+       range): two columns - Tiers stacked above Quick Actions in the
+       narrow left column, Recent Activity filling the right column
+       and spanning both rows, using the space that used to sit empty.
+     - narrow (<=700px): all three stacked in a single column. */
+.insights-row {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) 1.6fr minmax(260px, 1fr);
+  grid-template-areas: "tiers activity actions";
+  gap: .9rem;
+  margin-bottom: 1.1rem;
+}
+.insights-row__tiers { grid-area: tiers; }
+.insights-row__activity { grid-area: activity; }
+.insights-row__actions { grid-area: actions; }
+@media (max-width: 1240px) {
+  .insights-row {
+    grid-template-columns: 1fr 1.6fr;
+    grid-template-areas: "tiers activity" "actions activity";
+  }
+}
+@media (max-width: 700px) {
+  .insights-row {
+    grid-template-columns: 1fr;
+    grid-template-areas: "tiers" "activity" "actions";
+  }
+}
+.activity-card, .quick-actions-card { background: #151822; border: 1.5px solid rgba(255,255,255,.08); border-radius: 18px; padding: 1.1rem; }
+.card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: .9rem; }
+.card-header h3 { font-size: 1rem; }
+.activity-feed { display: flex; flex-direction: column; gap: .2rem; max-height: 340px; overflow-y: auto; }
+.activity-item { display: flex; gap: .8rem; padding: .7rem 0; border-bottom: 1px solid rgba(255,255,255,.05); }
+.activity-item:last-child { border-bottom: none; }
+.activity-icon { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+.activity-msg { font-size: .82rem; color: #cfcac0; margin: 0; }
+.activity-meta { font-size: .72rem; color: #8B8478; margin-top: .1rem; }
+
+.action-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: .7rem; margin-bottom: 1.2rem; }
+.action-grid--single { grid-template-columns: 1fr; }
+.action-grid--single .action-btn { flex-direction: row; justify-content: center; padding: .9rem; }
+.action-btn {
+  display: flex; flex-direction: column; align-items: center; gap: .4rem; background: #1C1F2A;
+  border: 1.5px solid rgba(255,255,255,.08); border-radius: 14px; padding: 1rem .6rem; cursor: pointer;
+  color: #cfcac0; font-size: .78rem; font-weight: 600; transition: border-color .15s, transform .15s;
+}
+.action-btn:hover { border-color: rgba(212,169,74,.4); transform: translateY(-2px); }
+.action-icon { font-size: 1.3rem; }
+.platform-health { border-top: 1px solid rgba(255,255,255,.08); padding-top: 1rem; }
+.health-title { font-size: .78rem; font-weight: 700; color: #8B8478; margin-bottom: .7rem; text-transform: uppercase; letter-spacing: .04em; }
+.health-items { display: flex; flex-direction: column; gap: .55rem; }
+.health-row { display: flex; align-items: center; justify-content: space-between; font-size: .8rem; color: #A39D8F; }
+.health-val { font-weight: 700; }
+.health-val.good { color: #4A9B6E; }
+.health-val.warn { color: #D4A94A; }
+
+/* ── Modals ── */
+.modal-overlay { position: fixed; inset: 0; background: rgba(8,9,13,.72); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 1.5rem; z-index: 300; }
+.modal-panel { background: #151822; border: 1.5px solid rgba(255,255,255,.14); border-radius: 22px; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; }
+.modal-header { display: flex; align-items: center; justify-content: space-between; padding: 1.3rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,.08); }
+.modal-header h2 { font-size: 1.2rem; }
+.modal-close { background: none; border: 1.5px solid rgba(255,255,255,.14); border-radius: 50%; width: 32px; height: 32px; color: #A39D8F; cursor: pointer; }
+.modal-close:hover { border-color: #D4A94A; color: #D4A94A; }
+
+.email-form { padding: 1.5rem; }
+.form-group { margin-bottom: 1.1rem; }
+.form-group label { display: block; font-size: .82rem; font-weight: 700; color: #cfcac0; margin-bottom: .4rem; }
+.required { color: #e2726c; }
+.form-control {
+  width: 100%; background: #1C1F2A; border: 1.5px solid rgba(255,255,255,.12); border-radius: 10px; color: #fff;
+  font: 500 .88rem/1.4 'Inter', sans-serif; padding: .7rem .9rem; outline: none; box-sizing: border-box;
+}
+.form-control:focus { border-color: #D4A94A; }
+.form-control.is-error { border-color: #e2726c; }
+.textarea { resize: vertical; }
+.field-error { color: #e2726c; font-size: .74rem; margin-top: .35rem; margin-bottom: 0; }
+.char-count { text-align: right; font-size: .7rem; color: #8B8478; margin-top: .3rem; margin-bottom: 0; }
+.modal-actions { display: flex; justify-content: flex-end; gap: .7rem; padding: 0 1.5rem 1.5rem; }
+.btn-cancel { background: transparent; border: 1.5px solid rgba(255,255,255,.14); color: #cfcac0; font-weight: 700; font-size: .85rem; padding: .65rem 1.2rem; border-radius: 999px; cursor: pointer; }
+.btn-send { background: linear-gradient(135deg, #D4A94A, #B8862E); color: #0F1117; font-weight: 700; font-size: .85rem; padding: .65rem 1.2rem; border: none; border-radius: 999px; cursor: pointer; }
+.btn-send:disabled { opacity: .7; cursor: not-allowed; }
+.email-success { display: flex; flex-direction: column; align-items: center; gap: .6rem; padding: 2.5rem 1.5rem; text-align: center; }
+.email-success span { font-size: 2rem; }
+.email-success p { margin: 0; }
+
+.spinner { display: inline-block; width: 13px; height: 13px; border: 2px solid rgba(15,17,23,.3); border-top-color: #0F1117; border-radius: 50%; animation: admin-dashboard-spin .6s linear infinite; vertical-align: middle; margin-right: .3rem; }
+@keyframes admin-dashboard-spin { to { transform: rotate(360deg); } }
+
+/* ── Responsive ── */
+@media (max-width: 860px) {
+  .page-title { font-size: 1.1rem; }
+}
+// At 650px and under, the charts row has already stacked to one column,
+// so .quick-stats-list's card is as wide as the whole page - a single
+// vertical column of short "label / value" rows left a slab of empty
+// space on the right of each one (icon+text on the left, nothing on the
+// right). Two columns uses that width instead, matching how .stats-grid
+// itself already reflows at this width.
+@media (max-width: 650px) {
+  .quick-stats-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: .7rem; }
+}
+@media (max-width: 560px) {
+  .section-content { padding: 1.2rem; }
+  .topbar { padding: .9rem 1rem; }
+  .action-grid { grid-template-columns: 1fr; }
+}

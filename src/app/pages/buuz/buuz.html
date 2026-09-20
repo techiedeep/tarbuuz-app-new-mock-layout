@@ -1,0 +1,204 @@
+<app-header />
+
+<section class="hero">
+  <div class="glow glow--amber"></div>
+  <div class="glow glow--amber2"></div>
+  <div class="hero-inner">
+    <div class="hero-badge-row">
+      <span class="hero-badge-word">Build Your Perfect</span>
+
+      <div class="mode-toggle" role="tablist" aria-label="Cocktail or Mocktail">
+        <button
+          type="button"
+          role="tab"
+          class="mode-btn"
+          [class.active]="kitMode() === 'cocktail'"
+          [attr.aria-selected]="kitMode() === 'cocktail'"
+          (click)="setKitMode('cocktail')"
+        >🍸 Cocktail</button>
+        <button
+          type="button"
+          role="tab"
+          class="mode-btn"
+          [class.active]="kitMode() === 'mocktail'"
+          [attr.aria-selected]="kitMode() === 'mocktail'"
+          (click)="setKitMode('mocktail')"
+        >🍹 Mocktail</button>
+      </div>
+
+      <span class="hero-badge-word">Kit</span>
+    </div>
+
+    @if (kitMode() === 'cocktail') {
+      <h1 class="hero-title">You bring the <span class="hl-amber">spirit</span>.<br>We bring everything else.</h1>
+      <p class="hero-sub">
+        Pick your format, choose your mix, finish it like a bartender —
+        <b>salted rim, olives, mint, whatever it takes.</b> The only thing missing from the box is the liquor.
+      </p>
+    } @else {
+      <h1 class="hero-title">All the <span class="hl-amber">craft</span>.<br>None of the proof.</h1>
+      <p class="hero-sub">
+        Same format, same mix, same finishing touches — just skip the liquor.
+        <b>Zero-proof, zero compromise.</b> Built to taste just as intentional as the real thing.
+      </p>
+    }
+  </div>
+</section>
+
+<div class="layout">
+  <div class="main-col">
+
+    <!-- ═══ TEMPLATES ═══ -->
+    <div class="section-block">
+      <div class="section-label">⚡ Quick start — one click</div>
+      <div class="template-grid">
+        @for (template of templates; track template.name) {
+          <button
+            type="button"
+            class="template-card"
+            [class.active]="activeTemplate() === template.name"
+            (click)="selectTemplate(template)"
+          >
+            <div class="top"><span class="ico">{{ template.icon }}</span><span class="name">{{ template.name }}</span></div>
+            <div class="items">{{ templateIngredientNames(template) }}</div>
+          </button>
+        }
+      </div>
+    </div>
+
+    <div class="divider-or">or build your own, step by step</div>
+
+    <!-- ═══ FORMAT ═══ -->
+    <div class="section-block">
+      <div class="section-label">1 · Choose your format</div>
+      <div class="format-grid">
+        @for (fmt of formats; track fmt.key) {
+          <button
+            type="button"
+            class="format-card"
+            [class.selected]="format() === fmt.key"
+            (click)="selectFormat(fmt.key)"
+          >
+            <div class="format-shape">
+              <div class="fs-shape" [class]="'fs-' + fmt.shape"></div>
+            </div>
+            <div class="format-name">{{ fmt.name }}</div>
+            <div class="format-desc">{{ fmt.desc }}</div>
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- ═══ MIX ═══ -->
+    <div class="section-block">
+      <div class="section-label">2 · Build the mix</div>
+      <div class="search-wrap">
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search an ingredient, or type your own and hit Enter…"
+          autocomplete="off"
+          [formControl]="searchControl"
+          (keydown.enter)="onSearchEnter()"
+        >
+        @if (searchDropdownOpen()) {
+          <div class="search-dropdown open">
+            @for (ing of searchResults(); track ing.key) {
+              <div class="search-item" (click)="addExistingIngredient(ing.key)">
+                <span>{{ ing.icon }}</span><span>{{ ing.name }}</span><span class="cat-tag">{{ ing.role }}</span>
+              </div>
+            }
+            @if (showCustomOption()) {
+              <div class="search-item search-item--custom" (click)="addCustomIngredient(searchControl.value)">
+                ✨ Add "{{ searchControl.value.trim() }}" as a custom ingredient
+              </div>
+            }
+          </div>
+        }
+      </div>
+      <div class="chip-row">
+        @for (ing of popularIngredients; track ing.key) {
+          <button
+            type="button"
+            class="chip"
+            [class.selected]="mix().has(ing.key)"
+            (click)="toggleMixIngredient(ing.key)"
+          >{{ ing.icon }} {{ ing.name }}</button>
+        }
+      </div>
+    </div>
+
+    <!-- ═══ GARNISH ═══ -->
+    <div class="section-block">
+      <div class="section-label">3 · Finish it like a bartender</div>
+      <p class="garnish-note">The details that make it feel bought, not just mixed — rim, garnish, the finishing touch.</p>
+      <div class="chip-row">
+        @for (g of garnishes; track g.key) {
+          <button
+            type="button"
+            class="chip"
+            [class.selected]="garnishSelection().has(g.key)"
+            (click)="toggleGarnish(g.key)"
+          >{{ g.icon }} {{ g.name }}</button>
+        }
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══ SUMMARY PANEL ═══ -->
+  <aside class="summary-panel">
+    <div>
+      <div class="summary-label-row">
+        <div class="summary-label">Your Buuz, live</div>
+        <span class="summary-mode-badge">{{ kitMode() === 'cocktail' ? '🍸 Cocktail' : '🍹 Mocktail' }}</span>
+      </div>
+      <div class="summary-format">
+        <span class="ico">{{ selectedFormat().icon }}</span>
+        <span class="txt"><b>{{ selectedFormat().name }}</b><span>{{ selectedFormat().desc }}</span></span>
+      </div>
+      <div class="donut-wrap">
+        <div class="donut" [style.background]="donutGradient() || 'var(--ink-800)'">
+          <div class="donut-hole">
+            <span class="count">{{ mixCount() }}</span>
+            <span class="label">picked</span>
+          </div>
+        </div>
+      </div>
+      <div class="legend-list">
+        @if (ratios().length === 0) {
+          <div class="legend-empty">Add ingredients to see your mix</div>
+        }
+        @for (r of ratios(); track r.ingredient.key) {
+          <div class="legend-row">
+            <span class="legend-swatch" [style.background]="r.ingredient.color"></span>
+            <span class="legend-name">{{ r.ingredient.icon }} {{ r.ingredient.name }}</span>
+            <span class="legend-pct">{{ r.rounded }}%</span>
+          </div>
+        }
+      </div>
+      <div class="summary-garnish">
+        <div class="summary-garnish-title">Finishing touches</div>
+        <div class="summary-garnish-chips">
+          @if (selectedGarnishes().length === 0) {
+            <span class="summary-garnish-empty">None selected yet</span>
+          }
+          @for (g of selectedGarnishes(); track g.key) {
+            <span class="summary-garnish-chip">{{ g.icon }} {{ g.name }}</span>
+          }
+        </div>
+      </div>
+    </div>
+    <div class="summary-cta-block">
+      @if (canAddToCart()) {
+        <div class="summary-price">{{ kitPrice() | currency:'USD':'symbol':'1.2-2' }}</div>
+      }
+      <button type="button" class="btn-cta" [disabled]="!canAddToCart()" (click)="addToCart()">
+        {{ justAdded() ? 'Added to your kit ✓' : 'Add to Cart ✨' }}
+      </button>
+      <p class="summary-hint">{{ summaryHint() }}</p>
+    </div>
+  </aside>
+</div>
+
+<app-footer />

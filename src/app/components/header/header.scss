@@ -1,0 +1,197 @@
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.3rem 2.4rem;
+  border-bottom: 1px solid rgba(255, 255, 255, .06);
+  position: sticky;
+  top: 0;
+  background: rgba(15, 17, 23, .85);
+  backdrop-filter: blur(10px);
+  z-index: 200;
+}
+
+.nav-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 700;
+  font-size: 1.55rem;
+
+  .dot {
+    color: var(--amber-500);
+  }
+}
+
+.nav-links {
+  display: flex;
+  gap: 2.2rem;
+  list-style: none;
+
+  a {
+    color: rgba(255, 255, 255, .6);
+    font-size: .92rem;
+    font-weight: 500;
+    transition: color .15s;
+
+    &:hover {
+      color: var(--text-strong);
+    }
+
+    &.current {
+      color: var(--amber-500);
+    }
+  }
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: .9rem;
+}
+
+// Only rendered once the cart actually has items (see header.html's
+// @if (cartHasItems())) - nothing useful for it to open before then.
+.cart-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border: 1.5px solid rgba(255, 255, 255, .14);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, .03);
+  color: rgba(255, 255, 255, .85);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color .2s, background .2s, color .2s;
+}
+.cart-btn:hover { border-color: rgba(212, 169, 74, .35); color: var(--amber-500); }
+.cart-btn:focus-visible { outline: 2px solid var(--amber-500); outline-offset: 2px; }
+
+// Plain outline SVG rather than an emoji - renders the same weight and
+// crispness as the rest of this button's own border/stroke styling
+// instead of pulling in a platform-dependent emoji glyph.
+.cart-btn__icon {
+  width: 19px;
+  height: 19px;
+}
+
+.cart-btn__badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--amber-500);
+  color: #0F1117;
+  font-size: .66rem;
+  font-weight: 800;
+  line-height: 18px;
+  text-align: center;
+}
+
+.hide-sm {
+  display: flex;
+}
+.show-sm {
+  display: none;
+}
+
+// ── Hamburger: three bars that morph into an X when open, rather than a
+// second icon swapped in — one element doing double duty reads as more
+// intentional than an icon flip, and it's a well-understood affordance
+// (the animation itself confirms "this button opens/closes something").
+.hamburger-btn {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 1.5px solid rgba(255, 255, 255, .14);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, .03);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color .2s, background .2s;
+}
+.hamburger-btn:hover { border-color: rgba(212, 169, 74, .35); }
+.hamburger-btn:focus-visible { outline: 2px solid var(--amber-500); outline-offset: 2px; }
+
+.hamburger-bar {
+  width: 18px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--amber-500);
+  transition: transform .25s cubic-bezier(.4, 0, .2, 1), opacity .2s, width .2s;
+}
+// Top and bottom bars rotate to form an X; the middle bar fades out —
+// all three converge on the button's exact center so the X is symmetric.
+.hamburger-btn--open .hamburger-bar:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger-btn--open .hamburger-bar:nth-child(2) { opacity: 0; width: 0; }
+.hamburger-btn--open .hamburger-bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+// ── Mobile panel: an overlay dropdown anchored below the sticky nav, not
+// a document-flow element — matches how every other dropdown in this app
+// behaves (UserMenu, the profile switcher pills), so opening it doesn't
+// jankily shove the page content down and closing it doesn't leave a gap.
+.mobile-nav-panel {
+  position: fixed;
+  top: 68px;
+  left: 1rem;
+  right: 1rem;
+  background: #151822;
+  border: 1.5px solid rgba(255, 255, 255, .1);
+  border-radius: 16px;
+  box-shadow: 0 20px 48px -12px rgba(0, 0, 0, .55);
+  z-index: 199;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: max-height .3s cubic-bezier(.4, 0, .2, 1), opacity .2s, transform .25s cubic-bezier(.4, 0, .2, 1);
+  pointer-events: none;
+}
+.mobile-nav-panel--open {
+  max-height: 420px;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.mobile-nav-links {
+  list-style: none;
+  padding: .6rem;
+  display: flex;
+  flex-direction: column;
+
+  a {
+    display: block;
+    padding: .85rem 1rem;
+    border-radius: 10px;
+    color: rgba(255, 255, 255, .78);
+    font-size: .96rem;
+    font-weight: 600;
+    transition: background .15s, color .15s;
+
+    &:hover { background: rgba(255, 255, 255, .04); color: #fff; }
+    &.current { color: var(--amber-500); background: rgba(212, 169, 74, .08); }
+  }
+}
+
+@media (max-width: 860px) {
+  .hide-sm {
+    display: none;
+  }
+  .show-sm {
+    display: flex;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hamburger-bar, .mobile-nav-panel { transition: none; }
+}

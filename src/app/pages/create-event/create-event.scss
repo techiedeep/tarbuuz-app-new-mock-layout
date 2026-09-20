@@ -1,0 +1,269 @@
+// Create Event — same ink/amber/indigo system as every other page. Colors
+// hardcoded, not CSS custom properties in a local :root block — Angular
+// scopes :root inside component-scoped styles in a way that silently
+// breaks every var() reference (confirmed directly, repeatedly, in this
+// project). Now a globally-mounted popup rather than a routed page —
+// :host stays a zero-footprint wrapper (no background, no min-height) so
+// it never affects layout on whatever page it's mounted alongside; the
+// overlay/shell below carry all the actual visual weight.
+
+:host { display: contents; }
+
+.wizard-overlay {
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(8, 9, 12, .72); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  overflow-y: auto; padding: 1rem;
+  animation: wizard-overlay-in .2s ease;
+}
+@keyframes wizard-overlay-in { from { opacity: 0; } to { opacity: 1; } }
+
+.wizard-shell {
+  position: relative; width: 100%; max-width: 1040px; max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  background: #0F1117; border: 1.5px solid rgba(255, 255, 255, .1); border-radius: 24px;
+  box-shadow: 0 40px 120px -20px rgba(0, 0, 0, .7);
+  animation: wizard-shell-in .25s cubic-bezier(.2, .9, .3, 1.1);
+}
+@keyframes wizard-shell-in { from { opacity: 0; transform: scale(.96) translateY(12px); } to { opacity: 1; transform: none; } }
+
+.wizard-close {
+  position: absolute; top: 1.1rem; right: 1.1rem; z-index: 5;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: #1C1F2A; border: 1.5px solid rgba(255, 255, 255, .18); color: #A39D8F;
+  font-size: .85rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: border-color .2s, color .2s;
+}
+.wizard-close:hover { border-color: #D4A94A; color: #D4A94A; }
+
+@media (max-width: 640px) {
+  .wizard-overlay { padding: 0; align-items: stretch; }
+  .wizard-shell { max-width: none; max-height: none; min-height: 100vh; border-radius: 0; border: none; }
+}
+
+// ── Page head ──
+.page-head { max-width: 940px; margin: 0 auto; padding: .9rem 2rem .4rem; text-align: center; }
+.page-kicker { color: #D4A94A; font-weight: 700; font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; margin-bottom: .3rem; }
+.page-title { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: clamp(1.4rem, 2.6vw, 1.8rem); }
+
+// ── Stepper ──
+.stepper-wrap { max-width: 940px; margin: 0 auto; padding: .6rem 2rem .9rem; }
+.stepper { display: flex; align-items: flex-start; justify-content: space-between; }
+.step-item { display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; text-align: center; cursor: default; }
+.step-item.clickable { cursor: pointer; }
+.step-connector { position: absolute; top: 13px; left: calc(-50% + 20px); right: calc(50% + 20px); height: 2px; background: rgba(255, 255, 255, .08); z-index: 0; }
+.step-connector.filled { background: linear-gradient(135deg, #D4A94A, #B8862E); }
+.step-circle {
+  position: relative; z-index: 1; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: .72rem; font-weight: 800; border: 2px solid rgba(255, 255, 255, .18); background: #151822; color: #8B8478; flex-shrink: 0;
+}
+.step-item.done .step-circle { background: linear-gradient(135deg, #D4A94A, #B8862E); border-color: transparent; color: #0F1117; }
+.step-item.current .step-circle { border-color: #D4A94A; color: #D4A94A; box-shadow: 0 0 0 5px rgba(212, 169, 74, .14); }
+.step-name { margin-top: .4rem; font-size: .66rem; font-weight: 700; color: #8B8478; max-width: 80px; line-height: 1.2; }
+.step-item.done .step-name, .step-item.current .step-name { color: #fff; }
+.step-item.current .step-name { color: #D4A94A; }
+@media (max-width: 700px) { .step-name { display: none; } .step-circle { width: 24px; height: 24px; } }
+
+// ── Card shell ──
+.wizard-card { max-width: 50rem; margin: 0 auto; padding: 0 2rem 1.8rem; }
+.step-panel { background: #151822; border: 1.5px solid rgba(255, 255, 255, .08); border-radius: 20px; padding: 1.4rem 4rem; }
+@media (max-width: 900px) { .step-panel { padding: 1.2rem 3rem; } }
+@media (max-width: 640px) { .step-panel { padding: 1.1rem 1.2rem; } }
+@media (max-width: 400px) { .step-panel { padding: 1rem 1rem; } }
+.step-heading { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.35rem; margin-bottom: .3rem; }
+.step-sub { color: #A39D8F; font-size: .88rem; margin-bottom: .9rem; line-height: 1.5; }
+
+.field-group { margin-bottom: 1.1rem; }
+.field-label { display: block; font-weight: 700; font-size: .8rem; color: #A39D8F; margin-bottom: .5rem; }
+.field-label .opt { font-weight: 500; font-style: italic; color: #8B8478; }
+.field-input, .field-select, .field-textarea {
+  width: 100%; font: 400 1rem/1 'Inter', sans-serif; color: #fff; background: #1C1F2A;
+  border: 1.5px solid rgba(255, 255, 255, .18); border-radius: 12px; padding: .75rem 1rem; outline: none;
+}
+.field-input:focus, .field-select:focus, .field-textarea:focus { border-color: #D4A94A; }
+.field-input.field-error, .field-textarea.field-error { border-color: #e2726c; }
+.field-error-msg { color: #e2726c; font-size: .78rem; font-weight: 600; margin-top: .4rem; }
+.field-input::placeholder, .field-textarea::placeholder { color: #8B8478; }
+.field-textarea { resize: vertical; min-height: 76px; font-family: 'Inter', sans-serif; line-height: 1.5; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+@media (max-width: 560px) { .field-row { grid-template-columns: 1fr; } }
+
+// Native date-picker calendar icon renders near-black by default — all
+// but invisible against this dark background. Inverted + brightened
+// rather than left as-is, which was the actual bug being fixed here.
+.field-input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1) brightness(1.6);
+  cursor: pointer;
+  opacity: .85;
+}
+.field-input[type="date"]::-webkit-calendar-picker-indicator:hover { opacity: 1; }
+
+// Native <select> arrows have the same dark-on-dark visibility problem
+// as the date picker icon above — browsers render a generic dark caret
+// that all but disappears against this background. Replaced with an
+// explicit, visible amber-tinted arrow via a background-image rather
+// than relying on the native one at all.
+.field-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23D4A94A' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  padding-right: 2.4rem;
+}
+
+// ── Time picker: explicit hour/minute/AM-PM, never a blank native slot ──
+.time-picker {
+  display: flex; align-items: center; gap: .4rem;
+  background: #1C1F2A; border: 1.5px solid rgba(255, 255, 255, .18); border-radius: 12px; padding: .3rem .5rem;
+}
+.time-picker.field-error { border-color: #e2726c; }
+.time-select {
+  flex: 1; min-width: 0; appearance: none; background: transparent; border: none; outline: none;
+  color: #fff; font: 600 1rem/1 'Inter', sans-serif; padding: .5rem .3rem; cursor: pointer; text-align: center;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7' fill='none'%3E%3Cpath d='M1 1L5 5.5L9 1' stroke='%23D4A94A' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right .2rem center; padding-right: 1.1rem;
+}
+.time-select option { background: #1C1F2A; color: #fff; }
+.time-colon { color: #8B8478; font-weight: 700; flex-shrink: 0; }
+.ampm-toggle { display: flex; gap: .2rem; flex-shrink: 0; background: #0F1117; border-radius: 9px; padding: .2rem; }
+.ampm-btn {
+  border: none; background: transparent; color: #8B8478; font-weight: 700; font-size: .78rem;
+  padding: .4rem .7rem; border-radius: 7px; cursor: pointer; font-family: inherit; transition: background .15s, color .15s;
+}
+.ampm-btn.active { background: linear-gradient(135deg, #D4A94A, #B8862E); color: #0F1117; }
+
+// ── Event type grid — 5 columns (landscape, matches the reference's
+// row-reduction strategy) rather than the previous 2-column layout,
+// which pushed this step's height well past a typical viewport and
+// forced a scroll even before any other step's content was considered.
+.type-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: .55rem; }
+.type-card {
+  background: #1C1F2A; border: 1.5px solid rgba(255, 255, 255, .18); border-radius: 14px; padding: .85rem .7rem;
+  text-align: left; cursor: pointer; color: inherit; font-family: inherit; display: flex; flex-direction: column; gap: .2rem;
+}
+.type-card:hover { border-color: rgba(212, 169, 74, .35); }
+.type-card.selected { border-color: #D4A94A; background: rgba(212, 169, 74, .07); }
+.type-icon { font-size: 1.25rem; }
+.type-name { font-weight: 700; font-size: .84rem; }
+.type-desc { color: #8B8478; font-size: .72rem; line-height: 1.3; }
+@media (max-width: 640px) { .type-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 560px) { .type-grid { grid-template-columns: 1fr 1fr; } }
+
+// ── Smart delivery banner ──
+.delivery-banner { margin-top: .3rem; margin-bottom: 1.5rem; background: rgba(212, 169, 74, .08); border: 1px solid rgba(212, 169, 74, .28); border-radius: 16px; padding: 1.2rem 1.3rem; }
+.delivery-banner-head { display: flex; align-items: center; gap: .55rem; font-weight: 700; font-size: .92rem; color: #F0DCA0; margin-bottom: .5rem; }
+.delivery-banner p { color: #A39D8F; font-size: .86rem; line-height: 1.5; margin-bottom: .9rem; }
+.delivery-apps { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: .9rem; }
+.delivery-app-chip { display: inline-flex; align-items: center; gap: .4rem; background: #1C1F2A; border: 1px solid rgba(255, 255, 255, .18); border-radius: 999px; padding: .45rem .85rem; font-size: .8rem; font-weight: 600; }
+.delivery-continue { font-size: .8rem; color: #8B8478; }
+.delivery-continue a { color: #D4A94A; font-weight: 700; text-decoration: underline; cursor: pointer; }
+
+// ── Search + chips (shared pattern) ──
+.search-wrap { position: relative; margin-bottom: .9rem; }
+.search-dropdown {
+  position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 15; background: #1C1F2A;
+  border: 1.5px solid rgba(255, 255, 255, .18); border-radius: 14px; box-shadow: 0 16px 38px rgba(0, 0, 0, .45);
+  max-height: 280px; overflow-y: auto;
+}
+.search-group-label { padding: .5rem 1rem .2rem; font-size: .68rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: #8B8478; }
+.search-item { display: flex; align-items: center; gap: .6rem; padding: .6rem 1rem; cursor: pointer; font-weight: 600; font-size: .88rem; }
+.search-item:hover { background: rgba(212, 169, 74, .08); }
+.chip-row { display: flex; flex-wrap: wrap; gap: .55rem; }
+.chip {
+  display: inline-flex; align-items: center; gap: .4rem; cursor: pointer; font-weight: 600; font-size: .85rem;
+  color: #fff; background: #1C1F2A; border: 1.5px solid rgba(255, 255, 255, .18); border-radius: 999px; padding: .55rem 1rem; font-family: inherit;
+}
+.chip:hover { border-color: #D4A94A; }
+.chip.selected { background: linear-gradient(135deg, #D4A94A, #B8862E); border-color: transparent; color: #0F1117; }
+.selected-summary { margin-top: .9rem; font-size: .8rem; color: #8B8478; }
+.selected-summary b { color: #D4A94A; }
+
+// ── Budget chips ──
+.budget-input-wrap { position: relative; max-width: 220px; }
+.budget-currency { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #8B8478; font-weight: 700; font-size: 1.02rem; pointer-events: none; }
+.budget-input { padding-left: 1.8rem; }
+
+// ── Nav buttons ──
+.wizard-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 1.2rem; gap: 1rem; }
+// white-space: nowrap is the actual fix — without it, "Submit Event" and
+// "← Back" wrap to two lines the moment the row gets tight, and a
+// two-line label inside a 999px (full pill) border-radius produces a
+// stretched oval rather than a taller rectangle, which is what the
+// reported screenshots were actually showing. Below 480px the row
+// stacks instead of narrowing further — a squeezed single line has its
+// own failure mode, and a full-width stacked pair is the more robust
+// mobile pattern regardless. column-reverse puts Submit/Continue (the
+// second child in the markup) visually on top without reordering HTML.
+.btn-primary { background: linear-gradient(135deg, #D4A94A, #B8862E); color: #0F1117; font-weight: 700; font-size: .95rem; border: none; border-radius: 999px; padding: .95rem 2rem; cursor: pointer; box-shadow: 0 10px 26px -8px rgba(212, 169, 74, .5); transition: transform .2s; white-space: nowrap; }
+.btn-primary:disabled { opacity: .35; cursor: not-allowed; box-shadow: none; }
+.btn-primary:not(:disabled):hover { transform: translateY(-2px); }
+.btn-ghost { background: transparent; color: #fff; font-weight: 700; font-size: .9rem; border: 1.5px solid rgba(255, 255, 255, .18); border-radius: 999px; padding: .9rem 1.6rem; cursor: pointer; white-space: nowrap; }
+@media (max-width: 480px) {
+  .wizard-nav { flex-direction: column-reverse; align-items: stretch; }
+  .btn-primary, .btn-ghost { width: 100%; text-align: center; }
+}
+.btn-ghost:hover { border-color: #D4A94A; color: #D4A94A; }
+.btn-ghost:disabled { opacity: 0; pointer-events: none; }
+.step-required-hint { text-align: center; font-size: .78rem; color: #8B8478; margin-top: .8rem; }
+
+// ── Review step ──
+// Two columns cuts the Review step's height roughly in half — this was
+// the step still needing an internal scroll even after the landscape
+// shell widened everything else. Each group becomes its own bordered
+// card rather than a horizontal-divider stack, since dividers only read
+// correctly in a single column. Budget & Location spans both columns —
+// it carries the most content (three lines plus free-text requests) and
+// would otherwise be the one card visibly taller than its neighbor.
+.review-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
+.review-group--wide { grid-column: 1 / -1; }
+@media (max-width: 640px) { .review-grid { grid-template-columns: 1fr; } .review-group--wide { grid-column: auto; } }
+
+.review-group { background: #1C1F2A; border: 1px solid rgba(255, 255, 255, .08); border-radius: 14px; padding: .65rem .9rem; }
+.review-group-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: .5rem; }
+.review-group-title { font-weight: 800; font-size: .76rem; letter-spacing: .07em; text-transform: uppercase; color: #D4A94A; }
+.review-edit { font-size: .78rem; font-weight: 700; color: #A39D8F; cursor: pointer; text-decoration: underline; }
+.review-edit:hover { color: #D4A94A; }
+.review-line { font-size: .92rem; color: #fff; line-height: 1.6; }
+.review-line .lbl { color: #8B8478; }
+.review-chips { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .4rem; }
+.review-chip { font-size: .78rem; font-weight: 600; background: #0F1117; border: 1px solid rgba(255, 255, 255, .18); border-radius: 999px; padding: .28rem .7rem; }
+.review-empty { color: #8B8478; font-style: italic; font-size: .86rem; }
+
+// ── Processing popup ──
+.modal-overlay { position: fixed; inset: 0; background: rgba(8, 9, 12, .72); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 1.5rem; z-index: 400; animation: overlay-in .25s ease; }
+@keyframes overlay-in { from { opacity: 0; } to { opacity: 1; } }
+.modal { position: relative; width: 100%; max-width: 460px; background: #151822; border: 1.5px solid rgba(255, 255, 255, .18); border-radius: 26px; padding: 2.2rem 2rem 1.8rem; box-shadow: 0 40px 100px -20px rgba(0, 0, 0, .6); animation: modal-in .3s cubic-bezier(.2, .9, .3, 1.1); }
+.modal-close {
+  position: absolute; top: 1.1rem; right: 1.1rem; width: 34px; height: 34px; border-radius: 50%;
+  background: transparent; border: 1.5px solid rgba(255, 255, 255, .18); color: #A39D8F;
+  font-size: .85rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: border-color .2s, color .2s;
+}
+.modal-close:hover { border-color: #D4A94A; color: #D4A94A; }
+@keyframes modal-in { from { opacity: 0; transform: scale(.94) translateY(10px); } to { opacity: 1; transform: none; } }
+.modal-icon-wrap { display: flex; justify-content: center; margin-bottom: 1.2rem; }
+.modal-icon { width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, #B5ABF0, #6C5DD3); display: flex; align-items: center; justify-content: center; font-size: 1.7rem; box-shadow: 0 0 0 6px rgba(108, 93, 211, .14); position: relative; }
+.modal-icon::after { content: ''; position: absolute; inset: -6px; border-radius: 50%; border: 2px solid rgba(108, 93, 211, .35); animation: icon-pulse 2s infinite; }
+@keyframes icon-pulse { 0% { transform: scale(.9); opacity: 1; } 100% { transform: scale(1.35); opacity: 0; } }
+.modal-title { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.55rem; text-align: center; margin-bottom: .6rem; }
+.modal-sub { text-align: center; color: #A39D8F; font-size: .92rem; line-height: 1.55; margin-bottom: 1.5rem; }
+.modal-sub b { color: #fff; font-weight: 600; }
+.status-line { display: flex; align-items: center; justify-content: center; gap: .55rem; background: rgba(108, 93, 211, .08); border: 1px solid rgba(108, 93, 211, .24); border-radius: 12px; padding: .7rem 1rem; margin-bottom: 1.6rem; min-height: 2.6rem; }
+.status-dot { width: 7px; height: 7px; border-radius: 50%; background: #B5ABF0; flex-shrink: 0; animation: status-blink 1.3s infinite; }
+@keyframes status-blink { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
+.status-text { font-size: .85rem; color: #B5ABF0; font-weight: 600; text-align: center; transition: opacity .2s ease; }
+.mini-stepper { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1.7rem; padding: 0 .2rem; }
+.mini-step { display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; text-align: center; }
+.mini-connector { position: absolute; top: 13px; left: calc(-50% + 20px); right: calc(50% + 20px); height: 2px; background: rgba(255, 255, 255, .08); z-index: 0; }
+.mini-connector.filled { background: linear-gradient(135deg, #D4A94A, #B8862E); }
+.mini-circle { position: relative; z-index: 1; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .68rem; font-weight: 800; border: 2px solid rgba(255, 255, 255, .18); background: #1C1F2A; color: #8B8478; flex-shrink: 0; }
+.mini-step.done .mini-circle { background: linear-gradient(135deg, #D4A94A, #B8862E); border-color: transparent; color: #0F1117; }
+.mini-step.current .mini-circle { border-color: #B5ABF0; color: #B5ABF0; background: #151822; box-shadow: 0 0 0 4px rgba(108, 93, 211, .16); }
+.mini-label { margin-top: .5rem; font-size: .6rem; font-weight: 700; color: #8B8478; line-height: 1.25; max-width: 60px; }
+.mini-step.current .mini-label { color: #B5ABF0; }
+.modal-eta { text-align: center; font-size: .78rem; color: #8B8478; margin-bottom: 1.6rem; }
+.modal-eta b { color: #D4A94A; font-weight: 700; }
+.modal-ctas { display: flex; flex-direction: column; gap: .7rem; }
+.btn-ghost-full { width: 100%; background: transparent; color: #fff; font-weight: 700; font-size: .9rem; border: 1.5px solid rgba(255, 255, 255, .18); border-radius: 999px; padding: .85rem; cursor: pointer; }
+.btn-ghost-full:hover { border-color: #D4A94A; color: #D4A94A; }
+.modal-footer-note { text-align: center; font-size: .76rem; color: #8B8478; margin-top: 1.1rem; line-height: 1.5; }

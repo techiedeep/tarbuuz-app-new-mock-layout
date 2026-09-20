@@ -1,0 +1,249 @@
+<!-- Login Modal — reskinned to the Tarbuuz ink/amber palette (matching Events,
+     Buuz, Kitchen Lab, and every other page). Structure and every binding
+     below are wired to login.ts; the logo uses the same text wordmark as
+     the rest of the app instead of the original <img> asset, matching
+     preview.html and the established brand treatment. -->
+<div class="modal-overlay" (click)="onClose()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <button class="modal-close" type="button" (click)="onClose()" aria-label="Close">✕</button>
+
+    <div class="modal-header-section">
+      <div class="modal-logo">tarbuuz<span class="dot">.</span></div>
+    </div>
+
+    <div class="split-layout">
+      <!-- ═══ SIGN IN ═══ -->
+      <div class="left-section">
+        <div class="modal-content">
+          <h1 class="login-title">Sign in</h1>
+          <form [formGroup]="loginForm" (ngSubmit)="continueWithEmailLogin()">
+            <div class="form-group">
+              <label class="form-label" for="loginEmail">Email</label>
+              <input
+                id="loginEmail"
+                type="email"
+                class="form-input"
+                placeholder="you@example.com"
+                formControlName="email"
+                autocomplete="email"
+                (input)="onLoginEmailInput()"
+                [class.invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+                [disabled]="loginStep() === 'code'">
+
+              @if (errorMessage() && loginForm.get('email')?.touched && loginStep() === 'email') {
+                <div class="error-message" role="alert">
+                  {{ errorMessage() }}
+                  @if (errorMessage()!.toLowerCase().includes('verify your email') && !showResendCodeInput() && !errorMessage()!.toLowerCase().includes('temporarily locked') && !errorMessage()!.toLowerCase().includes('too many attempts')) {
+                    <br>
+                    <a href="#" class="resend-link" (click)="onResendRegistrationFromLogin($event)">Resend Code</a>
+                  }
+
+                  @if (showResendCodeInput()) {
+                    <div class="form-group">
+                      <label class="form-label" for="resendCode">Verification Code</label>
+                      <input
+                        id="resendCode"
+                        type="text"
+                        inputmode="numeric"
+                        class="form-input"
+                        placeholder="Enter 6-digit code"
+                        maxlength="6"
+                        [value]="resendCodeValue()"
+                        (input)="onResendCodeInput($event)"
+                        [class.invalid]="resendCodeError()">
+                      @if (resendCodeError()) {
+                        <div class="error-message" role="alert">{{ resendCodeError() }}</div>
+                      }
+                      <button
+                        type="button"
+                        class="btn-primary"
+                        (click)="validateRegistrationAndLogin(loginForm.get('email')?.value, resendCodeValue())">
+                        Verify &amp; Sign-In
+                      </button>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+
+            @if (loginStep() === 'code') {
+              <div class="form-group">
+                <label class="form-label" for="loginCode">Verification Code</label>
+                <input
+                  id="loginCode"
+                  type="text"
+                  inputmode="numeric"
+                  class="form-input"
+                  placeholder="Enter 6-digit code"
+                  maxlength="6"
+                  formControlName="code"
+                  [class.invalid]="loginForm.get('code')?.invalid && loginForm.get('code')?.touched"
+                  (input)="onLoginCodeInput($event)">
+
+                <div class="resend-code-row">
+                  <a href="#" class="resend-link" (click)="onResendLoginCode($event)">
+                    {{ loginResendCooldown() > 0 ? 'Resend code (' + loginResendCooldown() + 's)' : 'Resend code' }}
+                  </a>
+                </div>
+
+                @if (successMessage()) {
+                  <div class="info-message login-info-message">{{ successMessage() }}</div>
+                }
+                @if (errorMessage()) {
+                  <div class="error-message" role="alert">{{ errorMessage() }}</div>
+                }
+                @if (registrationErrorMessage()) {
+                  <div class="error-message" role="alert">{{ registrationErrorMessage() }}</div>
+                }
+              </div>
+            }
+
+            <button type="submit" class="btn-primary" [disabled]="isLoginSubmitting()">
+              {{ showResendCodeInput() ? 'Verify & Sign-In' : buttonText() }}
+            </button>
+
+            <p class="login-terms">
+              By continuing, you agree to Tarbuuz's
+              <a (click)="navigateAndScrollToTop('/terms')" style="cursor: pointer;">Terms of Use</a> and
+              <a (click)="navigateAndScrollToTop('/privacy')" style="cursor: pointer;">Privacy Notice</a>.
+            </p>
+          </form>
+        </div>
+      </div>
+
+      <!-- ═══ CREATE ACCOUNT ═══ -->
+      <div class="right-section">
+        <div class="modal-content">
+          <div class="registration-header">
+            <h1 class="modal-title">Join The Neural Network In Kitchen</h1>
+            <p class="modal-subtitle">Choose your role and let our neural networks personalize your culinary journey</p>
+          </div>
+
+          <form [formGroup]="registrationForm" (ngSubmit)="completeRegistration()">
+            <div class="role-grid-compact" [class.three-cards]="!showChefCard()">
+              <div
+                class="role-option-compact"
+                [class.selected]="registrationForm.get('roles')?.value?.includes('foodie')"
+                (click)="selectSingleRole('foodie')">
+                <span class="role-icon-small">🍽️</span>
+                <div class="role-name-small">Foodie</div>
+              </div>
+
+              @if (showChefCard()) {
+                <div
+                  class="role-option-compact"
+                  [class.selected]="registrationForm.get('roles')?.value?.includes('chef')"
+                  (click)="selectSingleRole('chef')">
+                  <span class="role-icon-small">👨‍🍳</span>
+                  <div class="role-name-small">Chef</div>
+                </div>
+              }
+
+              <div
+                class="role-option-compact"
+                [class.selected]="registrationForm.get('roles')?.value?.includes('supplier')"
+                (click)="selectSingleRole('supplier')">
+                <span class="role-icon-small">🚚</span>
+                <div class="role-name-small">Supplier</div>
+              </div>
+
+              <div
+                class="role-option-compact"
+                [class.selected]="registrationForm.get('roles')?.value?.includes('venue')"
+                (click)="selectSingleRole('venue')">
+                <span class="role-icon-small">🏢</span>
+                <div class="role-name-small">Hosts</div>
+              </div>
+            </div>
+
+            @if (registrationForm.get('roles')?.touched && registrationForm.get('roles')?.invalid) {
+              <div class="error-message" role="alert" style="margin-bottom: 8px;">Please select a role</div>
+            }
+
+            <div class="form-group">
+              <label class="form-label" for="regFirstName">First Name</label>
+              <input
+                id="regFirstName"
+                type="text"
+                class="form-input"
+                placeholder="First Name"
+                formControlName="firstName"
+                autocomplete="given-name"
+                (input)="onRegistrationFirstNameInput()"
+                [disabled]="showRegistrationCode()">
+              @if (registrationErrorMessages()['firstName'] && registrationForm.get('firstName')?.touched) {
+                <div class="error-message" role="alert">{{ registrationErrorMessages()['firstName'] }}</div>
+              }
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="regLastName">Last Name</label>
+              <input
+                id="regLastName"
+                type="text"
+                class="form-input"
+                placeholder="Last Name"
+                formControlName="lastName"
+                autocomplete="family-name"
+                (input)="onRegistrationLastNameInput()"
+                [disabled]="showRegistrationCode()">
+              @if (registrationErrorMessages()['lastName'] && registrationForm.get('lastName')?.touched) {
+                <div class="error-message" role="alert">{{ registrationErrorMessages()['lastName'] }}</div>
+              }
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="regEmail">Email</label>
+              <input
+                id="regEmail"
+                type="email"
+                class="form-input"
+                placeholder="you@example.com"
+                formControlName="email"
+                autocomplete="email"
+                (input)="onRegistrationEmailInput()"
+                [disabled]="showRegistrationCode()">
+              @if (registrationErrorMessages()['email'] && registrationForm.get('email')?.touched) {
+                <div class="error-message" role="alert">{{ registrationErrorMessages()['email'] }}</div>
+              }
+            </div>
+
+            @if (showRegistrationCode()) {
+              <div class="form-group">
+                <label class="form-label" for="regOtp">Verification Code</label>
+                <input
+                  id="regOtp"
+                  type="text"
+                  inputmode="numeric"
+                  class="form-input"
+                  placeholder="Enter 6-digit code"
+                  maxlength="6"
+                  formControlName="otpCode"
+                  (input)="onRegistrationOtpInput($event)">
+                <div class="resend-code-row">
+                  <a href="#" class="resend-link" (click)="onResendRegistrationCode($event)">
+                    {{ registrationResendCooldown() > 0 ? 'Resend code (' + registrationResendCooldown() + 's)' : 'Resend code' }}
+                  </a>
+                </div>
+              </div>
+            }
+
+            @if (registrationErrorMessages()['form']) {
+              <div class="error-message" role="alert">{{ registrationErrorMessages()['form'] }}</div>
+            }
+
+            @if (showRegistrationCode()) {
+              <button type="button" class="btn-primary" [disabled]="isRegistrationSubmitting()" (click)="verifyRegistrationOtp()">
+                {{ registrationButtonText() }}
+              </button>
+            } @else {
+              <button type="submit" class="btn-primary" [disabled]="isRegistrationSubmitting()">
+                {{ registrationButtonText() }}
+              </button>
+            }
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

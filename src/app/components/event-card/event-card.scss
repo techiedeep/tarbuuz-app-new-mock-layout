@@ -1,0 +1,198 @@
+// Event card — matches the Buuz/Kitchen Lab visual language: ink cards,
+// amber as the primary accent, indigo reserved for AI-driven features
+// (bid matching, scheduling) exactly as established everywhere else in
+// this app. Colors hardcoded, not CSS custom properties in a local :root
+// block — Angular scopes :root inside component-scoped styles in a way
+// that silently breaks every var() reference (confirmed directly in this
+// project).
+
+.event-card {
+  position: relative;
+  background: #151822;
+  border: 1.5px solid rgba(255, 255, 255, .08);
+  border-radius: 18px;
+  padding: 1.5rem;
+  overflow: hidden;
+  width: 100%;
+  min-height: 460px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  transition: transform .3s cubic-bezier(.4, 0, .2, 1), box-shadow .3s, border-color .3s;
+}
+
+.event-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #D4A94A, #B8862E);
+  opacity: 0;
+  transition: opacity .3s;
+}
+
+.event-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(212, 169, 74, .3);
+  box-shadow: 0 16px 40px -12px rgba(0, 0, 0, .5);
+}
+.event-card:hover::before { opacity: 1; }
+
+.event-header { display: flex; align-items: flex-start; gap: .75rem; margin-bottom: .4rem; }
+.event-icon-badge { font-size: 1.8rem; line-height: 1; flex-shrink: 0; margin-top: .1rem; }
+.event-header-body { flex: 1; min-width: 0; }
+.event-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: #fff;
+  margin-bottom: .15rem;
+  line-height: 1.3;
+  word-break: break-word;
+}
+.event-id { font-size: .68rem; color: #8B8478; font-weight: 600; letter-spacing: .3px; }
+
+.event-status-row { margin-bottom: .8rem; }
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .3rem .75rem;
+  border-radius: 999px;
+  font-size: .68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+.status-pending { background: rgba(212, 169, 74, .12); color: #F0DCA0; }
+.status-progress { background: rgba(212, 169, 74, .12); color: #F0DCA0; }
+.status-bid { background: rgba(108, 93, 211, .16); color: #B5ABF0; }
+.status-warning { background: rgba(226, 114, 108, .12); color: #e2726c; }
+.status-scheduled { background: rgba(108, 93, 211, .16); color: #B5ABF0; }
+.status-confirmed { background: rgba(74, 155, 110, .12); color: #7fc79a; }
+.status-completed { background: rgba(74, 155, 110, .16); color: #4A9B6E; }
+.status-cancelled { background: rgba(226, 114, 108, .1); color: #e2726c; }
+
+.details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .55rem 1rem;
+  margin-bottom: .8rem;
+}
+.detail-cell, .detail-row { display: flex; align-items: center; gap: .5rem; min-width: 0; }
+.detail-row { margin-bottom: .7rem; }
+.detail-row--empty { min-height: 1.2rem; }
+.detail-icon { font-size: .9rem; flex-shrink: 0; }
+.detail-text {
+  font-size: .8rem;
+  color: #A39D8F;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.cuisine-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start; // critical: flex's default (stretch) was making
+  align-content: flex-start; // every chip pill fill the full reserved
+  gap: .4rem;               // height below instead of staying its natural
+  margin-bottom: .8rem;     // compact size — that's the empty-box-under-
+  min-height: 4.1rem;       // each-chip bug. flex-start on both axes keeps
+  max-height: 4.1rem;       // chips their real size while the container
+  overflow: hidden;         // itself still reserves fixed vertical space.
+}
+.cuisine-chip {
+  align-self: flex-start;
+  flex-shrink: 0;
+  font-size: .72rem;
+  font-weight: 600;
+  background: #1C1F2A;
+  border: 1px solid rgba(255, 255, 255, .1);
+  border-radius: 999px;
+  padding: .3rem .65rem;
+  color: #fff;
+}
+.cuisine-chip--more {
+  background: transparent;
+  border-style: dashed;
+  border-color: rgba(212, 169, 74, .4);
+  color: #D4A94A;
+}
+
+.event-description {
+  font-size: .82rem;
+  color: #A39D8F;
+  font-style: italic;
+  line-height: 1.5;
+  border-left: 2px solid rgba(212, 169, 74, .3);
+  padding-left: .7rem;
+  margin-bottom: .8rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.bid-closing-cell { margin-bottom: .8rem; }
+.bid-closing-text { color: #D4A94A; font-weight: 700; }
+
+.event-footer {
+  margin-top: auto;
+  padding-top: .9rem;
+  border-top: 1px solid rgba(255, 255, 255, .06);
+  display: flex;
+  align-items: center;
+  // Both actions stay on one row rather than wrapping to a second line
+  // when a card has to fit Review Bids + View Menu into limited width -
+  // min-width: fit-content on .menu-btn below is what actually keeps
+  // this safe, not flex-wrap. A card narrow enough that even
+  // fit-content can't fit both buttons still won't clip text, since
+  // fit-content refuses to shrink a button past what its own label needs.
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+  gap: .6rem;
+  width: 100%;
+  min-width: 0;
+}
+.menu-status { display: flex; align-items: center; gap: .5rem; min-width: 0; flex: 0 1 auto; }
+.menu-icon { flex: 0 0 auto; font-size: .95rem; width: 1.2rem; text-align: center; }
+.menu-btn {
+  box-sizing: border-box;
+  // fit-content, not a fixed px value - a fixed width is a guess about
+  // how long "Review Bids" or "View Menu" will render, and breaks the
+  // moment either label is longer or shorter than that guess (measured:
+  // "Review Bids" needs ~114px including padding, which a rounder
+  // fixed-width choice already came close to clipping). fit-content is
+  // correct for whatever text actually ends up in the button.
+  min-width: fit-content;
+  padding: .55rem 1.15rem;
+  border: 1.5px solid rgba(255, 255, 255, .18);
+  border-radius: 999px;
+  background: transparent;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: .82rem;
+  font-weight: 700;
+  white-space: nowrap;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color .2s, color .2s, background .2s, transform .2s;
+}
+.menu-btn:hover { border-color: #D4A94A; color: #D4A94A; }
+.menu-btn--primary {
+  background: linear-gradient(135deg, #D4A94A, #B8862E);
+  color: #0F1117;
+  border-color: transparent;
+}
+.menu-btn--primary:hover { color: #0F1117; transform: translateY(-1px); }
+
+// Compactness on small screens, independent of the single-row fix above.
+@media (max-width: 500px) {
+  .event-footer { gap: .5rem; }
+  .menu-status { gap: .35rem; }
+  .menu-btn { padding: .5rem .8rem; font-size: .76rem; }
+  .menu-icon { font-size: .85rem; width: 1rem; }
+}

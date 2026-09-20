@@ -1,0 +1,59 @@
+@if (open) {
+  <div class="cart-drawer-backdrop" (click)="close()" aria-hidden="true"></div>
+}
+<aside
+  id="cart-drawer"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Shopping cart"
+  [class.cart-drawer--open]="open"
+  class="cart-drawer"
+>
+  <div class="cart-drawer__head">
+    <h2 class="cart-drawer__title">Your Cart</h2>
+    <button type="button" class="cart-drawer__close" (click)="close()" aria-label="Close cart">
+      <span aria-hidden="true">✕</span>
+    </button>
+  </div>
+
+  <div class="cart-drawer__body">
+    @if (!hasItems()) {
+      <div class="cart-drawer__empty">
+        <span class="cart-drawer__empty-icon" aria-hidden="true">🛍️</span>
+        <p>Your cart is empty.</p>
+        <p class="cart-drawer__empty-sub">Build a kit on the Buuz page to get started.</p>
+      </div>
+    } @else {
+      @for (item of items(); track item.id) {
+        <div class="cart-line">
+          <div class="cart-line__thumb" aria-hidden="true">{{ item.formatIcon }}</div>
+          <div class="cart-line__body">
+            <div class="cart-line__name">{{ item.formatName }} Kit</div>
+            <div class="cart-line__detail">{{ item.mixSummary }}</div>
+            <div class="cart-line__detail cart-line__detail--muted">{{ item.garnishSummary }}</div>
+            <div class="cart-line__row">
+              <div class="cart-line__stepper" role="group" [attr.aria-label]="'Quantity for ' + item.formatName + ' kit'">
+                <button type="button" class="cart-line__step-btn" (click)="decrement(item.id, item.quantity)" [attr.aria-label]="item.quantity <= 1 ? 'Remove item' : 'Decrease quantity'">−</button>
+                <span class="cart-line__qty">{{ item.quantity }}</span>
+                <button type="button" class="cart-line__step-btn" (click)="increment(item.id, item.quantity)" aria-label="Increase quantity">+</button>
+              </div>
+              <span class="cart-line__price">{{ item.unitPrice * item.quantity | currency:'USD':'symbol':'1.2-2' }}</span>
+            </div>
+          </div>
+          <button type="button" class="cart-line__remove" (click)="removeItem(item.id)" [attr.aria-label]="'Remove ' + item.formatName + ' kit from cart'">✕</button>
+        </div>
+      }
+    }
+  </div>
+
+  @if (hasItems()) {
+    <div class="cart-drawer__footer">
+      <div class="cart-drawer__subtotal-row">
+        <span>Subtotal</span>
+        <span class="cart-drawer__subtotal-value">{{ subtotal() | currency:'USD':'symbol':'1.2-2' }}</span>
+      </div>
+      <p class="cart-drawer__footnote">Shipping and tax calculated at checkout</p>
+      <button type="button" class="btn-proceed" (click)="proceedToCheckout()">Proceed to Checkout →</button>
+    </div>
+  }
+</aside>

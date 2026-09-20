@@ -1,0 +1,132 @@
+* { box-sizing: border-box; }
+
+.submit-recipe-page { padding: 2rem; min-height: 100vh; }
+.page-container { max-width: 1120px; margin: 0 auto; }
+
+.back-link { display: inline-block; color: #8B8478; font-size: .85rem; font-weight: 600; margin-bottom: 1.4rem; cursor: pointer; }
+.back-link:hover { color: #D4A94A; }
+
+.page-head { margin-bottom: 2rem; }
+.page-eyebrow { display: inline-block; font-size: .78rem; font-weight: 700; color: #D4A94A; background: rgba(212,169,74,.12); border: 1px solid rgba(212,169,74,.3); padding: .3rem .8rem; border-radius: 999px; margin-bottom: .9rem; }
+.page-title { font-family: 'Cormorant Garamond', serif; font-size: 2rem; color: #fff; margin-bottom: .6rem; }
+.page-sub { font-size: .92rem; color: #A39D8F; line-height: 1.6; }
+
+/* ═══ FORM CARDS ═══ */
+.recipe-form { display: flex; flex-direction: column; gap: 1.4rem; }
+
+/* ═══ TWO-COLUMN LAYOUT ═══ */
+/* Left column holds the video + instructions; the right column holds every
+   other field. Halves the page height on desktop versus the old single
+   stacked column. Collapses back to one column below 900px. */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; align-items: stretch; }
+.form-col { display: flex; flex-direction: column; gap: 1.4rem; min-width: 0; }
+
+/* The media column is naturally shorter than the details column, so let the
+   Instructions card stretch to fill it - keeps the two columns balanced and
+   gives more room to write, instead of leaving dead space. */
+.form-card--instructions { flex: 1; display: flex; flex-direction: column; }
+.form-card--instructions .form-group { flex: 1; display: flex; flex-direction: column; margin-bottom: 0; }
+.form-card--instructions .form-textarea { flex: 1; min-height: 180px; }
+
+@media (max-width: 900px) {
+  .form-grid { grid-template-columns: 1fr; align-items: start; }
+  .form-card--instructions,
+  .form-card--instructions .form-group { display: block; flex: none; }
+  .form-card--instructions .form-textarea { min-height: 150px; }
+}
+.form-card { background: #151822; border: 1.5px solid rgba(255,255,255,.08); border-radius: 20px; padding: 1.6rem; }
+.form-card__title { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; color: #fff; margin-bottom: .4rem; display: flex; align-items: center; gap: .5rem; }
+.form-card__hint { font-size: .82rem; color: #8B8478; margin-bottom: 1.1rem; }
+.required { color: #e2726c; }
+
+.form-group { margin-bottom: 1.1rem; }
+.form-group:last-child { margin-bottom: 0; }
+.form-label { display: block; font-size: .82rem; font-weight: 700; color: #cfcac0; margin-bottom: .45rem; }
+.form-input, .form-select, .form-textarea {
+  width: 100%; background: #1C1F2A; border: 1.5px solid rgba(255,255,255,.12); border-radius: 10px; color: #fff;
+  font: 500 .9rem/1.4 'Inter', sans-serif; padding: .75rem .95rem; outline: none; transition: border-color .15s;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: #D4A94A; }
+.form-input.error, .form-select.error, .form-textarea.error { border-color: #e2726c; }
+.form-textarea { resize: vertical; min-height: 70px; font-family: 'Inter', sans-serif; }
+.form-select { cursor: pointer; }
+.form-select option { background: #1C1F2A; }
+
+.input-with-prefix { position: relative; }
+.input-prefix { position: absolute; left: .95rem; top: 50%; transform: translateY(-50%); color: #8B8478; font-weight: 600; pointer-events: none; }
+.form-input--prefixed { padding-left: 1.7rem; }
+
+.form-row { display: grid; gap: 1rem; }
+.form-row--3 { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 640px) { .form-row--3 { grid-template-columns: 1fr; } }
+
+.field-error { display: none; font-size: .78rem; color: #e2726c; font-weight: 600; margin-top: .4rem; }
+.field-error.show { display: block; }
+
+/* ═══ VIDEO UPLOAD ═══ */
+.video-drop-zone {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .5rem;
+  border: 2px dashed rgba(255,255,255,.15); border-radius: 16px; padding: 2.6rem 1rem; cursor: pointer;
+  transition: border-color .15s, background .15s; text-align: center;
+}
+.video-drop-zone:hover { border-color: rgba(212,169,74,.5); background: rgba(212,169,74,.04); }
+.video-drop-icon { font-size: 2rem; }
+.video-drop-text { font-weight: 700; color: #fff; font-size: .95rem; }
+.video-drop-sub { font-size: .78rem; color: #8B8478; }
+
+.video-preview-wrap { display: flex; flex-direction: column; gap: .8rem; align-items: center; }
+.video-preview { width: 100%; max-height: 320px; border-radius: 14px; background: #000; }
+.video-remove-btn { background: rgba(226,114,108,.1); border: 1px solid rgba(226,114,108,.3); color: #e2726c; font-size: .8rem; font-weight: 700; padding: .5rem 1rem; border-radius: 999px; cursor: pointer; }
+.video-remove-btn:hover { background: rgba(226,114,108,.18); }
+
+/* ═══ INGREDIENTS ═══ */
+.ingredient-row { display: flex; gap: .6rem; align-items: center; margin-bottom: .7rem; }
+.ingredient-row .form-input { flex: 1; }
+.ingredient-remove-btn { flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%; background: #1C1F2A; border: 1px solid rgba(255,255,255,.1); color: #8B8478; cursor: pointer; font-size: .8rem; }
+.ingredient-remove-btn:hover { color: #e2726c; border-color: rgba(226,114,108,.4); }
+.btn-add-ingredient { background: rgba(212,169,74,.1); border: 1.5px dashed rgba(212,169,74,.35); color: #D4A94A; font-weight: 700; font-size: .85rem; padding: .6rem 1.1rem; border-radius: 10px; cursor: pointer; margin-top: .3rem; }
+.btn-add-ingredient:hover { background: rgba(212,169,74,.18); }
+
+/* ═══ TAG CHIPS ═══ */
+.tag-group { margin-bottom: 1.1rem; }
+.tag-group:last-child { margin-bottom: 0; }
+.tag-group__label { display: block; font-size: .78rem; font-weight: 700; color: #8B8478; text-transform: uppercase; letter-spacing: .03em; margin-bottom: .6rem; }
+.tag-row { display: flex; flex-wrap: wrap; gap: .5rem; }
+.tag-chip { background: #1C1F2A; border: 1.5px solid rgba(255,255,255,.12); color: #cfcac0; font-size: .8rem; font-weight: 600; padding: .45rem .9rem; border-radius: 999px; cursor: pointer; transition: all .15s; }
+.tag-chip:hover { border-color: rgba(255,255,255,.3); }
+.tag-chip.selected { background: rgba(212,169,74,.14); border-color: #D4A94A; color: #D4A94A; }
+.tag-chip--allergen.selected { background: rgba(74,155,110,.14); border-color: #4A9B6E; color: #6FBF8F; }
+
+/* ═══ SUBMIT ═══ */
+.form-actions { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+.submit-btn {
+  background: linear-gradient(135deg, #D4A94A, #B8862E); color: #0F1117; font-weight: 700; font-size: .98rem;
+  border: none; border-radius: 999px; padding: 1rem 2rem; cursor: pointer; box-shadow: 0 10px 26px -8px rgba(212,169,74,.5);
+  transition: transform .2s;
+}
+.submit-btn:hover:not(:disabled) { transform: translateY(-2px); }
+.submit-btn:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+.cancel-btn {
+  background: #1C1F2A; color: #fff; font-weight: 700; font-size: .98rem;
+  border: 1.5px solid rgba(255,255,255,.14); border-radius: 999px; padding: 1rem 2rem; cursor: pointer;
+  transition: border-color .2s, background .2s;
+}
+.cancel-btn:hover:not(:disabled) { background: #232735; border-color: rgba(255,255,255,.28); }
+.cancel-btn:disabled { opacity: .6; cursor: not-allowed; }
+.form-footnote { text-align: center; font-size: .78rem; color: #8B8478; margin-top: -.4rem; }
+
+/* ═══ SUCCESS PANEL ═══ */
+.success-panel { background: #151822; border: 1.5px solid rgba(74,155,110,.3); border-radius: 24px; padding: 3rem 2rem; text-align: center; max-width: 640px; margin: 0 auto; }
+.success-icon { width: 64px; height: 64px; border-radius: 50%; background: rgba(74,155,110,.15); border: 2px solid #4A9B6E; color: #4A9B6E; display: flex; align-items: center; justify-content: center; font-size: 1.9rem; font-weight: 800; margin: 0 auto 1.3rem; }
+.success-title { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: #fff; margin-bottom: .8rem; }
+.success-sub { font-size: .92rem; color: #A39D8F; line-height: 1.65; max-width: 520px; margin: 0 auto 1.8rem; }
+.success-actions { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+.btn-secondary { background: #1C1F2A; border: 1.5px solid rgba(255,255,255,.14); color: #fff; font-weight: 700; font-size: .9rem; padding: .8rem 1.6rem; border-radius: 999px; cursor: pointer; }
+.btn-primary { background: linear-gradient(135deg, #D4A94A, #B8862E); color: #0F1117; font-weight: 700; font-size: .9rem; border: none; padding: .8rem 1.6rem; border-radius: 999px; cursor: pointer; }
+
+/* ═══ RESPONSIVE ═══ */
+@media (max-width: 640px) {
+  .submit-recipe-page { padding: 1.2rem; }
+  .form-card { padding: 1.2rem; }
+  .success-panel { padding: 2rem 1.2rem; }
+}

@@ -1,0 +1,70 @@
+/* Global styles: CSS custom properties (design tokens) and base resets.
+   These live here, not duplicated per-component, since custom properties
+   cascade through the DOM tree regardless of Angular's view encapsulation —
+   every component below can reference var(--amber-500) etc. without
+   redeclaring the :root block. */
+
+:root {
+  --ink-950: #0F1117;
+  --ink-900: #151822;
+  --ink-800: #1C1F2A;
+  --ink-700: #262B3A;
+  --ink-600: #3A3F52;
+  --amber-600: #B8862E;
+  --amber-500: #D4A94A;
+  --amber-200: #F0DCA0;
+  --indigo-500: #6C5DD3;
+  --indigo-300: #B5ABF0;
+  --stone-400: #A39D8F;
+  --stone-500: #8B8478;
+  --white: #F5F3EE;
+  --amber-grad: linear-gradient(135deg, var(--amber-500), var(--amber-600));
+  --indigo-grad: linear-gradient(135deg, var(--indigo-300), var(--indigo-500));
+  --border: rgba(255, 255, 255, .08);
+  --border-strong: rgba(255, 255, 255, .18);
+
+  /* High-emphasis text (bold spans, active tab labels, blockquotes) is
+     consistently pure white, deliberately brighter than the body's warm
+     --white (#F5F3EE) — named here so it reads as an intentional design
+     decision rather than #fff scattered as an unexplained magic value
+     across five separate stylesheets. */
+  --text-strong: #fff;
+
+  /* Semantic success color — order confirmations, "saved" states, etc.
+     Kept distinct from the amber/indigo brand accents on purpose. */
+  --success: #4A9B6E;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--ink-950);
+  color: var(--white);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Smaller inline dash used in place of the large em-dash (—) in copy.
+   Global (not component-scoped) so it also styles spans injected via
+   [innerHTML], which never receive a component's scoped styles. */
+.separator {
+  font-family: Arial, sans-serif;
+  font-size: 0.75em;
+  font-weight: 400;
+  display: inline-block;
+  vertical-align: middle;
+}

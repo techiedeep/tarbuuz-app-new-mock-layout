@@ -1,0 +1,94 @@
+<app-header />
+
+<div class="dashboard-body">
+  <div class="dashboard-container">
+
+    <!-- Dashboard Header -->
+    <header class="dashboard-header">
+      <div class="header-gradient-bar"></div>
+      <div class="header-content">
+
+        <div class="user-profile">
+          <div class="user-avatar">
+            <span class="avatar-initials">{{ initials() }}</span>
+            <span class="verified-dot" aria-label="Verified"></span>
+          </div>
+          <div class="user-info">
+            <h1 class="user-name">{{ displayName() }}</h1>
+            <p class="user-email">{{ session()?.email }}</p>
+          </div>
+        </div>
+
+        <div class="quick-stats">
+          <div class="stat-item"><span class="stat-value">{{ totalEvents() }}</span><span class="stat-label">Total Events</span></div>
+          <div class="stat-item"><span class="stat-value">{{ completedEvents() }}</span><span class="stat-label">Completed</span></div>
+          <div class="stat-item"><span class="stat-value">{{ upcomingEvents() }}</span><span class="stat-label">Upcoming</span></div>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- Main Stage -->
+    <section class="main-stage">
+
+      <div class="stage-controls">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" class="search-input" placeholder="Search events, chefs, cuisines..." [formControl]="searchControl">
+        </div>
+
+        <div class="filter-tabs">
+          @for (filter of filters; track filter.id) {
+            <button class="filter-tab" [class.active]="selectedFilter() === filter.id" (click)="setFilter(filter.id)">
+              {{ filter.label }}
+            </button>
+          }
+          <button class="create-event-btn" type="button" aria-label="Create a new event" (click)="openCreateEvent()">
+            <span aria-hidden="true">✦</span> Create Event
+          </button>
+        </div>
+      </div>
+
+      @if (isLoading()) {
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <p>Loading your events...</p>
+        </div>
+      }
+
+      @if (!isLoading()) {
+        <div class="event-grid">
+          @if (filteredEvents().length > 0) {
+            @for (event of filteredEvents(); track event.id) {
+              <app-event-card [event]="event" (reviewBids)="onReviewBids($event)" (viewMenu)="onViewMenu($event)" />
+            }
+          } @else {
+            <div class="empty-state">
+              <div class="empty-icon">🎭</div>
+              <h3 class="empty-title">No Events Found</h3>
+              <p class="empty-text">Try adjusting your filters or search query</p>
+            </div>
+          }
+        </div>
+      }
+    </section>
+  </div>
+</div>
+
+<app-footer />
+
+<app-bidding-drawer
+  [event]="biddingEvent()"
+  [open]="showBiddingDrawer()"
+  (closed)="closeBiddingDrawer()"
+  (accepted)="onBidAccepted($event)"
+/>
+
+<app-supplier-marketplace-drawer
+  [open]="showSupplierDrawer()"
+  primaryActionLabel="Continue to Review →"
+  (closed)="closeSupplierDrawer()"
+  (primaryAction)="continueToBidCart()"
+/>
+
+<app-create-event />

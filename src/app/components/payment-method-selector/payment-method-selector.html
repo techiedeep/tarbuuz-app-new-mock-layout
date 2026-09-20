@@ -1,0 +1,57 @@
+<div class="payment-method-row">
+  <button type="button" class="payment-method-btn" [class.active]="selectedMethod() === 'card'" data-method="card" (click)="selectMethod('card')">
+    <span class="pm-icon pm-icon--card">💳</span><span>Card</span>
+  </button>
+  <button type="button" class="payment-method-btn" [class.active]="selectedMethod() === 'paypal'" data-method="paypal" (click)="selectMethod('paypal')">
+    <span class="pm-icon pm-icon--paypal">Pay<b>Pal</b></span>
+  </button>
+  <button type="button" class="payment-method-btn" [class.active]="selectedMethod() === 'venmo'" data-method="venmo" (click)="selectMethod('venmo')">
+    <span class="pm-icon pm-icon--venmo">venmo</span>
+  </button>
+  <button type="button" class="payment-method-btn" [class.active]="selectedMethod() === 'gpay'" data-method="gpay" (click)="selectMethod('gpay')">
+    <span class="pm-icon pm-icon--gpay"><span class="gpay-g">G</span> Pay</span>
+  </button>
+  <button type="button" class="payment-method-btn" [class.active]="selectedMethod() === 'applepay'" data-method="applepay" (click)="selectMethod('applepay')">
+    <span class="pm-icon pm-icon--applepay">
+      <svg width="14" height="17" viewBox="0 0 14 17" fill="currentColor" aria-hidden="true"><path d="M9.2 2.7c-.6.7-1.5 1.2-2.4 1.1-.1-.9.3-1.9.9-2.5.6-.7 1.6-1.2 2.4-1.3.1 1-.3 1.9-.9 2.7zM9.7 3.9c-1.3-.1-2.5.7-3.1.7-.6 0-1.6-.7-2.7-.7-1.4 0-2.7.8-3.4 2.1-1.5 2.5-.4 6.3 1 8.3.7 1 1.5 2.1 2.6 2 1-.04 1.4-.7 2.7-.7 1.3 0 1.6.7 2.7.7 1.1-.02 1.8-1 2.5-2 .8-1.1 1.1-2.2 1.1-2.3-.02-.01-2.2-.85-2.2-3.3-.02-2.1 1.7-3.1 1.8-3.1-1-1.4-2.5-1.6-3-1.6z"/></svg>
+    </span>Pay
+  </button>
+</div>
+
+@if (selectedMethod() === 'card') {
+  <form class="mock-payment-form" (ngSubmit)="submit()">
+    <div class="form-group">
+      <label for="pmsCardNumber">Card Number</label>
+      <input type="text" id="pmsCardNumber" class="form-input" placeholder="4242 4242 4242 4242" maxlength="19"
+        [value]="cardNumber()" (input)="onCardNumberInput($any($event.target).value)">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="pmsExpiry">Expiry</label>
+        <input type="text" id="pmsExpiry" class="form-input" placeholder="MM / YY" maxlength="7"
+          [value]="expiry()" (input)="onExpiryInput($any($event.target).value)">
+      </div>
+      <div class="form-group">
+        <label for="pmsCvc">CVC</label>
+        <input type="text" id="pmsCvc" class="form-input" placeholder="123" maxlength="4"
+          [value]="cvc()" (input)="onCvcInput($any($event.target).value)">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="pmsName">Name on Card</label>
+      <input type="text" id="pmsName" class="form-input" placeholder="Rania Adler"
+        [value]="nameOnCard()" (input)="nameOnCard.set($any($event.target).value)">
+    </div>
+    <button type="submit" class="btn-proceed" [disabled]="isSubmitting">
+      {{ isSubmitting ? 'Processing…' : 'Pay ' + (amount | currency:currency:'symbol':'1.2-2') + ' →' }}
+    </button>
+  </form>
+} @else if (getProviderInfo(selectedMethod()); as provider) {
+  <div class="redirect-payment-panel">
+    <div class="redirect-icon">{{ provider.icon }}</div>
+    <p class="redirect-text">You'll be securely redirected to <strong>{{ provider.name }}</strong> to complete this payment.</p>
+    <button type="button" class="btn-proceed" [disabled]="isSubmitting" (click)="submit()">
+      {{ isSubmitting ? 'Processing…' : 'Continue with ' + provider.name + ' →' }}
+    </button>
+  </div>
+}

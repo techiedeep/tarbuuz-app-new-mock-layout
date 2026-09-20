@@ -1,0 +1,66 @@
+@if (open) {
+  <div class="drawer-backdrop" (click)="close()" aria-hidden="true"></div>
+}
+<aside
+  id="supplier-marketplace-drawer"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Specialty Extras"
+  [class.drawer-open]="open"
+  class="validation-drawer validation-drawer--wide">
+  <button class="validation-drawer__close validation-drawer__close--floating" (click)="close()" aria-label="Close Specialty Extras panel">
+    <span aria-hidden="true">✕</span>
+  </button>
+
+  <div class="validation-drawer__body validation-drawer__body--marketplace">
+    <div class="extras-hero">
+      <span class="extras-hero-eyebrow">Specialty Extras</span>
+      <h2 class="extras-hero-title">The details that make it <em>unforgettable</em>.</h2>
+      <p class="extras-hero-sub">Cakes, tableware, live music, photography - browse specialty offerings from verified Suppliers across the network, then connect with each one directly.</p>
+    </div>
+
+    <div class="extras-search">
+      <span class="extras-search-icon">🔍</span>
+      <input
+        type="text" class="extras-search-input" placeholder="Search cakes, tableware, photographers…"
+        [value]="searchQuery()" (input)="searchQuery.set($any($event.target).value)"
+      >
+    </div>
+    <div class="extras-category-row">
+      <button type="button" class="extras-chip" [class.selected]="activeCategory() === null" (click)="selectCategory(null)">
+        ✨ All
+      </button>
+      @for (cat of categories; track cat.value) {
+        <button type="button" class="extras-chip" [class.selected]="activeCategory() === cat.value" (click)="selectCategory(cat.value)">
+          {{ cat.icon }} {{ cat.label }}
+          <span class="extras-chip-count">{{ categoryCount(cat.value) }}</span>
+        </button>
+      }
+    </div>
+
+    <div class="extras-grid extras-grid--2col">
+      @for (item of filteredListings(); track item.id) {
+        <div class="extras-card extras-card--full">
+          <span class="extras-icon">{{ item.icon }}</span>
+          <div class="extras-title">{{ item.title }}</div>
+          <div class="extras-supplier">by <b>{{ item.supplierName }}</b> · ★ {{ item.supplierRating }} ({{ item.supplierReviews }}) · {{ item.location }}</div>
+          <p class="extras-desc">{{ item.description }}</p>
+          <div class="extras-card-footer">
+            <span class="extras-price">{{ item.price }}</span>
+            <a class="extras-view-supplier" [href]="item.supplierUrl" target="_blank" rel="noopener">View Supplier →</a>
+          </div>
+        </div>
+      } @empty {
+        <div class="extras-empty">
+          <span>🔎</span>
+          <p>Nothing matches that search. Try another category or term.</p>
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="extras-drawer-footer">
+    <button type="button" class="extras-skip-link" (click)="close()">Skip for now</button>
+    <button type="button" class="btn-primary" (click)="triggerPrimaryAction()">{{ primaryActionLabel }}</button>
+  </div>
+</aside>

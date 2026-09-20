@@ -1,0 +1,271 @@
+<app-header />
+
+<div class="cart-page">
+
+  <header class="cart-page__header">
+    <button class="cart-back-btn" (click)="goBack()" aria-label="Back to Events">
+      <span aria-hidden="true">←</span> Back to Events
+    </button>
+    <div class="cart-page__title-group">
+      <div class="cart-page__icon" aria-hidden="true">🛒</div>
+      <div>
+        <h1 class="cart-page__title">Order Summary</h1>
+        <p class="cart-page__subtitle">Review your selected bid before proceeding to payment</p>
+      </div>
+    </div>
+  </header>
+
+  @if (isLoading()) {
+    <div class="cart-empty">
+      <p>Loading your order summary…</p>
+    </div>
+  } @else if (bid(); as bid) {
+    @if (event(); as event) {
+
+      <div class="cart-layout">
+
+        <!-- ── Left Column ── -->
+        <div class="cart-left">
+
+          <!-- Venue / Bid Card -->
+          <section class="cart-card cart-card--venue fade-in" aria-label="Accepted host details">
+            <div class="cart-card__badge">
+              <span class="badge-icon">🏆</span>
+              <span>Selected Host</span>
+              @if (bid.rank) { <span class="badge-rank">#{{ bid.rank }} Ranked</span> }
+            </div>
+
+            <div class="cart-venue__top">
+              <div class="cart-ring-wrap">
+                <svg class="cart-ring" viewBox="0 0 100 100" aria-hidden="true">
+                  <circle cx="50" cy="50" r="38" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="9" />
+                  <circle cx="50" cy="50" r="38" fill="none" stroke="url(#cartScoreGrad)" stroke-width="9"
+                    stroke-linecap="round" [attr.stroke-dasharray]="238.76"
+                    [attr.stroke-dashoffset]="238.76 * (1 - bid.compositeScore / 10)"
+                    transform="rotate(-90 50 50)" />
+                  <text x="50" y="46" text-anchor="middle" class="cart-ring__val">{{ bid.compositeScore | number:'1.0-1' }}</text>
+                  <text x="50" y="61" text-anchor="middle" class="cart-ring__sub">Score</text>
+                </svg>
+              </div>
+
+              <div class="cart-venue__identity">
+                <h2 class="cart-venue__name">{{ bid.bidderName }}</h2>
+                <span class="cart-venue__type">{{ bid.bidderBusinessType | titlecase }}</span>
+                <p class="cart-venue__proposal">{{ bid.proposal }}</p>
+              </div>
+            </div>
+
+            <div class="cart-scores">
+              <h4 class="cart-scores__title">AI Score Breakdown</h4>
+              @for (s of scoreRows(); track s.label) {
+                <div class="cart-score-row">
+                  <span class="cart-score-label">{{ s.label }}</span>
+                  <div class="cart-score-track">
+                    <div class="cart-score-fill" [style.width.%]="s.percent"></div>
+                  </div>
+                  <span class="cart-score-num">{{ s.value | number:'1.1-1' }}</span>
+                </div>
+              }
+            </div>
+
+            <div class="cart-metrics">
+              <div class="cart-metric">
+                <span class="cart-metric__label">Amount / Person</span>
+                <span class="cart-metric__value">{{ bid.bidAmount | currency:'USD':'symbol':'1.2-2' }}</span>
+              </div>
+              <div class="cart-metric">
+                <span class="cart-metric__label">Capacity</span>
+                <span class="cart-metric__value">{{ bid.serviceCapacity }}</span>
+              </div>
+              <div class="cart-metric">
+                <span class="cart-metric__label">Est. Completion</span>
+                <span class="cart-metric__value">{{ bid.estimatedCompletionDate | date:'mediumDate' }}</span>
+              </div>
+              @if (bid.budgetVerdict) {
+                <div class="cart-metric">
+                  <span class="cart-metric__label">Budget Verdict</span>
+                  <span class="cart-metric__value" [class]="'cart-metric__value--verdict-' + bid.budgetVerdict">
+                    {{ bid.budgetVerdict | titlecase }}
+                  </span>
+                </div>
+              }
+              @if (bid.confidence) {
+                <div class="cart-metric">
+                  <span class="cart-metric__label">AI Confidence</span>
+                  <span class="cart-metric__value">{{ bid.confidence | titlecase }}</span>
+                </div>
+              }
+            </div>
+          </section>
+
+          <!-- Event Summary Card -->
+          <section class="cart-card cart-card--event fade-in" aria-label="Event summary">
+            <h3 class="cart-card__section-title"><span>📋</span> Event Details</h3>
+            <div class="cart-event-grid">
+              <div class="cart-event-item">
+                <span class="cart-event-label">Event Name</span>
+                <span class="cart-event-value">{{ event.eventName | titlecase }}</span>
+              </div>
+              <div class="cart-event-item">
+                <span class="cart-event-label">Date</span>
+                <span class="cart-event-value">{{ event.eventDate | date:'longDate' }}</span>
+              </div>
+              <div class="cart-event-item">
+                <span class="cart-event-label">Time</span>
+                <span class="cart-event-value">{{ event.eventTime }} {{ event.eventTimezone }}</span>
+              </div>
+              <div class="cart-event-item">
+                <span class="cart-event-label">Duration</span>
+                <span class="cart-event-value">{{ event.duration }}</span>
+              </div>
+              <div class="cart-event-item">
+                <span class="cart-event-label">Location</span>
+                <span class="cart-event-value">{{ event.eventLocation }}</span>
+              </div>
+              <div class="cart-event-item">
+                <span class="cart-event-label">Guests</span>
+                <span class="cart-event-value cart-event-value--highlight">{{ event.guestCount }} people</span>
+              </div>
+              <div class="cart-event-item">
+                <span class="cart-event-label">Cuisine</span>
+                <span class="cart-event-value">{{ event.preferredCuisines.join(', ') | titlecase }}</span>
+              </div>
+              @if (event.eventAmbience) {
+                <div class="cart-event-item">
+                  <span class="cart-event-label">Ambience</span>
+                  <span class="cart-event-value">{{ event.eventAmbience | titlecase }}</span>
+                </div>
+              }
+            </div>
+          </section>
+
+        </div><!-- /cart-left -->
+
+        <!-- ── Right Column ── -->
+
+        @if (cartStep() === 'cart') {
+          <aside class="cart-right" aria-label="Payment summary">
+            <div class="cart-summary-card fade-in">
+              <h3 class="cart-summary__title"><span>💳</span> Payment Summary</h3>
+
+              <!-- Platform fee removed entirely - subtotal IS the total now. -->
+              <div class="cart-summary__lines">
+                <div class="cart-summary__line">
+                  <span class="cart-summary__line-label">Price per person</span>
+                  <span class="cart-summary__line-value">{{ bid.bidAmount | currency:'USD':'symbol':'1.2-2' }}</span>
+                </div>
+
+                <div class="cart-summary__line">
+                  <span class="cart-summary__line-label"><span>👥</span> Guest count</span>
+                  <span class="cart-summary__line-value cart-summary__line-value--guests">{{ event.guestCount }} guests</span>
+                </div>
+
+                <div class="cart-summary__divider"></div>
+
+                <div class="cart-summary__line cart-summary__line--total">
+                  <span class="cart-summary__line-label">Total Amount</span>
+                  <span class="cart-summary__line-value cart-summary__line-value--total">{{ grandTotal() | currency:'USD':'symbol':'1.2-2' }}</span>
+                </div>
+              </div>
+
+              <div class="cart-summary__venue-callout">
+                <div class="callout-dot"></div>
+                <div>
+                  <strong>{{ bid.bidderName }}</strong>
+                  <span class="callout-type">{{ bid.bidderBusinessType | titlecase }}</span>
+                </div>
+                @if (bid.rank) { <span class="callout-badge">#{{ bid.rank }}</span> }
+              </div>
+
+              <button class="btn-proceed" (click)="proceedToPayment()">
+                <span class="btn-proceed__icon" aria-hidden="true">🔒</span>
+                Proceed to Payment
+                <span class="btn-proceed__arrow" aria-hidden="true">→</span>
+              </button>
+
+              <div class="cart-trust">
+                <span class="trust-item">🔐 Secure checkout</span>
+                <span class="trust-item">💯 Best price guarantee</span>
+                <span class="trust-item">📋 Instant confirmation</span>
+              </div>
+            </div>
+
+            @if (bid.tradeOffs) {
+              <div class="cart-insight-card fade-in">
+                <h4 class="cart-insight__title"><span class="insight-icon" aria-hidden="true">✦</span> AI Trade-off Analysis</h4>
+                <p class="cart-insight__text">{{ bid.tradeOffs }}</p>
+              </div>
+            }
+          </aside>
+        }
+
+        @if (cartStep() === 'payment') {
+          <aside class="cart-right cart-right--payment" aria-label="Payment gateway">
+            <div class="cart-summary-card fade-in">
+              <div class="payment-header">
+                <button class="payment-back-btn" (click)="backToCart()" aria-label="Back to order summary">← Back to summary</button>
+                <div class="payment-amount-recap">
+                  <span class="payment-amount-label">Paying</span>
+                  <span class="payment-amount-value">{{ grandTotal() | currency:'USD':'symbol':'1.2-2' }}</span>
+                  <span class="payment-amount-sub">{{ event.guestCount }} guests · {{ bid.bidderName }}</span>
+                </div>
+              </div>
+
+              <div class="cart-summary__divider" style="margin: 1rem 0;"></div>
+
+              <!--
+                app-braintree-payment doesn't exist anywhere in this
+                codebase yet - no real payment gateway is integrated.
+                app-payment-method-selector below is a real, complete
+                component (card + PayPal/Venmo/Google Pay/Apple Pay
+                selection) built from an earlier standalone preview -
+                not a placeholder. Swap the (paymentSubmitted) handler's
+                internals for a real gateway call once
+                app-braintree-payment or similar actually exists; the
+                component itself doesn't need to change for that.
+              -->
+              <div class="cart-body">
+                @if (paymentErrorMessage()) {
+                  <p class="payment-error" role="alert">{{ paymentErrorMessage() }}</p>
+                }
+                <app-payment-method-selector
+                  [amount]="grandTotal()"
+                  [currency]="paymentCurrency()"
+                  [isSubmitting]="isSubmittingPayment()"
+                  (paymentSubmitted)="submitPayment($event)"
+                />
+              </div>
+            </div>
+          </aside>
+        }
+
+      </div><!-- /cart-layout -->
+    }
+  } @else {
+    <div class="cart-empty">
+      <p>No cart data found. Redirecting to your dashboard…</p>
+    </div>
+  }
+
+</div>
+
+<app-footer />
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="cartScoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#D4A94A" /><stop offset="100%" stop-color="#B8862E" />
+    </linearGradient>
+  </defs>
+</svg>
+
+@if (showSuccessModal()) {
+  <div class="modal-overlay" (click)="closeSuccessModal()">
+    <div class="modal success-modal" (click)="$event.stopPropagation()">
+      <div class="modal-icon-wrap"><div class="modal-icon">✓</div></div>
+      <h2 class="modal-title">Payment Confirmed!</h2>
+      <p class="modal-sub">Your booking with <b>{{ bid()?.bidderName }}</b> is confirmed. A receipt has been sent to your email.</p>
+      <button type="button" class="btn-primary-full" (click)="closeSuccessModal()">Back to Events</button>
+    </div>
+  </div>
+}

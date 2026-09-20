@@ -1,0 +1,248 @@
+<app-header />
+
+<!-- HERO -->
+<section class="hero">
+  <div class="glow glow--amber"></div>
+  <div class="glow glow--indigo"></div>
+  <div class="hero-inner">
+    <span class="hero-badge">⏱ See Exactly What You'll Get Back</span>
+    <h1 class="hero-title">Your event, in <span class="hl-amber">minutes</span><span class="separator">–</span>not weeks of your evenings.</h1>
+    <p class="hero-sub">Here's the honest comparison: what planning an event actually costs you in time today, versus what it costs with Tarbuuz<span class="separator">–</span>then pick the plan that fits how often you host.</p>
+  </div>
+</section>
+
+<!-- TIME COMPARISON -->
+<section class="section">
+  <div class="section-head">
+    <div class="section-kicker">The Real Cost Isn't Money<span class="separator">–</span>It's Time</div>
+    <h2 class="section-title">Planning a 60-person dinner, two ways</h2>
+  </div>
+
+  <div class="time-compare">
+    <div class="time-card old">
+      <div class="time-card-label">The Old Way</div>
+      <div class="time-card-total">~34 hrs</div>
+      <ul class="time-list">
+        @for (item of timeOld; track item.label) {
+          <li><span>{{ item.label }}</span><span class="t">{{ item.time }}</span></li>
+        }
+      </ul>
+    </div>
+
+    <div class="time-vs"><div class="time-vs-inner">vs</div></div>
+
+    <div class="time-card tarbuuz">
+      <div class="time-card-label">✨ With Tarbuuz</div>
+      <div class="time-card-total">~20 min</div>
+      <ul class="time-list">
+        @for (item of timeTarbuuz; track item.label) {
+          <li><span>{{ item.label }}</span><span class="t">{{ item.time }}</span></li>
+        }
+      </ul>
+    </div>
+  </div>
+
+  <div class="time-headline-stat">
+    <p class="big">That's <span class="hl">~98% less active time</span> spent planning<span class="separator">–</span>the rest is just waiting for great bids to arrive.</p>
+    <p>Bids typically arrive within hours, not days. You're never blocked<span class="separator">–</span>just waiting on other people's best offers.</p>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how-it-works">
+  <div class="section-head">
+    <div class="section-kicker ai">How Tarbuuz Works</div>
+    <h2 class="section-title">Five steps. Twenty minutes. Fully booked.</h2>
+    <p class="section-sub">Every minute above maps to one of these steps<span class="separator">–</span>nothing hidden, nothing skipped.</p>
+  </div>
+
+  <div class="steps-row">
+    @for (step of steps; track step.number; let last = $last) {
+      <div class="step-card">
+        <div class="step-num">{{ step.number }}</div>
+        <div class="step-time">{{ step.time }}</div>
+        <div class="step-title">{{ step.title }}</div>
+        <div class="step-desc">{{ step.description }}</div>
+        @if (!last) { <span class="step-arrow">→</span> }
+      </div>
+    }
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="section" id="pricing">
+  <div class="section-head">
+    <div class="section-kicker">Plans</div>
+    <h2 class="section-title">Pick the plan that matches how often you host</h2>
+    <p class="section-sub">Every plan includes free event creation and marketplace access<span class="separator">–</span>no credit card required to start.</p>
+  </div>
+
+  <div class="billing-toggle">
+    <span class="billing-label" [class.active]="!isAnnual()">Monthly</span>
+    <div
+      class="toggle-switch"
+      [class.on]="isAnnual()"
+      role="switch"
+      [attr.aria-checked]="isAnnual()"
+      tabindex="0"
+      aria-label="Toggle annual billing"
+      (click)="toggleBilling()"
+      (keydown.enter)="toggleBilling()"
+      (keydown.space)="toggleBilling()"
+    >
+      <div class="toggle-knob"></div>
+    </div>
+    <span class="billing-label" [class.active]="isAnnual()">Annual</span>
+    <span class="save-badge">Save 2 months</span>
+  </div>
+
+  <div class="plans">
+    @for (plan of plans; track plan.name) {
+      <div class="plan" [class.featured]="plan.featured">
+        @if (plan.badge) {
+          <span class="plan-badge">{{ plan.badge }}</span>
+        }
+        <div class="plan-name">{{ plan.name }}</div>
+        <div class="plan-tagline">{{ plan.tagline }}</div>
+        <div class="plan-price">
+          <span class="amt">{{ plan.isProPlan ? proPriceDisplay() : plan.priceDisplay }}</span>
+          @if (plan.priceSuffix) { <span class="per">{{ plan.priceSuffix }}</span> }
+        </div>
+        <div class="plan-billed-note">{{ plan.isProPlan ? proBilledNote() : plan.billedNote }}</div>
+        <button class="plan-cta" [class.primary]="plan.ctaVariant === 'primary'" [class.ghost]="plan.ctaVariant === 'ghost'" type="button" (click)="onPlanCtaClick(plan.name)">{{ plan.ctaLabel }}</button>
+        <ul class="plan-features">
+          @for (feature of plan.features; track feature.text) {
+            <li [class.ai]="feature.isAi"><span class="ck">✓</span> {{ feature.text }}</li>
+          }
+        </ul>
+      </div>
+    }
+  </div>
+</section>
+
+<!-- ROI -->
+<div class="roi">
+  <div class="roi-inner">
+    <p class="roi-text">If your time is worth even <span class="hl">$25 an hour</span>, the old way of planning
+      one event costs you roughly <span class="hl">$850 in hours alone</span><span class="separator">–</span>more than a full year of Pro.</p>
+  </div>
+</div>
+
+<!-- COMPARISON TABLE -->
+<section class="section">
+  <div class="section-head">
+    <div class="section-kicker">Compare in Detail</div>
+    <h2 class="section-title">Every feature, side by side</h2>
+  </div>
+  <div class="table-scroll">
+    <table class="compare-table">
+      <thead>
+        <tr><th>Feature</th><th>Free</th><th>Pro</th><th>Enterprise</th></tr>
+      </thead>
+      <tbody>
+        @for (row of comparisonRows; track row.feature) {
+          <tr>
+            <td>{{ row.feature }}</td>
+            <td>
+              @switch (row.free.kind) {
+                @case ('check') { <span class="ck">✓</span> }
+                @case ('dash') { <span class="dash">—</span> }
+                @default { {{ row.free.kind === 'text' ? row.free.value : '' }} }
+              }
+            </td>
+            <td>
+              @switch (row.pro.kind) {
+                @case ('check') { <span class="ck">✓</span> }
+                @case ('dash') { <span class="dash">—</span> }
+                @default { {{ row.pro.kind === 'text' ? row.pro.value : '' }} }
+              }
+            </td>
+            <td>
+              @switch (row.enterprise.kind) {
+                @case ('check') { <span class="ck">✓</span> }
+                @case ('dash') { <span class="dash">—</span> }
+                @default { {{ row.enterprise.kind === 'text' ? row.enterprise.value : '' }} }
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <p class="table-scroll-hint">← Swipe to compare Pro and Enterprise →</p>
+</section>
+
+<!-- FAQ -->
+<section class="section">
+  <div class="section-head section-head--tight">
+    <div class="section-kicker">Billing, Answered</div>
+    <h2 class="section-title">Before you subscribe</h2>
+  </div>
+
+  <div class="faq">
+    @for (item of faqItems; track item.question; let i = $index) {
+      <div class="faq-item" [class.open]="openFaqIndex() === i">
+        <button
+          class="faq-q"
+          type="button"
+          [attr.aria-expanded]="openFaqIndex() === i"
+          [attr.aria-controls]="'pricing-faq-answer-' + i"
+          (click)="toggleFaq(i)"
+        >
+          {{ item.question }}
+          <span class="plus">+</span>
+        </button>
+        <div class="faq-a" [id]="'pricing-faq-answer-' + i" [attr.aria-hidden]="openFaqIndex() !== i">
+          <p>{{ item.answer }}</p>
+        </div>
+      </div>
+    }
+  </div>
+</section>
+
+<!-- CLOSING -->
+<section class="closing">
+  <div class="glow glow--amber"></div>
+  <h2 class="closing-title">Start free. Upgrade when hosting becomes a habit.</h2>
+  <p class="closing-sub">No credit card, no commitment<span class="separator">–</span>just your first event, planned in about twenty minutes.</p>
+  @if (!isLoggedIn()) {
+    <button class="btn-primary" type="button" (click)="createFirstEvent()">Create Your First Event<span class="separator">–</span>Free →</button>
+  }
+</section>
+
+<app-footer />
+
+<!-- ═══ PRO PLAN PAYMENT DRAWER ═══
+     Real, shared app-payment-method-selector - the same component
+     bid-cart's own order-summary payment step uses - presented here as
+     a slide-in drawer since Pricing has no cart-style layout to switch
+     away from. -->
+@if (showProPayment()) {
+  <div class="drawer-backdrop" (click)="closeProPayment()"></div>
+}
+<aside class="pro-payment-drawer" [class.drawer-open]="showProPayment()" role="dialog" aria-modal="true" aria-label="Start Pro subscription">
+  <div class="pro-payment-drawer__header">
+    <div>
+      <h2 class="pro-payment-drawer__title">Start Pro</h2>
+      <p class="pro-payment-drawer__subtitle">{{ proPriceDisplay() }}{{ isAnnual() ? '' : '/mo' }} · {{ proBilledNote() }}</p>
+    </div>
+    <button class="pro-payment-drawer__close" (click)="closeProPayment()" aria-label="Close">✕</button>
+  </div>
+  <div class="pro-payment-drawer__body">
+    @if (proPaymentError()) {
+      <p class="payment-error" role="alert">{{ proPaymentError() }}</p>
+    }
+    <app-payment-method-selector
+      [amount]="proMonthlyEquivalent()"
+      currency="USD"
+      [isSubmitting]="isSubmittingProPayment()"
+      (paymentSubmitted)="submitProPayment($event)"
+    />
+  </div>
+</aside>
+
+<!-- ═══ ENTERPRISE - CONTACT SALES ═══
+     Independent instance of the same shared ContactForm component
+     Footer already uses - self-contained per that component's own
+     design, not a shared global modal. -->
+<app-contact-form [open]="showContactSales()" defaultSubject="Enterprise Membership" (closed)="closeContactSales()" />

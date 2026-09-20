@@ -1,0 +1,173 @@
+<app-header />
+
+<section class="hero">
+  <div class="glow glow--amber"></div>
+  <div class="glow glow--indigo"></div>
+  <div class="hero-inner">
+    <span class="hero-badge">👨‍🍳 Kitchen Lab</span>
+    <h1 class="hero-title">Cook once. Get paid <span class="hl-amber">every time</span> it's served.</h1>
+    <p class="hero-sub">Book a kitchen or use your own. Record what you make. Submit it to Tarbuuz <span class="separator">–</span> and earn a royalty automatically, every time Smart Menu matches your recipe to a real event.</p>
+    <button type="button" class="hero-cta" (click)="goToSubmitRecipeDirect()">Submit Your Recipe →</button>
+  </div>
+</section>
+
+<!-- ═══ LIFECYCLE ═══ -->
+<section class="section">
+  <div class="section-head">
+    <div class="section-kicker">How It Works</div>
+    <h2 class="section-title">From your kitchen to someone's event, in six steps</h2>
+    <p class="section-sub">Every step is simple on purpose <span class="separator">–</span> you cook, we handle the matching and the payment.</p>
+  </div>
+  <div class="lifecycle">
+    @for (s of lifecycleStages; track s.number) {
+      <div class="stage">
+        <div class="stage-num">{{ s.number }}</div>
+        <div class="stage-icon">{{ s.icon }}</div>
+        <h3 class="stage-title">
+          {{ s.title }}
+          @if (s.isAi) { <span class="ai-tag">✨ Smart Menu</span> }
+        </h3>
+        <p class="stage-desc" [innerHTML]="s.description"></p>
+      </div>
+    }
+  </div>
+</section>
+
+<!-- ═══ TRY YOUR CULINARY SKILLS ═══ -->
+<!-- Used to be a fully self-contained fake demo (choose kitchen → record →
+     name it → fake success). Now it captures the one real decision - which
+     kitchen - and hands off to the real submission form at /submit-recipe,
+     which is where a recipe actually gets recorded, described, and saved.
+     See KitchenLab.goToSubmitRecipe(). -->
+<div class="skills-band">
+  <div class="section">
+    <div class="section-head">
+      <div class="section-kicker">Get Started</div>
+      <h2 class="section-title">Two ways to cook. Same payout either way.</h2>
+      <p class="section-sub">Pick whichever fits you right now <span class="separator">–</span> you can always do the other next time.</p>
+    </div>
+
+    @if (!bookingSubmitted()) {
+      <div class="skills-panel">
+        <div class="step-label">1 · Choose How You'll Cook</div>
+        <div class="kitchen-choice-grid">
+          <button
+            type="button"
+            class="kitchen-card"
+            [class.selected]="kitchenChoice() === 'network'"
+            (click)="selectKitchen('network')"
+          >
+            <span class="kc-icon">🏢</span>
+            <span class="kc-title">Book a Kitchen</span>
+            <span class="kc-desc">Reserve a verified Tarbuuz kitchen near you for a specific date and time.</span>
+          </button>
+          <button
+            type="button"
+            class="kitchen-card"
+            [class.selected]="kitchenChoice() === 'own'"
+            (click)="selectKitchen('own')"
+          >
+            <span class="kc-icon">🏠</span>
+            <span class="kc-title">Use My Own Kitchen</span>
+            <span class="kc-desc">Already have a space that meets food-safety basics? Skip booking.</span>
+          </button>
+        </div>
+
+        <div class="step-label">2 · You're All Set</div>
+        <button type="button" class="btn-cta" [disabled]="!kitchenChoice()" (click)="submit()">Submit</button>
+        @if (continueHint()) {
+          <p class="demo-hint">{{ continueHint() }}</p>
+        }
+        @if (kitchenChoice() === 'own' && !continueHint()) {
+          <p class="demo-hint">No booking needed <span class="separator">–</span> go straight to submitting your recipe.</p>
+        }
+      </div>
+    } @else {
+      <div class="booking-confirmed">
+        <div class="booking-confirmed__icon">✓</div>
+        <h3 class="booking-confirmed__title">Your booking request has been submitted</h3>
+        <p class="booking-confirmed__sub">We'll confirm your kitchen reservation shortly. You can add your recipe's full details any time before your booked session.</p>
+      </div>
+    }
+  </div>
+</div>
+
+<!-- ═══ MATCH CRITERIA ═══ -->
+<section class="section">
+  <div class="section-head">
+    <div class="section-kicker ai">✨ How Smart Menu Picks Your Recipe</div>
+    <h2 class="section-title">Not random. Not first-come. Actually matched.</h2>
+    <p class="section-sub">Every time Smart Menu generates a menu for a host, it checks the recipe network against these three signals.</p>
+  </div>
+  <div class="criteria-grid">
+    @for (c of matchCriteria; track c.title) {
+      <div class="criterion-card">
+        <div class="criterion-icon">{{ c.icon }}</div>
+        <h3>{{ c.title }}</h3>
+        <p [innerHTML]="c.description"></p>
+      </div>
+    }
+  </div>
+</section>
+
+<!-- ═══ ROYALTY ═══ -->
+<div class="royalty-band">
+  <div class="section">
+    <div class="section-head">
+      <div class="section-kicker">Getting Paid</div>
+      <h2 class="section-title">One recipe, paid automatically, every time</h2>
+      <p class="section-sub">No invoices to send. No payment to chase. Here's exactly what triggers your royalty.</p>
+    </div>
+    <div class="royalty-chain">
+      @for (s of royaltySteps; track s.number; let last = $last) {
+        <div class="royalty-step">
+          <div class="royalty-num">{{ s.number }}</div>
+          <div class="royalty-body"><h4 [innerHTML]="s.title"></h4><p [innerHTML]="s.description"></p></div>
+        </div>
+        @if (!last) { <div class="royalty-arrow">↓</div> }
+      }
+    </div>
+    <div class="royalty-example">
+      <span class="royalty-example-label">Illustrative example, not a guarantee</span>
+      <p>A recipe serving 10 guests at $6/serving in royalties would earn roughly <strong>$10</strong> the moment that one event is booked - and again, in full, the next time it's matched to a different event.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ STATS ═══ -->
+<div class="stats-strip">
+  <div class="stats-inner">
+    @for (s of stats; track s.label) {
+      <div><div class="stat-v">{{ s.value }}</div><div class="stat-k">{{ s.label }}</div></div>
+    }
+  </div>
+</div>
+
+<!-- ═══ FAQ ═══ -->
+<section class="section">
+  <div class="section-head section-head--tight">
+    <div class="section-kicker">Before You Submit</div>
+    <h2 class="section-title">Common questions from creators</h2>
+  </div>
+  <div class="faq">
+    @for (item of faqItems; track item.question; let i = $index) {
+      <div class="faq-item" [class.open]="openFaqIndex() === i">
+        <button class="faq-q" type="button" [attr.aria-expanded]="openFaqIndex() === i" (click)="toggleFaq(i)">
+          {{ item.question }}<span class="plus">+</span>
+        </button>
+        <div class="faq-a" [style.max-height.px]="openFaqIndex() === i ? 300 : 0">
+          <p [innerHTML]="item.answer"></p>
+        </div>
+      </div>
+    }
+  </div>
+</section>
+
+<!-- ═══ CLOSING ═══ -->
+<section class="closing">
+  <div class="glow glow--amber"></div>
+  <h2 class="closing-title">Your next recipe could be earning by next week.</h2>
+  <p class="closing-sub">Book a kitchen, or use your own <span class="separator">–</span> either way, submitting your first recipe costs nothing.</p>
+</section>
+
+<app-footer />

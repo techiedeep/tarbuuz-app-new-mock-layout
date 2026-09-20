@@ -1,0 +1,386 @@
+.nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.1rem 2.4rem; border-bottom: 1px solid rgba(255, 255, 255, .06);
+  position: sticky; top: 0; background: rgba(15, 17, 23, .92);
+  backdrop-filter: blur(10px); z-index: 100;
+}
+.nav-logo { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.4rem; color: #fff; }
+.nav-logo .dot { color: #D4A94A; }
+
+.page-body { background: #0F1117; min-height: 100vh; padding: 2rem 2rem 6rem; }
+.page-container { max-width: 1160px; margin: 0 auto; }
+
+.loading-state, .empty-state { display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 5rem 1rem; color: #8B8478; text-align: center; }
+.spinner { width: 32px; height: 32px; border-radius: 50%; border: 3px solid rgba(255,255,255,.1); border-top-color: #D4A94A; animation: rm-spin .8s linear infinite; }
+@keyframes rm-spin { to { transform: rotate(360deg); } }
+.empty-icon { font-size: 3rem; }
+.empty-state h3 { font-family: 'Cormorant Garamond', serif; color: #fff; font-size: 1.3rem; }
+
+.back-link { display: inline-block; color: #A39D8F; font-size: .85rem; font-weight: 600; margin-bottom: 1.2rem; cursor: pointer; }
+.back-link:hover { color: #D4A94A; }
+
+// ── Event summary strip ──
+.event-strip {
+  background: #151822; border: 1.5px solid rgba(255, 255, 255, .08); border-radius: 16px;
+  padding: 1.2rem 1.5rem; margin-bottom: 2.2rem;
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+}
+.event-strip-name { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.3rem; color: #fff; }
+.event-strip-meta { display: flex; gap: 1.2rem; flex-wrap: wrap; font-size: .82rem; color: #A39D8F; }
+
+// ── Event details strip — cuisines, dietary requirements, special notes.
+// A separate card below the always-present event-strip rather than
+// crammed into that same single-line row, since this section is
+// conditional (an event with no dietary needs and no notes shouldn't
+// reserve empty space) and its content (a chip row, a longer notes
+// quote) doesn't fit the strip's compact one-line rhythm.
+.event-strip-details {
+  background: #151822; border: 1.5px solid rgba(255, 255, 255, .08); border-radius: 16px;
+  padding: 1.1rem 1.5rem; margin: -1.2rem 0 2.2rem; display: flex; flex-direction: column; gap: .9rem;
+}
+.strip-detail-row { display: flex; align-items: baseline; gap: .8rem; flex-wrap: wrap; }
+.strip-detail-label { font-size: .74rem; font-weight: 700; color: #8B8478; text-transform: uppercase; letter-spacing: .04em; flex-shrink: 0; min-width: 140px; }
+.strip-detail-value { font-size: .85rem; color: #cfcac0; }
+.strip-detail-value--dietary { color: #F0DCA0; font-weight: 600; }
+.strip-detail-value--notes { font-style: italic; color: #A39D8F; }
+.strip-cuisine-chips { display: flex; flex-wrap: wrap; gap: .5rem; }
+.strip-cuisine-chip {
+  font-size: .78rem; font-weight: 600; background: #1C1F2A; border: 1px solid rgba(255, 255, 255, .1);
+  border-radius: 999px; padding: .3rem .75rem; color: #fff;
+}
+@media (max-width: 640px) {
+  .strip-detail-row { flex-direction: column; gap: .3rem; }
+  .strip-detail-label { min-width: 0; }
+}
+
+.approved-banner {
+  display: flex; align-items: center; gap: 1rem;
+  background: rgba(74, 155, 110, .08); border: 1px solid rgba(74, 155, 110, .3); border-radius: 14px;
+  padding: 1rem 1.3rem; margin-bottom: 2rem; max-width: 640px; margin-left: auto; margin-right: auto;
+}
+.approved-icon { width: 2.2rem; height: 2.2rem; border-radius: 50%; background: #4A9B6E; color: #0F1117; display: flex; align-items: center; justify-content: center; font-weight: 800; flex-shrink: 0; }
+.approved-title { font-weight: 700; color: #fff; font-size: .95rem; }
+.approved-sub { font-size: .82rem; color: #A39D8F; margin-top: .1rem; }
+
+// ── Layout: courses + cost sidebar ──
+.menu-layout { display: grid; grid-template-columns: 1fr 300px; gap: 2rem; align-items: start; }
+@media (max-width: 900px) { .menu-layout { grid-template-columns: 1fr; } }
+
+.courses-column { display: flex; flex-direction: column; gap: 2rem; }
+.course-block { background: #151822; border: 1.5px solid rgba(255, 255, 255, .08); border-radius: 18px; padding: 1.6rem; }
+.course-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1.3rem; flex-wrap: wrap; }
+.course-head-left { display: flex; align-items: flex-start; gap: .8rem; }
+.course-icon { font-size: 1.5rem; }
+.course-title { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.2rem; color: #fff; }
+.course-desc { font-size: .8rem; color: #8B8478; margin-top: .1rem; }
+
+// A secondary, accent-colored action distinct from the page's actual
+// commitment CTAs (Approve Menu, the modal's primary buttons) - those
+// use the solid .btn-primary fill deliberately, so this stays an
+// outlined amber pill instead of borrowing that same solid style.
+// Amber rather than the old dashed indigo, matching this page's accent
+// color instead of the AI-feature indigo used elsewhere.
+.btn-add-course {
+  background: rgba(212, 169, 74, .12); border: 1.5px solid rgba(212, 169, 74, .4); color: #D4A94A;
+  border-radius: 999px; padding: .6rem 1.2rem; font-weight: 700; font-size: .85rem;
+  cursor: pointer; white-space: nowrap; font-family: 'Inter', sans-serif; transition: background .15s, transform .15s;
+}
+.btn-add-course:hover { background: rgba(212, 169, 74, .2); transform: translateY(-1px); }
+.item-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
+.menu-item-card { position: relative; background: #1C1F2A; border: 1px solid rgba(255, 255, 255, .08); border-radius: 14px; padding: 1rem 1.1rem; transition: border-color .2s, background .2s; }
+.menu-item-card--editing { background: #151822; border-color: rgba(212, 169, 74, .35); }
+
+.card-actions { position: absolute; top: .6rem; right: .6rem; display: flex; gap: .35rem; }
+.icon-btn {
+  width: 22px; height: 22px; border-radius: 50%; border: none; font-size: .64rem;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.icon-btn--edit { background: rgba(212, 169, 74, .14); color: #F0DCA0; }
+.icon-btn--edit:hover { background: rgba(212, 169, 74, .24); }
+.icon-btn--remove { background: rgba(226, 114, 108, .12); color: #e2726c; }
+.icon-btn--remove:hover { background: rgba(226, 114, 108, .22); }
+.item-name { font-weight: 700; font-size: .95rem; color: #fff; padding-right: 3.2rem; }
+.item-desc { font-size: .8rem; color: #A39D8F; line-height: 1.5; margin: .35rem 0 .6rem; }
+.item-tags { display: flex; flex-wrap: wrap; gap: .35rem; margin-bottom: .7rem; }
+.item-tag { font-size: .66rem; font-weight: 600; background: #151822; border: 1px solid rgba(255, 255, 255, .1); border-radius: 999px; padding: .18rem .55rem; color: #fff; }
+.item-footer { display: flex; align-items: center; justify-content: space-between; gap: .5rem; padding-top: .6rem; border-top: 1px solid rgba(255, 255, 255, .06); }
+
+// ── Inline edit form — replaces the card's display content entirely
+//    while editing, rather than overlaying a modal. Same visual language
+//    (labels, inputs, error text) as every other form in this app. ──
+.item-edit-form { display: flex; flex-direction: column; gap: .3rem; }
+.edit-label { font-size: .68rem; font-weight: 700; color: #8B8478; text-transform: uppercase; letter-spacing: .04em; margin-top: .5rem; }
+.edit-label:first-child { margin-top: 0; }
+.edit-input, .edit-textarea {
+  width: 100%; padding: .5rem .7rem; background: #0F1117; border: 1.5px solid rgba(255, 255, 255, .14);
+  border-radius: 8px; color: #fff; font-size: .85rem; font-family: 'Inter', sans-serif;
+}
+.edit-input:focus, .edit-textarea:focus { outline: none; border-color: #D4A94A; }
+.edit-input.error, .edit-textarea.error { border-color: #e2726c; }
+.edit-textarea { resize: vertical; min-height: 2.6rem; }
+.edit-input--price { width: 100px; }
+.edit-error { color: #e2726c; font-size: .7rem; font-weight: 600; }
+.edit-actions { display: flex; justify-content: flex-end; gap: .5rem; margin-top: .8rem; }
+.edit-btn { padding: .4rem .9rem; border-radius: 999px; border: none; font-size: .78rem; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif; }
+.edit-btn--cancel { background: #1C1F2A; color: #A39D8F; border: 1px solid rgba(255, 255, 255, .12); }
+.edit-btn--cancel:hover { color: #fff; }
+.edit-btn--save { background: linear-gradient(135deg, #D4A94A, #B8862E); color: #0F1117; }
+.edit-btn--save:hover { transform: translateY(-1px); }
+.item-price { font-weight: 800; color: #D4A94A; font-size: .9rem; }
+.per-guest { font-weight: 500; font-size: .68rem; color: #8B8478; }
+.item-source { font-size: .66rem; color: #B5ABF0; font-style: italic; text-align: right; }
+
+.course-empty { grid-column: 1 / -1; text-align: center; padding: 1.5rem; color: #8B8478; font-size: .85rem; border: 1px dashed rgba(255, 255, 255, .1); border-radius: 12px; }
+.course-empty-link { display: block; margin-top: .4rem; color: #B5ABF0; font-weight: 700; cursor: pointer; }
+.course-empty-link:hover { text-decoration: underline; }
+
+// ── Cost sidebar ──
+.cost-column { display: flex; flex-direction: column; gap: 1.2rem; position: sticky; top: 90px; }
+.cost-card { background: #151822; border: 1.5px solid rgba(255, 255, 255, .08); border-radius: 16px; padding: 1.3rem; }
+.cost-card-title { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.05rem; color: #fff; margin-bottom: .9rem; }
+.cost-row { display: flex; justify-content: space-between; font-size: .82rem; color: #A39D8F; margin-bottom: .5rem; }
+.cost-divider { height: 1px; background: rgba(255, 255, 255, .08); margin: .7rem 0; }
+.cost-row--total { color: #fff; font-weight: 700; }
+.budget-verdict { margin-top: 1rem; padding: .7rem .9rem; border-radius: 10px; font-size: .78rem; font-weight: 700; background: rgba(74, 155, 110, .1); color: #4A9B6E; border: 1px solid rgba(74, 155, 110, .3); }
+.budget-verdict--over { background: rgba(226, 114, 108, .1); color: #e2726c; border-color: rgba(226, 114, 108, .3); }
+
+.agentic-card { background: linear-gradient(160deg, rgba(108, 93, 211, .1), rgba(21, 24, 34, .4)); border: 1.5px solid rgba(108, 93, 211, .25); border-radius: 16px; padding: 1.3rem; }
+.agentic-icon { font-size: 1.6rem; margin-bottom: .5rem; }
+.agentic-title { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.05rem; color: #fff; margin-bottom: .4rem; }
+.agentic-desc { font-size: .8rem; color: #A39D8F; line-height: 1.5; margin-bottom: .9rem; }
+.agentic-btn {
+  background: transparent; border: 1.5px solid rgba(181, 171, 240, .45); color: #B5ABF0;
+  border-radius: 999px; padding: .55rem 1.1rem; font: 700 .85rem/1 'Inter', sans-serif;
+  cursor: pointer; transition: background .15s, transform .15s;
+}
+.agentic-btn:hover { background: rgba(108, 93, 211, .15); transform: translateY(-1px); }
+
+// ── Approve bar ──
+.approve-bar {
+  position: sticky; bottom: 0; margin-top: 2.5rem; padding: 1.2rem 1.5rem;
+  background: rgba(21, 24, 34, .95); backdrop-filter: blur(10px);
+  border: 1.5px solid rgba(255, 255, 255, .1); border-radius: 18px;
+  display: flex; align-items: center; justify-content: flex-end; gap: .8rem; flex-wrap: wrap;
+}
+.approve-bar__decision { display: flex; align-items: center; gap: .8rem; }
+.btn { display: inline-flex; align-items: center; justify-content: center; border: none; border-radius: 999px; padding: .75rem 1.5rem; font-weight: 700; font-size: .88rem; cursor: pointer; font-family: 'Inter', sans-serif; transition: transform .2s; }
+.btn:hover { transform: translateY(-1px); }
+.btn:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+// Self-contained rather than relying on the generic .btn base class for
+// sizing - .btn's padding (.75rem 1.5rem) is smaller than Create Event's
+// own .btn-primary, which is what actually caused this button to look
+// undersized and inconsistent against its sibling modal. Matches
+// Create Event's version exactly now: same padding, same disabled state,
+// same hover lift, plus white-space: nowrap so "Go to Home →" never
+// wraps awkwardly at the button's edge.
+.btn-primary { background: linear-gradient(135deg, #D4A94A, #B8862E); color: #0F1117; font-weight: 700; font-size: .95rem; border: none; border-radius: 999px; padding: .95rem 2rem; cursor: pointer; box-shadow: 0 10px 26px -8px rgba(212, 169, 74, .5); transition: transform .2s; white-space: nowrap; }
+.btn-primary:disabled { opacity: .35; cursor: not-allowed; box-shadow: none; }
+.btn-primary:not(:disabled):hover { transform: translateY(-2px); }
+.btn-secondary { background: #1C1F2A; color: #fff; border: 1.5px solid rgba(255, 255, 255, .18); }
+
+footer { border-top: 1px solid rgba(255, 255, 255, .06); background: #151822; margin-top: 3rem; }
+.foot-inner { max-width: 1160px; margin: 0 auto; padding: 2rem 2.4rem; text-align: center; color: #8B8478; font-size: .85rem; }
+
+// ── Print button (on-screen only) ──
+.btn-print {
+  padding: .6rem 1.2rem; border: 1.5px solid rgba(212, 169, 74, .35); border-radius: 999px;
+  background: rgba(212, 169, 74, .08); color: #F0DCA0; font-size: .82rem; font-weight: 700;
+  cursor: pointer; white-space: nowrap; font-family: 'Inter', sans-serif; flex-shrink: 0;
+}
+.btn-print:hover { background: rgba(212, 169, 74, .16); border-color: #D4A94A; }
+.event-strip { gap: 1rem; }
+
+// ── Print-only header — hidden on screen entirely, only appears inside
+//    the print stylesheet below. ──
+.print-header { display: none; }
+
+// ══════════════════════════════════════════════════════════════════════
+// PRINT TEMPLATE
+// A genuinely separate composition, not the dark screen theme forced onto
+// white paper. Paper is a different medium: no hover states, no dark
+// background wasting toner, no interactive affordances at all — just the
+// menu itself, branded, legible, and worth keeping. Amber gets swapped
+// for its darker variant throughout since the lighter tone that reads
+// fine on an OLED screen loses contrast against white paper and most
+// home/office printers.
+// ══════════════════════════════════════════════════════════════════════
+@media print {
+  .no-print { display: none !important; }
+
+  @page { margin: 1.4cm; }
+
+  body, .page-body {
+    background: #fff !important;
+    color: #1a1a1a !important;
+  }
+  .page-body { padding: 0; min-height: 0; }
+  .page-container { max-width: 100%; }
+
+  .print-header {
+    display: block;
+    text-align: center;
+    padding-bottom: 1.1rem;
+    margin-bottom: 1.6rem;
+    border-bottom: 2px solid #B8862E;
+  }
+  .print-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: #1a1a1a;
+    letter-spacing: .02em;
+  }
+  .print-dot { color: #B8862E; }
+  .print-menu-label {
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: #B8862E;
+    margin-top: .6rem;
+  }
+  .print-event-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 700;
+    font-size: 1.9rem;
+    color: #1a1a1a;
+    margin: .3rem 0 .3rem;
+  }
+  .print-event-meta { font-size: .85rem; color: #555; }
+  .print-event-dietary {
+    font-size: .85rem; font-weight: 700; color: #8a5a00; margin-top: .5rem;
+  }
+  .print-event-notes {
+    font-size: .82rem; font-style: italic; color: #555; margin-top: .3rem;
+  }
+
+  .menu-layout { display: block; }
+  .cost-column { position: static; margin-top: 1.6rem; }
+
+  .course-block {
+    background: #fff !important;
+    border: none !important;
+    border-bottom: 1px solid #ddd !important;
+    border-radius: 0 !important;
+    padding: 1rem 0 !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .course-title, .item-name, .cost-card-title, .print-event-name {
+    color: #1a1a1a !important;
+  }
+  .course-desc, .item-desc { color: #555 !important; }
+  .course-icon { filter: grayscale(0%); }
+
+  .item-grid { display: block; }
+  .menu-item-card {
+    background: #fff !important;
+    border: none !important;
+    border-bottom: 1px dashed #ddd;
+    border-radius: 0 !important;
+    padding: .7rem 0 !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .menu-item-card:last-child { border-bottom: none; }
+  .item-tag {
+    background: #f4ede0 !important;
+    border: 1px solid #e3d3b0 !important;
+    color: #6b4f1f !important;
+  }
+  .item-price { color: #B8862E !important; }
+  .item-source { color: #6b4f1f !important; }
+  .per-guest { color: #888 !important; }
+
+  .cost-card {
+    background: #faf7f0 !important;
+    border: 1px solid #e3d3b0 !important;
+    color: #1a1a1a;
+  }
+  .cost-row { color: #555 !important; }
+  .cost-row--total { color: #1a1a1a !important; }
+  .cost-divider { background: #e3d3b0 !important; }
+  .budget-verdict {
+    background: #f0f7f2 !important;
+    color: #2d6a43 !important;
+    border: 1px solid #b8dcc4 !important;
+  }
+  .budget-verdict--over {
+    background: #fdf0ef !important;
+    color: #a13c35 !important;
+    border-color: #f0c4c0 !important;
+  }
+
+  // A small closing note, since the on-screen footer is hidden — keeps
+  // the printed page feeling like a complete, composed document rather
+  // than a webpage with pieces switched off.
+  .page-container::after {
+    content: 'Prepared with Tarbuuz — tarbuuz.ai';
+    display: block;
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+    font-size: .72rem;
+    color: #999;
+    font-style: italic;
+  }
+}
+
+// ── Menu Approved modal — deliberately the same visual design as Create
+// Event's own "You're all set!" success popup, not a separate one-off
+// style. Both mark crossing a milestone on the same 5-step journey
+// (miniStepLabels, shared from CreateEventService), so they use the
+// same modal chrome, same mini-stepper, same CSS classes. Styles below
+// are copied from create-event.scss rather than imported, since Angular
+// component styles are scoped per-component and don't cross files —
+// kept in sync by being visually identical, verified by eye, not by a
+// shared stylesheet.
+.modal-overlay { position: fixed; inset: 0; background: rgba(8, 9, 12, .72); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 1.5rem; z-index: 1200; animation: review-overlay-in .25s ease; }
+@keyframes review-overlay-in { from { opacity: 0; } to { opacity: 1; } }
+
+.modal { position: relative; width: 100%; max-width: 460px; background: #151822; border: 1.5px solid rgba(255, 255, 255, .18); border-radius: 26px; padding: 2.2rem 2rem 1.8rem; box-shadow: 0 40px 100px -20px rgba(0, 0, 0, .6); animation: review-modal-in .3s cubic-bezier(.2, .9, .3, 1.1); }
+@keyframes review-modal-in { from { opacity: 0; transform: scale(.94) translateY(10px); } to { opacity: 1; transform: none; } }
+
+.modal-close {
+  position: absolute; top: 1.1rem; right: 1.1rem; width: 34px; height: 34px; border-radius: 50%;
+  background: transparent; border: 1.5px solid rgba(255, 255, 255, .18); color: #A39D8F;
+  display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: .9rem;
+}
+.modal-close:hover { border-color: #D4A94A; color: #D4A94A; }
+
+.modal-icon-wrap { display: flex; justify-content: center; margin-bottom: 1.2rem; }
+.modal-icon { width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, #B5ABF0, #6C5DD3); display: flex; align-items: center; justify-content: center; font-size: 1.7rem; box-shadow: 0 0 0 6px rgba(108, 93, 211, .14); position: relative; }
+.modal-icon::after { content: ''; position: absolute; inset: -6px; border-radius: 50%; border: 2px solid rgba(108, 93, 211, .35); animation: review-icon-pulse 2s infinite; }
+@keyframes review-icon-pulse { 0% { transform: scale(.9); opacity: 1; } 100% { transform: scale(1.35); opacity: 0; } }
+
+.modal-title { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.55rem; text-align: center; margin-bottom: .6rem; }
+.modal-sub { text-align: center; color: #A39D8F; font-size: .92rem; line-height: 1.55; margin-bottom: 1.5rem; }
+.modal-sub b { color: #fff; font-weight: 600; }
+
+.status-line { display: flex; align-items: center; justify-content: center; gap: .55rem; background: rgba(108, 93, 211, .08); border: 1px solid rgba(108, 93, 211, .24); border-radius: 12px; padding: .7rem 1rem; margin-bottom: 1.6rem; min-height: 2.6rem; }
+.status-dot { width: 7px; height: 7px; border-radius: 50%; background: #B5ABF0; flex-shrink: 0; animation: review-status-blink 1.3s infinite; }
+@keyframes review-status-blink { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
+.status-text { font-size: .85rem; color: #B5ABF0; font-weight: 600; text-align: center; transition: opacity .2s ease; }
+
+.mini-stepper { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1.7rem; padding: 0 .2rem; }
+.mini-step { display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; text-align: center; }
+.mini-connector { position: absolute; top: 13px; left: calc(-50% + 20px); right: calc(50% + 20px); height: 2px; background: rgba(255, 255, 255, .08); z-index: 0; }
+.mini-connector.filled { background: linear-gradient(135deg, #D4A94A, #B8862E); }
+.mini-circle { position: relative; z-index: 1; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .68rem; font-weight: 800; border: 2px solid rgba(255, 255, 255, .18); background: #1C1F2A; color: #8B8478; flex-shrink: 0; }
+.mini-step.done .mini-circle { background: linear-gradient(135deg, #D4A94A, #B8862E); border-color: transparent; color: #0F1117; }
+.mini-step.current .mini-circle { border-color: #B5ABF0; color: #B5ABF0; background: #151822; box-shadow: 0 0 0 4px rgba(108, 93, 211, .16); }
+.mini-label { margin-top: .5rem; font-size: .6rem; font-weight: 700; color: #8B8478; line-height: 1.25; max-width: 60px; }
+.mini-step.current .mini-label { color: #B5ABF0; }
+
+.modal-eta { text-align: center; font-size: .78rem; color: #8B8478; margin-bottom: 1.6rem; }
+.modal-eta b { color: #D4A94A; font-weight: 700; }
+.modal-ctas { display: flex; flex-direction: column; gap: .7rem; }
+.btn-ghost-full { width: 100%; background: transparent; color: #fff; font-weight: 700; font-size: .9rem; border: 1.5px solid rgba(255, 255, 255, .18); border-radius: 999px; padding: .85rem; cursor: pointer; }
+.btn-ghost-full:hover { border-color: #D4A94A; color: #D4A94A; }
+.modal-footer-note { text-align: center; font-size: .76rem; color: #8B8478; margin-top: 1.1rem; line-height: 1.5; }
+
+@media (max-width: 480px) {
+  .modal { padding: 1.8rem 1.4rem 1.5rem; }
+  .mini-label { font-size: .56rem; max-width: 50px; }
+}

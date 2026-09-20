@@ -1,0 +1,225 @@
+<nav class="nav">
+  <a routerLink="/" class="nav-logo">tarbuuz<span class="dot">.</span></a>
+</nav>
+
+<div class="page-body">
+  <div class="page-container">
+
+    @if (isLoading()) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Loading opportunity details...</p>
+      </div>
+    }
+
+    @if (!isLoading() && notFound()) {
+      <div class="empty-state">
+        <div class="empty-icon">🎭</div>
+        <h3>We couldn't find that opportunity</h3>
+        <p>It may have already closed, or the link is out of date.</p>
+        <button type="button" class="btn btn-primary" (click)="goToDashboard()">← Back to Dashboard</button>
+      </div>
+    }
+
+    @if (!isLoading() && !notFound() && opportunity(); as opp) {
+
+      <a class="back-link" (click)="goToDashboard()">← Back to Dashboard</a>
+
+      <!-- ═══ EVENT HEADER ═══ -->
+      <header class="bid-header">
+        <div class="bid-header-glow"></div>
+        <div class="bid-header-top">
+          <div class="bid-header-titlewrap">
+            <span class="bid-header-eyebrow">🎯 Open for Bidding</span>
+            <h1 class="bid-header-name">{{ opp.eventName }}</h1>
+          </div>
+          <div class="bid-header-actions">
+            <div class="bid-timer" [class.urgent]="bidTimerText() === 'Bidding closed'">
+              <span class="timer-icon">⏳</span>
+              <span class="timer-text">{{ bidTimerText() }}</span>
+            </div>
+            @if (showChefRecommendationsButton()) {
+              <button type="button" class="chef-rec-btn" (click)="openAgenticChef()">
+                <span>👨‍🍳</span><span>View Chef Recommendations</span>
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="header-meta">
+          <span class="meta-chip">{{ opp.guestCount }} guests</span>
+          <span class="meta-chip">{{ opp.eventDate | date:'MMM d, y' }}&nbsp;{{ opp.eventTime }}@if (opp.eventTimezone) {&nbsp;{{ opp.eventTimezone }}}</span>
+          @if (opp.preferredCuisines.length > 0) {
+            <span class="meta-chip">{{ opp.preferredCuisines.join(', ') | titlecase }}</span>
+          }
+          <span class="meta-chip">{{ currencySymbol() }}{{ opp.budgetPerPerson }} / person</span>
+          @if (ambience(); as amb) {
+            <span class="meta-chip">{{ amb.icon }} {{ amb.label }}</span>
+          }
+          @if (opp.dietaryPreferences.length > 0) {
+            <span class="meta-chip">⚠ {{ opp.dietaryPreferences.join(', ') }}</span>
+          }
+        </div>
+      </header>
+
+      <!-- ═══ BID SECTION ═══ -->
+      <div class="bid-section">
+
+        <!-- BID FORM -->
+        <div class="bid-form-card">
+          <div class="bid-form-head">
+            <h2>Submit Your Bid</h2>
+            <p>Tell the host what you'd bring to this event.</p>
+          </div>
+
+          <form [formGroup]="bidForm" (ngSubmit)="onSubmit()" novalidate>
+            <div class="form-group">
+              <label class="bid-form-label" for="bidderBusinessType">Business Type <span class="required">*</span></label>
+              <select id="bidderBusinessType" class="form-select" formControlName="bidderBusinessType" [class.error]="hasError('bidderBusinessType')"
+                [attr.aria-invalid]="hasError('bidderBusinessType')" [attr.aria-describedby]="hasError('bidderBusinessType') ? 'err-bidderBusinessType' : null">
+                <option value="">Select Type</option>
+                @for (option of businessTypeOptions; track option.value) {
+                  <option [value]="option.value">{{ option.label }}</option>
+                }
+              </select>
+              @if (hasError('bidderBusinessType')) {
+                <div class="field-error show" id="err-bidderBusinessType" role="alert">{{ getErrorMessage('bidderBusinessType') }}</div>
+              }
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="bid-form-label" for="bidAmount">Bid Amount <span class="required">*</span></label>
+                <div class="input-with-prefix">
+                  <span class="input-prefix">{{ currencySymbol() }}</span>
+                  <input type="number" id="bidAmount" class="form-input form-input--prefixed" [class.error]="hasError('bidAmount')"
+                    formControlName="bidAmount" min="1" step="0.01" placeholder="0.00"
+                    [attr.aria-invalid]="hasError('bidAmount')" [attr.aria-describedby]="hasError('bidAmount') ? 'err-bidAmount' : null">
+                </div>
+                <span class="field-hint">Per guest</span>
+                @if (hasError('bidAmount')) {
+                  <div class="field-error show" id="err-bidAmount" role="alert">{{ getErrorMessage('bidAmount') }}</div>
+                }
+              </div>
+              <div class="form-group">
+                <label class="bid-form-label" for="serviceCapacity">Service Capacity <span class="required">*</span></label>
+                <input type="number" id="serviceCapacity" class="form-input" [class.error]="hasError('serviceCapacity')"
+                  formControlName="serviceCapacity" min="1" placeholder="Max guests you can serve"
+                  [attr.aria-invalid]="hasError('serviceCapacity')" [attr.aria-describedby]="hasError('serviceCapacity') ? 'err-serviceCapacity' : null">
+                @if (hasError('serviceCapacity')) {
+                  <div class="field-error show" id="err-serviceCapacity" role="alert">{{ getErrorMessage('serviceCapacity') }}</div>
+                }
+              </div>
+            </div>
+
+            @if (bidEstimate(); as estimate) {
+              <div class="bid-estimate">
+                <span>Estimated total</span>
+                <strong>{{ currencySymbol() }}{{ estimate.toLocaleString() }} for {{ opp.guestCount }} guests</strong>
+              </div>
+            }
+
+            <div class="form-group">
+              <label class="bid-form-label" for="proposal">Service Proposal &amp; Special Offerings</label>
+              <textarea id="proposal" class="form-textarea" formControlName="proposal" rows="4"
+                placeholder="Describe your service offering, any special equipment, on-site amenities, or unique value propositions..."></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn" [disabled]="isSubmitting()">
+              {{ isSubmitting() ? 'Submitting…' : 'Submit Bid →' }}
+            </button>
+            <p class="form-footnote">You'll be notified if your bid is accepted. Bids can't be edited after submission.</p>
+          </form>
+        </div>
+
+        <!-- EVENT DETAILS / MENU PREVIEW -->
+        <div class="menu-preview-card">
+          <div class="menu-preview-head">
+            <h2>Approved Menu</h2>
+            <p>What this Foodie has already approved - shape your proposal around it.</p>
+          </div>
+
+          @if (isMenuLoading()) {
+            <div class="menu-loading">
+              <div class="drawer-spinner"></div>
+              <p>Loading the approved menu…</p>
+            </div>
+          } @else if (courses().length === 0) {
+            <div class="menu-empty">
+              <span>🍽️</span>
+              <p>No menu is attached to this event yet.</p>
+            </div>
+          } @else {
+            @for (section of courses(); track section.title) {
+              <div class="menu-course-section">
+                <div class="menu-course-head">
+                  <span class="menu-course-icon" aria-hidden="true">{{ section.icon }}</span>
+                  <div>
+                    <h3 class="menu-course-title">{{ section.title }}</h3>
+                    @if (section.description) {
+                      <p class="menu-course-desc">{{ section.description }}</p>
+                    }
+                  </div>
+                </div>
+                <div class="menu-item-grid">
+                  @for (item of section.items; track item.name) {
+                    <div class="menu-item-card">
+                      <h4 class="menu-item-name">{{ item.name | titlecase }}</h4>
+                      <p class="menu-item-desc">{{ item.description }}</p>
+                      @if (item.tags && item.tags.length > 0) {
+                        <div class="menu-item-tag-row">
+                          <span class="menu-item-tag-label">Dietary:</span>
+                          @for (tag of item.tags; track tag) {
+                            <span class="menu-item-tag menu-item-tag--dietary">{{ tag }}</span>
+                          }
+                        </div>
+                      }
+                      @if (item.allergenFree && item.allergenFree.length > 0) {
+                        <div class="menu-item-tag-row">
+                          <span class="menu-item-tag-label">Allergen-free:</span>
+                          @for (tag of item.allergenFree; track tag) {
+                            <span class="menu-item-tag menu-item-tag--allergen-free">{{ tag }}</span>
+                          }
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          }
+        </div>
+
+      </div>
+    }
+  </div>
+</div>
+
+<!-- ═══ BID SUCCESS MODAL ═══ -->
+@if (showSuccessModal()) {
+  <div class="modal-overlay" (click)="closeSuccessModal()">
+    <div class="modal success-modal" (click)="$event.stopPropagation()">
+      <div class="modal-icon-wrap"><div class="modal-icon">✓</div></div>
+      <h2 class="modal-title">Bid Submitted!</h2>
+      <p class="modal-sub">Your bid for <b>{{ opportunity()?.eventName }}</b> was submitted successfully. The Foodie will review all bids - track its latest status anytime under the "My Bids" tab on your dashboard.</p>
+      <button type="button" class="btn-primary-full" (click)="closeSuccessModal()">Back to Dashboard</button>
+    </div>
+  </div>
+}
+
+<!-- ═══ CHEF RECOMMENDATIONS DRAWER ═══
+     Real, shared app-agentic-chef component - the same one Review Menu
+     uses - not a separate panel. Only reachable via
+     showChefRecommendationsButton (see submit-bid.ts), which only opens
+     when the Foodie has already accepted these recommendations on
+     Review Menu, so this always opens straight to that persisted
+     result's "already decided" view, never the idle Start Review state
+     a Foodie would see. -->
+<app-agentic-chef
+  [open]="showAgenticChef()"
+  [event]="syntheticEvent()"
+  [courses]="courses()"
+  (closed)="closeAgenticChef()"
+/>
+
+<app-footer />

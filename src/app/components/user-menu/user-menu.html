@@ -1,0 +1,45 @@
+<div class="user-menu-wrap">
+  <button
+    class="user-avatar"
+    type="button"
+    [class.active]="menuForcedOpen()"
+    (click)="toggleMenu()"
+    aria-haspopup="true"
+    [attr.aria-expanded]="menuForcedOpen()"
+    aria-label="User menu">
+    @if (isAuthenticated()) {
+      <span class="user-avatar-initials">{{ initials() }}</span>
+    } @else {
+      <span class="user-avatar-icon">👤</span>
+    }
+  </button>
+
+  <div class="user-dropdown" [class.force-open]="menuForcedOpen()" role="menu">
+    @if (isAuthenticated()) {
+      <div class="user-dropdown-name">{{ displayName() }}</div>
+      <button class="user-dropdown-item" type="button" role="menuitem" (click)="goToProfile()">
+        <span class="udi-icon">🧑</span>
+        <span>My Profile</span>
+      </button>
+      @if (activeDashboardRoute()) {
+        <button class="user-dropdown-item" type="button" role="menuitem" (click)="goToDashboard()">
+          <span class="udi-icon">📊</span>
+          <span>Dashboard</span>
+        </button>
+      }
+      <button class="user-dropdown-item" type="button" role="menuitem" (click)="signOut()">
+        <span class="udi-icon">↪</span>
+        <span>Sign Out</span>
+      </button>
+    } @else {
+      <button class="user-dropdown-item" type="button" role="menuitem" (click)="openLoginModal()">
+        <span class="udi-icon">✨</span>
+        <span>Sign In / Create Account</span>
+      </button>
+    }
+  </div>
+</div>
+
+@if (showLoginModal()) {
+  <app-login (close)="closeLoginModal()" />
+}

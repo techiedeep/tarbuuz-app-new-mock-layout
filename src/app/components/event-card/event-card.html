@@ -1,0 +1,94 @@
+<article class="event-card">
+
+  <!-- Header: icon badge · title + id -->
+  <div class="event-header">
+    <div class="event-icon-badge">{{ typeIcon() }}</div>
+    <div class="event-header-body">
+      <h3 class="event-title">{{ event().eventName }}</h3>
+      @if (showId()) {
+        <p class="event-id">Event ID: #{{ event().id }}</p>
+      }
+    </div>
+  </div>
+
+  <!-- Status -->
+  <div class="event-status-row">
+    <span class="status-badge" [class]="displayStatusMeta().cssClass">
+      <span aria-hidden="true">●</span> {{ displayStatusMeta().label }}
+    </span>
+  </div>
+
+  <!-- Metadata grid — always 4 cells so every card's grid is the same
+       height whether or not ambience was set, instead of silently
+       collapsing to 3 cells and shrinking the card. -->
+  <div class="details-grid">
+    <div class="detail-cell">
+      <span class="detail-icon">📅</span>
+      <span class="detail-text">{{ event().eventDate | date:'MMM d, y' }}@if (event().eventTimezone) {&nbsp;{{ event().eventTimezone }}}</span>
+    </div>
+    <div class="detail-cell">
+      <span class="detail-icon">👥</span>
+      <span class="detail-text">{{ event().guestCount }} guests</span>
+    </div>
+    <div class="detail-cell">
+      <span class="detail-icon">⏰</span>
+      <span class="detail-text">{{ event().eventTime }}</span>
+    </div>
+    @if (ambience(); as amb) {
+      <div class="detail-cell">
+        <span class="detail-icon">{{ amb.icon }}</span>
+        <span class="detail-text">{{ amb.label }}</span>
+      </div>
+    } @else {
+      <div class="detail-cell" aria-hidden="true">&nbsp;</div>
+    }
+  </div>
+
+  <!-- Cuisine chips — capped to MAX_VISIBLE_CUISINE_CHIPS with a "+N"
+       overflow chip, so an event with 5 cuisines can't wrap to a taller
+       row than one with 1. Row still renders (empty) when there are none,
+       reserving the same vertical space either way. -->
+  <div class="cuisine-chips">
+    @for (cuisine of visibleCuisines(); track cuisine) {
+      <span class="cuisine-chip">{{ cuisineIcon(cuisine) }} {{ cuisine | titlecase }}</span>
+    }
+    @if (hiddenCuisineCount() > 0) {
+      <span class="cuisine-chip cuisine-chip--more">+{{ hiddenCuisineCount() }}</span>
+    }
+  </div>
+
+  <!-- Dietary — single truncated line, same reasoning as the cuisine cap. -->
+  @if (event().dietaryPreferences.length > 0) {
+    <div class="detail-row">
+      <span class="detail-icon">🥗</span>
+      <span class="detail-text">{{ dietaryText() }}</span>
+    </div>
+  } @else {
+    <div class="detail-row detail-row--empty" aria-hidden="true">&nbsp;</div>
+  }
+
+  <!-- Special request -->
+  <div class="event-description">"{{ event().specialRequest }}"</div>
+
+  @if (showBidClosing()) {
+    <div class="detail-cell bid-closing-cell">
+      <span class="detail-icon">⏳</span>
+      <span class="detail-text bid-closing-text">{{ bidClosingMessage() }}</span>
+    </div>
+  }
+
+  <!-- Footer — both actions in a single row when both apply, not stacked. -->
+  <div class="event-footer">
+    @if (showReviewBidsAction()) {
+      <div class="menu-status menu-status--bid">
+        <span class="menu-icon">🏆</span>
+        <button type="button" class="menu-btn menu-btn--primary" (click)="reviewBids.emit(event())">Review Bids</button>
+      </div>
+    }
+    <div class="menu-status">
+      <span class="menu-icon">📋</span>
+      <button type="button" class="menu-btn" (click)="viewMenu.emit(event())">View Menu</button>
+    </div>
+  </div>
+
+</article>

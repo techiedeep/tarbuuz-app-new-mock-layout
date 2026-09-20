@@ -1,0 +1,114 @@
+<app-header />
+
+<main class="careers">
+
+  <!-- HERO — the one bold, memorable moment on this page -->
+  <section class="hero">
+    <div class="glow"></div>
+    <h1 class="hero-title">
+      We're looking for<br>
+      our next <span class="role-cycle">
+        @for (word of roleWords; track word; let i = $index) {
+          <span class="role-word" [class.active]="activeRoleIndex() === i">{{ word }}.</span>
+        }
+      </span>
+    </h1>
+    <p class="hero-sub">
+      Tarbuuz runs on people who'd rather build the thing than talk about building the thing.
+      No job board, no fixed postings — just a marketplace short on the right hands.
+    </p>
+    <a href="#pitch" class="hero-cta">Tell us what you'd build →</a>
+  </section>
+
+  <!-- TEAMS — varied-size editorial grid, deliberately uneven -->
+  <section class="teams">
+    <h2 class="section-title">Where you'd fit</h2>
+    <div class="teams-grid">
+      @for (team of teams; track team.key) {
+        <div class="team team--{{ team.size }}">
+          <h3>{{ team.name }}</h3>
+          <p>{{ team.pitch }}</p>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- SUBMISSION — the functional heart of the page -->
+  <section class="pitch-section" id="pitch">
+    <div class="pitch-card">
+
+      @if (!submitted()) {
+        <div class="pitch-head">
+          <h2>Show us what you'd build</h2>
+          <p>No resume required to start — tell us who you are and what you're good at. We read every one of these ourselves.</p>
+        </div>
+
+        <form [formGroup]="form" class="pitch-form">
+
+          <div class="field-group">
+            <label class="field-label">What do you want to build with us?</label>
+            <textarea
+              class="field-input field-textarea field-textarea--lead" rows="4"
+              formControlName="pitch" placeholder="A project you're proud of, a problem you can't stop thinking about, why Tarbuuz specifically&hellip;"
+              [class.field-error]="fieldError('pitch')" (blur)="markTouched('pitch')"
+            ></textarea>
+            @if (fieldError('pitch')) { <p class="field-error-msg">{{ fieldError('pitch') }}</p> }
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Which area fits best?</label>
+            <div class="area-chips">
+              @for (area of interestAreas; track area) {
+                <button
+                  type="button" class="area-chip" [class.selected]="form.value.area === area"
+                  (click)="selectArea(area)"
+                >{{ area }}</button>
+              }
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field-group">
+              <label class="field-label">Name</label>
+              <input
+                type="text" class="field-input" formControlName="name" placeholder="Your full name"
+                [class.field-error]="fieldError('name')" (blur)="markTouched('name')"
+              >
+              @if (fieldError('name')) { <p class="field-error-msg">{{ fieldError('name') }}</p> }
+            </div>
+            <div class="field-group">
+              <label class="field-label">Email</label>
+              <input
+                type="email" class="field-input" formControlName="email" placeholder="you@example.com"
+                [class.field-error]="fieldError('email')" (blur)="markTouched('email')"
+              >
+              @if (fieldError('email')) { <p class="field-error-msg">{{ fieldError('email') }}</p> }
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Portfolio or LinkedIn <span class="opt">(optional)</span></label>
+            <input type="text" class="field-input" formControlName="link" placeholder="A link that shows your work">
+          </div>
+
+          <button type="button" class="btn-submit" [disabled]="isSubmitting()" (click)="submit()">
+            {{ isSubmitting() ? 'Sending…' : 'Send it in' }}
+          </button>
+        </form>
+      }
+
+      @if (submitted()) {
+        <div class="pitch-sent">
+          <div class="sent-icon">✓</div>
+          <h2>Got it.</h2>
+          <p>Your pitch is in front of a real person now, not a filter. If there's a fit, we'll reach out directly.</p>
+          <button type="button" class="btn-ghost" (click)="submitAnother()">Send another</button>
+        </div>
+      }
+
+    </div>
+  </section>
+
+</main>
+
+<app-footer />

@@ -1,0 +1,108 @@
+// Terms of Use — same ink/amber/indigo palette as the rest of the app,
+// but restrained where it counts: this is a legal document someone needs
+// to actually read and trust, not a marketing page. Boldness goes into
+// the hero and the numbered section markers; the body text itself stays
+// plain, high-contrast, and unadorned.
+:host { display: block; background: #0F1117; color: #cfcac0; }
+
+// ── Hero ──
+.tou-hero { position: relative; overflow: hidden; padding: 4.5rem 2rem 3rem; text-align: center; }
+.tou-hero__inner { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; }
+.tou-hero__eyebrow { color: #D4A94A; font-weight: 700; font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; margin-bottom: .8rem; }
+.tou-hero__title { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: clamp(2.4rem, 5vw, 3.6rem); color: #F5F3EE; margin-bottom: 1.2rem; }
+.tou-hero__title--accent { color: #D4A94A; font-style: italic; }
+.tou-hero__meta { display: flex; justify-content: center; gap: .7rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
+.tou-hero__badge { font-size: .78rem; font-weight: 600; padding: .35rem .9rem; border-radius: 999px; background: #1C1F2A; border: 1.5px solid rgba(255,255,255,.12); color: #A39D8F; }
+.tou-hero__badge--effective { border-color: rgba(212,169,74,.35); color: #D4A94A; }
+.tou-hero__intro { color: #A39D8F; font-size: 1rem; line-height: 1.6; }
+.tou-hero__orb { position: absolute; border-radius: 50%; filter: blur(70px); pointer-events: none; }
+.tou-hero__orb--1 { width: 420px; height: 420px; background: #D4A94A; opacity: .1; top: -20%; left: -8%; }
+.tou-hero__orb--2 { width: 380px; height: 380px; background: #6C5DD3; opacity: .12; bottom: -30%; right: -8%; }
+
+// ── Important notice ──
+.tou-notice { background: rgba(226, 114, 108, .08); border-top: 1px solid rgba(226,114,108,.25); border-bottom: 1px solid rgba(226,114,108,.25); padding: 1rem 2rem; }
+.tou-notice__inner { max-width: 900px; margin: 0 auto; display: flex; gap: .8rem; align-items: flex-start; }
+.tou-notice__icon { font-size: 1.1rem; flex-shrink: 0; }
+.tou-notice p { font-size: .88rem; line-height: 1.6; color: #cfcac0; margin: 0; }
+.tou-notice__link { background: none; border: none; color: #D4A94A; font-weight: 700; font-size: inherit; font-family: inherit; cursor: pointer; padding: 0; text-decoration: underline; text-underline-offset: 2px; }
+
+// ── Layout: TOC + content ──
+.tou-layout { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 260px 1fr; gap: 3rem; padding: 3rem 2rem 6rem; align-items: start; }
+
+.tou-toc { position: sticky; top: 1.5rem; align-self: start; max-height: calc(100vh - 3rem); overflow-y: auto; }
+.tou-toc__inner { background: #151822; border: 1.5px solid rgba(255,255,255,.08); border-radius: 16px; padding: 1.3rem; }
+.tou-toc__heading { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.05rem; color: #fff; margin-bottom: .8rem; }
+.tou-toc__list { list-style: none; margin: 0; padding: 0; }
+.tou-toc__item { margin-bottom: .1rem; }
+.tou-toc__btn {
+  display: block; width: 100%; text-align: left; background: none; border: none; border-radius: 8px;
+  color: #A39D8F; font: 500 .82rem/1.4 'Inter', sans-serif; padding: .5rem .6rem; cursor: pointer;
+  transition: background .15s, color .15s;
+}
+.tou-toc__btn:hover { background: rgba(255,255,255,.04); color: #cfcac0; }
+.tou-toc__btn--active { background: rgba(212,169,74,.1); color: #D4A94A; font-weight: 700; }
+
+.tou-content { min-width: 0; }
+
+// ── Sections ──
+.tou-section { padding: 2.2rem 0; border-bottom: 1px solid rgba(255,255,255,.06); scroll-margin-top: 1.5rem; }
+.tou-section:last-of-type { border-bottom: none; }
+.tou-section__number { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.1rem; color: #D4A94A; margin-bottom: .3rem; }
+.tou-section__title { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.6rem; color: #F5F3EE; margin-bottom: 1rem; }
+.tou-subsection { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 1rem; color: #F5F3EE; margin: 1.4rem 0 .6rem; }
+.tou-section p { font-size: .92rem; line-height: 1.7; margin-bottom: .9rem; }
+.tou-section strong { color: #F5F3EE; font-weight: 700; }
+.tou-list { padding-left: 1.3rem; margin-bottom: .9rem; }
+.tou-list li { font-size: .92rem; line-height: 1.7; margin-bottom: .35rem; }
+.tou-list--compact li { margin-bottom: .5rem; }
+.tou-link { color: #D4A94A; text-decoration: underline; text-underline-offset: 2px; }
+
+// ── Role/account-type cards ──
+.tou-card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0 1.4rem; }
+.tou-card { background: #151822; border: 1.5px solid rgba(255,255,255,.08); border-radius: 14px; padding: 1.2rem; }
+.tou-card__icon { font-size: 1.5rem; margin-bottom: .5rem; }
+.tou-card__title { font-weight: 700; color: #F5F3EE; font-size: .95rem; margin-bottom: .5rem; }
+.tou-card__desc { color: #A39D8F; font-size: .85rem; line-height: 1.6; margin: 0; }
+
+// ── Prohibition / data-category grid ──
+.tou-prohibition-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 1rem 0 1.4rem; }
+.tou-prohibition { background: #1C1F2A; border: 1.5px solid rgba(255,255,255,.08); border-radius: 14px; padding: 1.1rem 1.2rem; }
+.tou-prohibition__head { font-weight: 700; color: #D4A94A; font-size: .82rem; text-transform: uppercase; letter-spacing: .04em; margin-bottom: .6rem; }
+
+// ── Callouts ──
+.tou-callout { display: flex; gap: .8rem; align-items: flex-start; border-radius: 14px; padding: 1.1rem 1.2rem; margin: 1rem 0 1.4rem; font-size: .88rem; line-height: 1.6; }
+.tou-callout__icon { font-size: 1.1rem; flex-shrink: 0; }
+.tou-callout--info { background: rgba(108, 93, 211, .08); border: 1.5px solid rgba(108,93,211,.3); }
+.tou-callout--warning { background: rgba(212, 169, 74, .08); border: 1.5px solid rgba(212,169,74,.3); }
+.tou-callout--legal { background: rgba(226, 114, 108, .08); border: 1.5px solid rgba(226,114,108,.3); }
+
+// ── Fee tables ──
+.tou-fee-table { border: 1.5px solid rgba(255,255,255,.1); border-radius: 12px; overflow: hidden; margin: 1rem 0 .6rem; }
+.tou-fee-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; padding: .7rem 1rem; font-size: .87rem; border-bottom: 1px solid rgba(255,255,255,.06); }
+.tou-fee-row:last-child { border-bottom: none; }
+.tou-fee-row--header { background: #1C1F2A; font-weight: 700; color: #F5F3EE; font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; }
+.tou-note { color: #8B8478; font-size: .82rem; font-style: italic; margin-bottom: 1.2rem; }
+
+.tou-address { font-style: normal; font-size: .9rem; line-height: 1.8; color: #cfcac0; background: #151822; border: 1.5px solid rgba(255,255,255,.08); border-radius: 12px; padding: 1rem 1.2rem; margin: .8rem 0 1rem; }
+
+// ── Final acceptance block ──
+.tou-acceptance { text-align: center; background: #151822; border: 1.5px solid rgba(212,169,74,.3); border-radius: 20px; padding: 2.4rem 2rem; margin-top: 2.5rem; }
+.tou-acceptance__icon { color: #D4A94A; font-size: 1.6rem; margin-bottom: .8rem; }
+.tou-acceptance__title { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.5rem; color: #F5F3EE; margin-bottom: 1rem; }
+.tou-acceptance p { max-width: 640px; margin: 0 auto 1rem; font-size: .88rem; line-height: 1.7; color: #A39D8F; }
+.tou-acceptance__version { font-size: .78rem; color: #8B8478; margin-top: 1.4rem; }
+
+// ── Responsive ──
+@media (max-width: 960px) {
+  .tou-layout { grid-template-columns: 1fr; gap: 1.5rem; padding: 2rem 1.4rem 4rem; }
+  .tou-toc { position: static; max-height: none; }
+  .tou-toc__list { display: flex; flex-wrap: wrap; gap: .3rem; }
+  .tou-toc__item { margin-bottom: 0; }
+  .tou-toc__btn { width: auto; padding: .45rem .75rem; border: 1px solid rgba(255,255,255,.1); border-radius: 999px; }
+}
+@media (max-width: 640px) {
+  .tou-hero { padding: 3rem 1.2rem 2rem; }
+  .tou-notice { padding: .9rem 1.2rem; }
+  .tou-section__title { font-size: 1.35rem; }
+  .tou-fee-row { grid-template-columns: 1fr; gap: .2rem; }
+}

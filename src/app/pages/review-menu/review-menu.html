@@ -1,0 +1,272 @@
+<nav class="nav no-print">
+  <a routerLink="/" class="nav-logo">tarbuuz<span class="dot">.</span></a>
+  <app-user-menu />
+</nav>
+
+<div class="page-body">
+  <div class="page-container">
+
+    @if (isLoading()) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Loading your menu...</p>
+      </div>
+    }
+
+    @if (!isLoading() && notFound()) {
+      <div class="empty-state">
+        <div class="empty-icon">🎭</div>
+        <h3>We couldn't find that event</h3>
+        <p>It may have been removed, or the link is out of date.</p>
+        <button type="button" class="btn btn-primary" (click)="backToEvents()">← Back to My Events</button>
+      </div>
+    }
+
+    @if (!isLoading() && !notFound() && event(); as ev) {
+
+      <a class="back-link no-print" (click)="backToEvents()">← Back to My Events</a>
+
+      <!-- Print-only header — hidden on screen, shown only inside the
+           print stylesheet. The on-screen event-strip below is
+           deliberately built for interactive browsing (budget-focused
+           meta) and isn't what a printed menu handed to a chef or kept
+           as a keepsake actually needs — this is a genuinely different,
+           simpler composition: wordmark, event
+           name, the facts a kitchen actually needs, nothing interactive. -->
+      <div class="print-header">
+        <div class="print-logo">tarbuuz<span class="print-dot">.</span></div>
+        <div class="print-menu-label">Event Menu</div>
+        <h1 class="print-event-name">{{ ev.eventName }}</h1>
+        <div class="print-event-meta">
+          {{ ev.eventDate | date:'MMMM d, y' }} · {{ ev.guestCount }} guests · {{ ev.eventLocation }}
+        </div>
+        @if (ev.dietaryPreferences.length > 0) {
+          <div class="print-event-dietary">⚠ Dietary requirements: {{ ev.dietaryPreferences.join(', ') }}</div>
+        }
+        @if (ev.specialRequest) {
+          <div class="print-event-notes">Notes: "{{ ev.specialRequest }}"</div>
+        }
+      </div>
+
+      <!-- ═══ EVENT SUMMARY STRIP ═══ -->
+      <div class="event-strip no-print">
+        <div class="event-strip-name">{{ ev.eventName }}</div>
+        <div class="event-strip-meta">
+          <span>📅 {{ ev.eventDate | date:'MMM d, y' }}</span>
+          <span>👥 {{ ev.guestCount }} guests</span>
+          <span>💰 Budget: {{ ev.budget != null ? '$' + ev.budget.toLocaleString() : 'Not set' }}</span>
+          <span>📍 {{ ev.eventLocation }}</span>
+        </div>
+        <button type="button" class="btn-print" (click)="printMenu()">🖨️ Print / Save Menu</button>
+      </div>
+
+      @if (ev.preferredCuisines.length > 0 || ev.dietaryPreferences.length > 0 || ev.specialRequest) {
+        <div class="event-strip-details no-print">
+          @if (ev.preferredCuisines.length > 0) {
+            <div class="strip-detail-row">
+              <span class="strip-detail-label">Selected cuisines</span>
+              <div class="strip-cuisine-chips">
+                @for (cuisine of ev.preferredCuisines; track cuisine) {
+                  <span class="strip-cuisine-chip">{{ cuisineIcon(cuisine) }} {{ cuisine | titlecase }}</span>
+                }
+              </div>
+            </div>
+          }
+          @if (ev.dietaryPreferences.length > 0) {
+            <div class="strip-detail-row">
+              <span class="strip-detail-label">Dietary requirements</span>
+              <span class="strip-detail-value strip-detail-value--dietary">⚠ {{ ev.dietaryPreferences.join(', ') }}</span>
+            </div>
+          }
+          @if (ev.specialRequest) {
+            <div class="strip-detail-row">
+              <span class="strip-detail-label">Special notes</span>
+              <span class="strip-detail-value strip-detail-value--notes">"{{ ev.specialRequest }}"</span>
+            </div>
+          }
+        </div>
+      }
+
+      @if (isApproved()) {
+        <div class="approved-banner no-print">
+          <span class="approved-icon">✓</span>
+          <div>
+            <div class="approved-title">Menu approved</div>
+            <div class="approved-sub">Bidding is in progress - verified Hosts have been notified.</div>
+          </div>
+        </div>
+      }
+
+      <div class="menu-layout">
+
+        <!-- ═══ COURSE SECTIONS ═══ -->
+        <div class="courses-column">
+          @for (course of courses(); track course.id) {
+            <div class="course-block">
+              <div class="course-head">
+                <div class="course-head-left">
+                  <span class="course-icon">{{ course.icon }}</span>
+                  <div>
+                    <div class="course-title">{{ course.title }}</div>
+                    <div class="course-desc">{{ course.description }}</div>
+                  </div>
+                </div>
+                @if (!isApproved()) {
+                  <button type="button" class="btn-add-course no-print" (click)="openPicker(course.id)">+ Add from Kitchen Lab</button>
+                }
+              </div>
+
+              <div class="item-grid">
+                @for (item of course.items; track item.id ?? item.name) {
+                  <div class="menu-item-card" [class.menu-item-card--editing]="isEditing(item.id)">
+                    @if (isEditing(item.id)) {
+                      <!-- ═══ EDIT MODE (screen only — editing mid-print makes no sense) ═══ -->
+                      <form class="item-edit-form no-print" [formGroup]="editForm" (ngSubmit)="saveEdit(course.id, item.id)">
+                        <label class="edit-label" for="edit-name-{{item.id}}">Dish name</label>
+                        <input id="edit-name-{{item.id}}" type="text" class="edit-input" formControlName="name" [class.error]="hasEditError('name')">
+                        @if (hasEditError('name')) { <div class="edit-error">{{ getEditErrorMessage('name') }}</div> }
+
+                        <label class="edit-label" for="edit-desc-{{item.id}}">Description</label>
+                        <textarea id="edit-desc-{{item.id}}" class="edit-textarea" rows="2" formControlName="description" [class.error]="hasEditError('description')"></textarea>
+                        @if (hasEditError('description')) { <div class="edit-error">{{ getEditErrorMessage('description') }}</div> }
+
+                        <label class="edit-label" for="edit-price-{{item.id}}">Price per guest ($)</label>
+                        <input id="edit-price-{{item.id}}" type="number" step="0.5" min="0" class="edit-input edit-input--price" formControlName="price" [class.error]="hasEditError('price')">
+                        @if (hasEditError('price')) { <div class="edit-error">{{ getEditErrorMessage('price') }}</div> }
+
+                        <div class="edit-actions">
+                          <button type="button" class="edit-btn edit-btn--cancel" (click)="cancelEdit()">Cancel</button>
+                          <button type="submit" class="edit-btn edit-btn--save">Save</button>
+                        </div>
+                      </form>
+                    } @else {
+                      <!-- ═══ DISPLAY MODE ═══ -->
+                      @if (!isApproved()) {
+                        <div class="card-actions no-print">
+                          <button type="button" class="icon-btn icon-btn--edit" (click)="startEdit(item)" aria-label="Edit {{ item.name }}">✏️</button>
+                          <button type="button" class="icon-btn icon-btn--remove" (click)="removeItem(course.id, item.id)" aria-label="Remove {{ item.name }}">✕</button>
+                        </div>
+                      }
+                      <div class="item-name">{{ item.name }}</div>
+                      <p class="item-desc">{{ item.description }}</p>
+                      <div class="item-tags">
+                        @for (tag of item.tags; track tag) { <span class="item-tag">{{ tag }}</span> }
+                      </div>
+                      <div class="item-footer">
+                        <span class="item-price">${{ item.price }}<span class="per-guest">/guest</span></span>
+                        @if (item.source) { <span class="item-source">{{ item.source }}</span> }
+                      </div>
+                    }
+                  </div>
+                } @empty {
+                  <div class="course-empty">
+                    No dishes in this course yet.
+                    @if (!isApproved()) {
+                      <a class="course-empty-link no-print" (click)="openPicker(course.id)">Add one from Kitchen Lab →</a>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- ═══ COST SIDEBAR ═══ -->
+        <aside class="cost-column">
+          @if (costBreakdown(); as cost) {
+            <div class="cost-card">
+              <div class="cost-card-title">Cost Breakdown</div>
+              @for (item of cost.items; track item.label) {
+                <div class="cost-row"><span>{{ item.label }}</span><span>${{ item.value }}/guest</span></div>
+              }
+              <div class="cost-divider"></div>
+              <div class="cost-row cost-row--total"><span>Per guest</span><span>${{ cost.totalPerPerson }}</span></div>
+              <div class="cost-row cost-row--total"><span>{{ cost.totalGuests }} guests</span><span>{{ cost.grandTotal != null ? '$' + cost.grandTotal.toLocaleString() : '—' }}</span></div>
+              <div class="budget-verdict" [class.budget-verdict--over]="!cost.withinBudget">
+                {{ cost.withinBudget ? '✓ Within your budget of ' + cost.budgetRange : '⚠ Over your budget of ' + cost.budgetRange }}
+              </div>
+            </div>
+          }
+
+          <!--
+          <div class="agentic-card no-print">
+            <div class="agentic-icon">🎁</div>
+            <div class="agentic-title">Add the finishing touches</div>
+            <p class="agentic-desc">Cakes, tableware, live music, photography - sourced from verified Suppliers, added before you pay.</p>
+            <button type="button" class="btn-add-course" (click)="openExtrasDrawer()">Shop Specialty Extras →</button>
+          </div>-->
+        </aside>
+
+      </div>
+
+      <!-- Agentic Chef's button lives here now, grouped with the
+           approve/decline actions on the right - deliberately NOT
+           inside the @if (!isApproved()) below, though. "View
+           Recommendations" needs to stay reachable after approval too
+           (that's the whole point of the persisted-result work already
+           done); nesting it inside the approval-gated block would make
+           it disappear the moment a menu is approved, which is exactly
+           the mistake to avoid here. Only the actual approve/decline
+           actions are conditional on approval status - this button
+           never was and shouldn't become that. -->
+      <div class="approve-bar no-print">
+        <button type="button" class="btn-add-course" (click)="openAgenticChef()">{{ agenticChefButtonLabel() }}</button>
+        @if (!isApproved()) {
+          <div class="approve-bar__decision">
+            <button type="button" class="btn btn-primary" [disabled]="isApproving()" (click)="approveMenu()">
+              {{ isApproving() ? 'Approving…' : '✓ Approve Menu' }}
+            </button>
+          </div>
+        }
+      </div>
+
+    }
+
+  </div>
+</div>
+
+<div class="no-print">
+  <app-kitchen-lab-picker
+    [open]="pickerOpen()"
+    [initialCourseType]="pickerCourseType()"
+    (closed)="closePicker()"
+    (recipePicked)="onRecipePicked($event)"
+  />
+  <app-agentic-chef
+    [event]="event()"
+    [courses]="courses()"
+    [open]="showAgenticChef()"
+    (closed)="closeAgenticChef()"
+  />
+
+  <!-- <app-supplier-marketplace-drawer [open]="showExtrasDrawer()" (closed)="closeExtrasDrawer()" /> -->
+
+  @if (showApprovedModal()) {
+    <div class="modal-overlay show" (click)="closeApprovedModal()">
+      <div class="modal" (click)="$event.stopPropagation()">
+        <button type="button" class="modal-close" (click)="closeApprovedModal()" aria-label="Close">✕</button>
+        <div class="modal-icon-wrap"><div class="modal-icon">✨</div></div>
+        <h2 class="modal-title">Menu Approved!</h2>
+        <p class="modal-sub">Your menu for <b>{{ event()?.eventName || 'your event' }}</b> is approved. We're opening it to verified hosts for bidding now.</p>
+        <div class="status-line"><span class="status-dot"></span><span class="status-text">{{ currentStatusMessage() }}</span></div>
+        <div class="mini-stepper">
+          @for (step of miniSteps(); track step.label; let i = $index) {
+            <div class="mini-step" [class]="step.state">
+              @if (i > 0) { <div class="mini-connector" [class.filled]="i <= 2"></div> }
+              <div class="mini-circle">{{ step.state === 'done' ? '✓' : i + 1 }}</div>
+              <div class="mini-label">{{ step.label }}</div>
+            </div>
+          }
+        </div>
+        <p class="modal-eta">Please check back regularly to stay updated on the latest bids for your event. Bidding status is displayed on the event card on your dashboard.</p>
+        <div class="modal-ctas">
+          <button class="btn-primary" type="button" style="width:100%" (click)="goToHome()">Go to Home →</button>
+          <button class="btn-ghost-full" type="button" (click)="goToDashboard()">Go to Dashboard</button>
+        </div>
+        <p class="modal-footer-note">Safe to close this and come back anytime - your bids will be waiting when they arrive.</p>
+      </div>
+    </div>
+  }
+</div>
+
+<app-footer class="no-print" />

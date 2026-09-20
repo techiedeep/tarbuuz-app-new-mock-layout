@@ -1,0 +1,402 @@
+// ═══════════════════════════════════════════════════════════════════════
+// Login / Registration modal — reskinned to the Tarbuuz ink/amber palette
+// (matching Events, Buuz, Kitchen Lab). Structure, class names, and every
+// responsive breakpoint are preserved exactly from the original so this
+// drops into the existing component with zero changes to login.component.ts.
+//
+// Colors are hardcoded here rather than referenced as CSS custom properties
+// from a local :root block — Angular scopes :root inside component-scoped
+// styles in a way that silently breaks every var() reference (confirmed
+// directly in this project's own Angular app). If your project already
+// defines these tokens in a genuinely global stylesheet, feel free to swap
+// the hex values below for var(--amber-500) etc. — just don't declare a
+// new :root here.
+// ═══════════════════════════════════════════════════════════════════════
+
+/* Free plan checkbox row styling */
+.free-plan-checkbox-row {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+}
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 1rem;
+  gap: 0.5rem;
+}
+.styled-checkbox {
+  width: 18px;
+  height: 18px;
+  accent-color: #4A9B6E;
+  margin-right: 8px;
+}
+.checkbox-text {
+  font-size: 1rem;
+  color: #F5F3EE;
+  font-weight: 500;
+}
+
+// ── Overlay ──────────────────────────────────────────────────────────────
+.modal-overlay {
+  // Deliberately NOT inset:0 here. app-login is nested inside
+  // <nav> (via app-user-menu), and that nav has backdrop-filter —
+  // which creates a new containing block for position:fixed
+  // descendants in Chromium. inset:0 resolves against that ~81px nav
+  // bar instead of the real viewport, confining the entire modal to a
+  // sliver at the top of the page. vw/vh units don't have this
+  // problem — they're always computed from the true viewport
+  // regardless of what containing block a fixed element ends up with.
+  // (100vw elsewhere in this app was changed to 100% for a real but
+  // much smaller scrollbar-gutter concern; this one specific case
+  // needs the opposite fix, because the bug it avoids is far worse.)
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(8, 9, 12, 0.72);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+  animation: fadeIn 0.3s ease;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes slideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+// ── Modal container ──────────────────────────────────────────────────────
+.modal-container {
+  background: #151822; // ink-900
+  width: 95%;
+  max-width: 972px;
+  height: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  border-radius: 1.5rem;
+  box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.6);
+  animation: slideUp 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  max-height: 95vh;
+
+  @media (max-width: 600px) {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    height: auto;
+    min-height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+    border: none;
+    padding: 0.5rem;
+    box-shadow: none;
+    overflow-y: auto;
+  }
+}
+
+.modal-close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid rgba(255, 255, 255, 0.18);
+  background: #1C1F2A; // ink-800
+  border-radius: 50%;
+  color: #A39D8F; // stone-400
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-close:hover {
+  border-color: #D4A94A; // amber-500
+  color: #D4A94A;
+  transform: rotate(90deg);
+}
+
+// ── Header / logo ────────────────────────────────────────────────────────
+.modal-header-section {
+  background: transparent;
+  padding: 24px 40px 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+  @media (max-width: 600px) {
+    padding: 1rem 0.75rem;
+  }
+}
+.modal-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 700;
+  font-size: 1.55rem;
+  color: #fff;
+}
+.modal-logo .dot {
+  color: #D4A94A; // amber-500 — same solid color, not a gradient clip, matching the exact wordmark used in the nav on every other page
+}
+
+// ── Split layout ─────────────────────────────────────────────────────────
+.split-layout {
+  display: flex;
+  flex-direction: row;
+  min-height: auto;
+  flex: 1;
+  gap: 0;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.5rem;
+
+    > .left-section, > .right-section {
+      width: 100%;
+      max-width: 100%;
+      border-right: none;
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+  }
+}
+.left-section {
+  background: transparent;
+  overflow: visible;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 0;
+}
+.right-section {
+  background: rgba(255, 255, 255, 0.02); // subtle distinction from left, echoing the original white/#fafafa split
+  overflow: visible;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.modal-content {
+  padding: 16px 28px 24px;
+
+  @media (max-width: 600px) {
+    padding: 1rem 0.5rem 1.25rem;
+  }
+}
+.registration-header {
+  padding: 0 0 12px;
+  text-align: center;
+}
+
+// ── Typography ───────────────────────────────────────────────────────────
+.login-title, .modal-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.3rem, 4vw, 1.7rem);
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 8px;
+  text-align: center;
+}
+.modal-subtitle {
+  color: #A39D8F; // stone-400
+  font-size: clamp(0.85rem, 3vw, 0.94rem);
+  margin-bottom: 0.875rem;
+  text-align: center;
+  line-height: 1.5;
+}
+.login-terms {
+  font-size: 12px;
+  color: #8B8478; // stone-500
+  text-align: center;
+  margin-top: 12px;
+  line-height: 1.5;
+
+  @media (max-width: 600px) {
+    font-size: 0.85rem;
+  }
+}
+.login-terms a {
+  color: #D4A94A; // amber-500 — matches the rest of the app's link/accent color instead of the original's blue
+  text-decoration: underline;
+}
+
+// ── Form fields ──────────────────────────────────────────────────────────
+.form-group {
+  margin-bottom: 14px;
+}
+.form-label {
+  display: block;
+  font-weight: 700;
+  color: #A39D8F; // stone-400
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+.form-input {
+  width: 100%;
+  padding: 10px 14px;
+  background: #1C1F2A; // ink-800
+  border: 1.5px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  font-size: 15px;
+  color: #fff;
+  transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+.form-input::placeholder {
+  color: #8B8478; // stone-500
+}
+.form-input:focus {
+  outline: none;
+  border-color: #D4A94A; // amber-500
+  box-shadow: 0 0 0 3px rgba(212, 169, 74, 0.15);
+}
+.form-input.invalid {
+  border-color: #e2726c;
+}
+.form-input:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+// ── Primary button ───────────────────────────────────────────────────────
+.btn-primary {
+  width: 100%;
+  padding: 12px 32px;
+  background: linear-gradient(135deg, #D4A94A, #B8862E);
+  color: #0F1117; // ink-950 — dark text on the light amber fill for proper contrast
+  border: none;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 14px;
+  box-shadow: 0 10px 26px -8px rgba(212, 169, 74, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px -8px rgba(212, 169, 74, 0.6);
+}
+.btn-primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+// ── Messages ─────────────────────────────────────────────────────────────
+.resend-code-row {
+  margin-top: 8px;
+  text-align: right;
+}
+.resend-link {
+  color: #D4A94A; // amber-500
+  font-size: 13px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.resend-link:hover {
+  color: #F0DCA0; // amber-200
+}
+.login-info-message {
+  margin-top: 8px;
+  color: #4A9B6E; // success
+  font-size: 0.95em;
+}
+.error-message {
+  color: #e2726c; // same danger tone already established for Kitchen Lab's "stop recording" state, kept distinct from the amber brand accent so errors always read as errors
+  font-size: 0.97em;
+  margin-top: 4px;
+  margin-bottom: 0;
+  font-weight: 600;
+}
+
+// ── Role selection grid (registration) ──────────────────────────────────
+.role-grid-compact {
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+.role-option-compact {
+  width: 100%;
+  min-height: 3.25rem;
+  font-size: 0.85rem;
+  min-width: 0;
+  border: 1.5px solid rgba(255, 255, 255, 0.18);
+  border-radius: 14px;
+  padding: 0.6rem 0.4rem;
+  cursor: pointer;
+  background: #1C1F2A; // ink-800
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  text-align: center;
+  transition: border-color 0.2s, background 0.2s;
+
+  // Enough real, available width per card - not just a wide enough
+  // viewport, which is a different thing once the modal's own
+  // split-layout is squeezing this grid into half the screen - to lay
+  // the icon and label out side by side instead of stacked. The three
+  // cards themselves stay in one row at every width (grid-template-
+  // columns above never changes); this is the only thing that adapts.
+  @container (min-width: 340px) {
+    flex-direction: row;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.65rem 0.5rem;
+  }
+}
+.role-option-compact:hover {
+  border-color: rgba(212, 169, 74, 0.35);
+  background: #151822; // ink-900
+}
+.role-option-compact.selected {
+  border-color: #D4A94A; // amber-500
+  background: rgba(212, 169, 74, 0.08);
+  box-shadow: 0 0 0 3px rgba(212, 169, 74, 0.14);
+}
+.role-icon-small {
+  font-size: 1.3rem;
+  line-height: 1;
+  flex-shrink: 0;
+
+  @container (min-width: 340px) {
+    font-size: 1.15rem;
+  }
+}
+.role-name-small {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+
+  @container (min-width: 340px) {
+    font-size: 0.85rem;
+  }
+}

@@ -1,0 +1,95 @@
+// Same ink/amber palette as every other modal in this app. A centered
+// card (not a side drawer) — a contact form is a short, single-purpose
+// action, not something to browse or review, so it gets the Login
+// modal's treatment rather than Review Menu's drawer pattern.
+:host { display: contents; }
+
+.drawer-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(8, 9, 12, .72); backdrop-filter: blur(4px);
+  z-index: 2000;
+}
+
+.contact-modal {
+  position: fixed; inset: 0; z-index: 2001;
+  display: flex; align-items: center; justify-content: center;
+  padding: 1.5rem 1rem; overflow-y: auto;
+}
+
+.contact-modal__inner {
+  position: relative; width: 100%; max-width: 560px;
+  background: #151822; border: 1.5px solid rgba(255, 255, 255, .1); border-radius: 24px;
+  box-shadow: 0 40px 100px -20px rgba(0, 0, 0, .6);
+  padding: 2.2rem 2rem;
+  animation: contact-modal-in .25s cubic-bezier(.2, .9, .3, 1.1);
+}
+@keyframes contact-modal-in { from { opacity: 0; transform: scale(.96) translateY(12px); } to { opacity: 1; transform: none; } }
+
+@media (max-width: 600px) {
+  .contact-modal { padding: 0; align-items: stretch; }
+  .contact-modal__inner { max-width: 100%; min-height: 100vh; border-radius: 0; border: none; padding: 1.5rem 1.2rem; }
+}
+
+.contact-modal__close {
+  position: absolute; top: 1.1rem; right: 1.1rem; z-index: 5;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: #1C1F2A; border: 1.5px solid rgba(255, 255, 255, .18); color: #A39D8F;
+  font-size: .85rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: border-color .2s, color .2s;
+}
+.contact-modal__close:hover { border-color: #D4A94A; color: #D4A94A; }
+
+.contact-modal__header { text-align: center; margin-bottom: 1.6rem; padding-right: 1.5rem; }
+.kicker { color: #D4A94A; font-weight: 700; font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; margin-bottom: .4rem; }
+.title { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.6rem; color: #fff; margin-bottom: .5rem; }
+.sub { color: #A39D8F; font-size: .88rem; line-height: 1.5; }
+
+// Field styling matches Create Event's conventions exactly — same
+// component, same visual language, rather than a second, slightly
+// different set of form styles for the one other form in the app.
+.field-group { margin-bottom: 1.1rem; }
+.field-label { display: block; font-weight: 700; font-size: .8rem; color: #A39D8F; margin-bottom: .5rem; }
+.field-input {
+  width: 100%; font: 400 1rem/1 'Inter', sans-serif; color: #fff; background: #1C1F2A;
+  border: 1.5px solid rgba(255, 255, 255, .18); border-radius: 12px; padding: .75rem 1rem; outline: none;
+}
+.field-input:focus { border-color: #D4A94A; }
+.field-input.field-error { border-color: #e2726c; }
+.field-error-msg { color: #e2726c; font-size: .78rem; font-weight: 600; margin-top: .4rem; }
+.field-input::placeholder { color: #8B8478; }
+.field-textarea { resize: vertical; min-height: 100px; font-family: 'Inter', sans-serif; line-height: 1.5; }
+.field-select {
+  appearance: none; cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23D4A94A' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 1rem center; padding-right: 2.4rem;
+}
+.field-select option { background: #1C1F2A; color: #fff; }
+
+.contact-actions { display: flex; gap: .8rem; margin-top: 1.4rem; }
+@media (max-width: 480px) { .contact-actions { flex-direction: column-reverse; } }
+
+.btn-primary {
+  flex: 1; background: linear-gradient(135deg, #D4A94A, #B8862E); color: #0F1117; font-weight: 700; font-size: .92rem;
+  border: none; border-radius: 999px; padding: .85rem 1.5rem; cursor: pointer;
+  box-shadow: 0 10px 26px -8px rgba(212, 169, 74, .5); transition: transform .2s, opacity .2s; white-space: nowrap;
+}
+.btn-primary:hover:not(:disabled) { transform: translateY(-2px); }
+.btn-primary:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+
+.btn-ghost {
+  flex: 1; background: transparent; color: #fff; font-weight: 700; font-size: .92rem;
+  border: 1.5px solid rgba(255, 255, 255, .18); border-radius: 999px; padding: .85rem 1.5rem; cursor: pointer;
+  white-space: nowrap; transition: border-color .2s, color .2s;
+}
+.btn-ghost:hover:not(:disabled) { border-color: #D4A94A; color: #D4A94A; }
+.btn-ghost:disabled { opacity: .5; cursor: not-allowed; }
+
+.contact-footnote { font-size: .76rem; color: #8B8478; text-align: center; margin-top: 1rem; line-height: 1.5; }
+
+.sent-state { text-align: center; padding: 1.5rem 0; }
+.sent-icon {
+  width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 1.2rem;
+  background: rgba(74, 155, 110, .12); border: 2px solid rgba(74, 155, 110, .4); color: #4A9B6E;
+  font-size: 1.8rem; font-weight: 800; display: flex; align-items: center; justify-content: center;
+}
+.sent-state .btn-primary { display: block; width: 100%; margin-top: 1.6rem; }

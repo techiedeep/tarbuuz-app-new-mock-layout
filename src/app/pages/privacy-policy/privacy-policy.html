@@ -1,0 +1,550 @@
+<app-header />
+
+<div class="pp-page">
+
+  <!-- ── Hero ── -->
+  <section class="pp-hero">
+    <div class="pp-hero__inner">
+      <div class="pp-hero__eyebrow">Legal</div>
+      <h1 class="pp-hero__title">Privacy <span class="pp-hero__title--accent">Policy</span></h1>
+      <p class="pp-hero__meta">
+        <span class="pp-hero__badge pp-hero__badge--effective">Effective: May 1, 2026</span>
+        <span class="pp-hero__badge pp-hero__badge--updated">Last Updated: May 1, 2026</span>
+      </p>
+      <p class="pp-hero__intro">
+        We are committed to protecting your privacy and handling your personal information
+        responsibly and transparently. This policy explains how we collect, use, and protect your data.
+      </p>
+    </div>
+    <div class="pp-hero__orb pp-hero__orb--1" aria-hidden="true"></div>
+    <div class="pp-hero__orb pp-hero__orb--2" aria-hidden="true"></div>
+  </section>
+
+  <!-- ── Consent Notice ── -->
+  <div class="pp-notice">
+    <div class="pp-notice__inner">
+      <span class="pp-notice__icon" aria-hidden="true">🔒</span>
+      <p>
+        <strong>By using the Platform, you consent</strong> to the data practices described in this Privacy Policy.
+        If you do not agree, please do not use the Platform. This policy applies to
+        www.tarbuuz.ai, our mobile apps (iOS and Android), and all related services.
+      </p>
+    </div>
+  </div>
+
+  <!-- ── Layout: TOC + Content ── -->
+  <div class="pp-layout">
+
+    <!-- Table of Contents -->
+    <aside class="pp-toc" aria-label="Table of contents">
+      <div class="pp-toc__inner">
+        <h2 class="pp-toc__heading">Contents</h2>
+        <nav>
+          <ul class="pp-toc__list">
+            @for (s of sections; track s.id) {
+              <li class="pp-toc__item">
+                <button
+                  class="pp-toc__btn"
+                  [class.pp-toc__btn--active]="activeSection() === s.id"
+                  (click)="scrollTo(s.id)">
+                  {{ s.label }}
+                </button>
+              </li>
+            }
+          </ul>
+        </nav>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="pp-content" aria-label="Privacy Policy content">
+
+      <!-- 1 -->
+      <section id="collection" class="pp-section">
+        <div class="pp-section__number">01</div>
+        <h2 class="pp-section__title">Information We Collect</h2>
+
+        <p>We collect information to provide, improve, and protect our services. The information we collect falls into three categories: information you provide to us, information we collect automatically, and information from third parties.</p>
+
+        <h3 class="pp-subsection">1.1 Information You Provide to Us</h3>
+
+        <div class="pp-card-grid">
+          <div class="pp-card">
+            <div class="pp-card__icon">👤</div>
+            <div class="pp-card__title">Account Information</div>
+            <p class="pp-card__desc">Full name, email address, phone number, encrypted password, profile photo (optional), mailing address, date of birth, and gender (optional).</p>
+          </div>
+          <div class="pp-card">
+            <div class="pp-card__icon">🏢</div>
+            <div class="pp-card__title">Business Information</div>
+            <p class="pp-card__desc">Business name and type, address and contact info, Tax ID (EIN), business license and permit numbers, professional certifications, food handler permits, and insurance certificates. (Hosts and Suppliers only.)</p>
+          </div>
+          <div class="pp-card">
+            <div class="pp-card__icon">💳</div>
+            <div class="pp-card__title">Payment Information</div>
+            <p class="pp-card__desc">Credit/debit card data (stored by third-party processors only), bank account details for direct deposit, billing address, payment history, and transaction records.</p>
+          </div>
+          <div class="pp-card">
+            <div class="pp-card__icon">🎉</div>
+            <div class="pp-card__title">Event &amp; Menu Data</div>
+            <p class="pp-card__desc">Event type, date, time, location, guest count, dietary requirements, budget, cuisine preferences, service style, menu proposals, ingredient lists, allergen info, pricing, portfolio photos, and professional bio.</p>
+          </div>
+          <div class="pp-card">
+            <div class="pp-card__icon">💬</div>
+            <div class="pp-card__title">Communications</div>
+            <p class="pp-card__desc">Messages sent through the Platform between users, customer support inquiries, feedback and surveys, reviews you write, and emails or notifications you send or receive.</p>
+          </div>
+          <div class="pp-card">
+            <div class="pp-card__icon">🛡️</div>
+            <div class="pp-card__title">Verification Information</div>
+            <p class="pp-card__desc">Government-issued ID, Social Security Number (for background checks where applicable), background check consent and results, business licenses, health permits, insurance certificates, and professional credentials.</p>
+          </div>
+        </div>
+
+        <h3 class="pp-subsection">1.2 Information We Collect Automatically</h3>
+        <ul class="pp-list">
+          <li><strong>Device &amp; Usage:</strong> IP address, device type and model, OS version, browser type, unique device identifiers, mobile network info, app version, language preference, and time zone settings</li>
+          <li><strong>Platform Activity:</strong> Pages viewed, features used, links clicked, search queries, browsing history, bid and booking activity, transaction history, time on page, navigation paths, and error logs</li>
+          <li><strong>Location Data:</strong> Approximate location from IP address; precise GPS location with your permission — used for nearby food supplier search, event location verification, delivery radius, and local ingredient recommendations</li>
+          <li><strong>Cookies &amp; Tracking Technologies:</strong> Session cookies, analytics pixels, web beacons, local storage, and device fingerprinting — see Section 8 for full details</li>
+        </ul>
+
+        <h3 class="pp-subsection">1.3 Information from Third Parties</h3>
+        <ul class="pp-list">
+          <li><strong>Background check providers:</strong> Criminal history, sex offender registry, license verification, employment verification, and credit history (certain account types)</li>
+          <li><strong>Social media platforms</strong> (if connected): Profile info, friend lists, publicly available data, and content you've shared</li>
+          <li><strong>Payment processors:</strong> Payment verification status, transaction details, fraud risk assessments, and chargeback information</li>
+          <li><strong>Analytics providers:</strong> Demographic information, interest categories, device usage patterns, and cross-platform behavior</li>
+          <li><strong>Data enrichment services:</strong> Business verification data, address standardization, email validation, and phone number verification</li>
+          <li><strong>Public sources:</strong> Business registration records, professional licensing databases, food safety inspection results, and court records (for verification purposes)</li>
+        </ul>
+      </section>
+
+      <!-- 2 -->
+      <section id="use" class="pp-section">
+        <div class="pp-section__number">02</div>
+        <h2 class="pp-section__title">How We Use Your Information</h2>
+
+        <h3 class="pp-subsection">2.1 Provide &amp; Improve the Platform</h3>
+        <div class="pp-use-grid">
+          <div class="pp-use-item">
+            <div class="pp-use-item__head">Platform Operation</div>
+            <p>Create and manage accounts, authenticate identity, process bookings and transactions, facilitate communication between users, enable event hosting and bidding, and manage menu proposals and supplier inventory.</p>
+          </div>
+          <div class="pp-use-item">
+            <div class="pp-use-item__head">AI-Powered Features</div>
+            <p>Rank competing Host bids by true value, generate Smart Menu recommendations, validate menus and flag allergens with Agentic Chef, optimize pricing and budgets, suggest seasonal ingredients, and forecast headcount and spend with Predictive Analytics.</p>
+          </div>
+          <div class="pp-use-item">
+            <div class="pp-use-item__head">Payment Processing</div>
+            <p>Process payments and refunds, detect and prevent fraud, calculate fees and commissions, issue payouts to Hosts and Suppliers, generate tax documents (1099 forms), and maintain financial records.</p>
+          </div>
+          <div class="pp-use-item">
+            <div class="pp-use-item__head">Platform Improvement</div>
+            <p>Analyze usage patterns and trends, conduct research and development, test new features, troubleshoot technical issues, monitor performance, and gather user feedback.</p>
+          </div>
+        </div>
+
+        <h3 class="pp-subsection">2.2 Safety &amp; Security</h3>
+        <p>We verify your identity and credentials, conduct background checks for Hosts, validate business licenses and permits, ensure food safety compliance, detect and prevent fraudulent activity, investigate disputes, review reported users and content, and enforce our Terms of Use and policies.</p>
+
+        <h3 class="pp-subsection">2.3 Communication</h3>
+        <p>We send booking confirmations, transaction receipts, account activity notices, security alerts, and Platform updates. With your consent, we also send promotional emails, feature announcements, newsletters, personalized recommendations, and referral program invitations. You may opt out of marketing at any time — see Section 6.4.</p>
+
+        <div class="pp-callout pp-callout--info">
+          <span class="pp-callout__icon" aria-hidden="true">📧</span>
+          <div>
+            <strong>Mandatory emails (cannot opt out):</strong> Booking confirmations and receipts, account security alerts, Terms or Privacy Policy changes, payment notifications, critical Platform updates, and legal notices.
+          </div>
+        </div>
+
+        <h3 class="pp-subsection">2.4 Legal &amp; Regulatory</h3>
+        <p>We use your information to comply with applicable laws and regulations, respond to legal requests and court orders, enforce our Terms of Use, protect our rights and property, defend against legal claims, fulfill tax and accounting obligations, and meet food safety reporting, anti-money laundering (AML), and Know Your Customer (KYC) requirements.</p>
+
+        <h3 class="pp-subsection">2.5 Research &amp; Analytics</h3>
+        <p>We analyze how users interact with the Platform, identify popular features and content, measure adoption and conversion rates, understand culinary trends and regional food culture, study dietary restriction patterns, and evaluate pricing strategies. We also use data to improve AI recommendation algorithms, train menu validation models, and enhance matching accuracy.</p>
+        <p>All research uses aggregate, anonymized data unless you provide specific consent for identifiable use.</p>
+      </section>
+
+      <!-- 3 -->
+      <section id="sharing" class="pp-section">
+        <div class="pp-section__number">03</div>
+        <h2 class="pp-section__title">How We Share Your Information</h2>
+
+        <div class="pp-callout pp-callout--highlight">
+          <span class="pp-callout__icon" aria-hidden="true">🛡️</span>
+          <div><strong>We do not sell your personal information to third parties.</strong></div>
+        </div>
+
+        <h3 class="pp-subsection">3.1 With Other Users</h3>
+        <div class="pp-share-table">
+          <div class="pp-share-row pp-share-row--header">
+            <span>Who sees it</span><span>What they see</span>
+          </div>
+          <div class="pp-share-row">
+            <span>Foodies (browsing)</span>
+            <span>Host/Supplier name, bio, credentials, portfolio, ratings, specialty cuisines, approximate location (city/region)</span>
+          </div>
+          <div class="pp-share-row">
+            <span>Foodies (after booking)</span>
+            <span>Full contact info, detailed business info, insurance certificates, food handler permits</span>
+          </div>
+          <div class="pp-share-row">
+            <span>Hosts (after bid acceptance)</span>
+            <span>Foodie name, event details, guest count, dietary restrictions, budget, venue info, Foodie ratings and review history</span>
+          </div>
+          <div class="pp-share-row">
+            <span>Suppliers (surplus marketplace)</span>
+            <span>Buyer name, pickup preferences, order history, payment status</span>
+          </div>
+          <div class="pp-share-row">
+            <span>Foodie (surplus marketplace)</span>
+            <span>Supplier name, food item details, pickup location/hours, ratings, health inspection scores</span>
+          </div>
+          <div class="pp-share-row">
+            <span>All users (public)</span>
+            <span>Profile info you choose to share, reviews/ratings, portfolio photos, business name and location, aggregate statistics</span>
+          </div>
+        </div>
+
+        <h3 class="pp-subsection">3.2 For Legal Reasons</h3>
+        <p>We may disclose your information to law enforcement, government authorities, or in legal proceedings to comply with valid legal requests (subpoenas, court orders), defend against claims, enforce our Terms, protect user safety, fulfill tax obligations, and report to health departments. We will notify you of legal requests unless prohibited by law or court order.</p>
+
+        <h3 class="pp-subsection">3.3 In Business Transactions</h3>
+        <p>If Tarbuuz.ai is involved in a merger, acquisition, bankruptcy, reorganization, or sale of assets, your information may be transferred to the acquiring entity. We will notify you via email and/or Platform notice. Your information remains subject to privacy protections, and you may have the right to opt-out or delete your account.</p>
+
+        <h3 class="pp-subsection">3.4 With Your Consent</h3>
+        <p>We may share your information for other purposes with your explicit consent, including integrations with third-party services you authorize, sharing data with research institutions (anonymized), including your content in marketing materials, or featuring your success story or testimonial. You can withdraw consent at any time by contacting us.</p>
+
+        <h3 class="pp-subsection">3.5 Aggregate &amp; Anonymized Data</h3>
+        <p>We may share aggregate, anonymized, or de-identified data that cannot reasonably identify you — for example, in industry reports, academic research partnerships, Platform performance metrics, market intelligence, and public transparency reports.</p>
+      </section>
+
+      <!-- 4 -->
+      <section id="retention" class="pp-section">
+        <div class="pp-section__number">04</div>
+        <h2 class="pp-section__title">Data Retention</h2>
+
+        <p>We retain your information for as long as necessary to provide services and fulfill the purposes described in this Privacy Policy.</p>
+
+        <div class="pp-fee-table">
+          <div class="pp-fee-row pp-fee-row--header">
+            <span>Data Type</span><span>Retention Period</span>
+          </div>
+          <div class="pp-fee-row">
+            <span>Active account data</span><span>While account is active</span>
+          </div>
+          <div class="pp-fee-row">
+            <span>Closed account data</span><span>30 days after account closure</span>
+          </div>
+          <div class="pp-fee-row">
+            <span>Transaction records</span><span>7 years (IRS/tax compliance)</span>
+          </div>
+          <div class="pp-fee-row">
+            <span>Communications &amp; support tickets</span><span>2 years after last message</span>
+          </div>
+          <div class="pp-fee-row">
+            <span>Background check results</span><span>7 years or as required by law</span>
+          </div>
+          <div class="pp-fee-row">
+            <span>Legal hold data</span><span>Until resolution of legal matter</span>
+          </div>
+          <div class="pp-fee-row">
+            <span>Anonymized analytics data</span><span>Indefinitely</span>
+          </div>
+        </div>
+
+        <h3 class="pp-subsection">4.2 Data Deletion</h3>
+        <p>When we delete your data, we remove it from active databases and servers, delete backup copies within 90 days, retain only what is legally required, anonymize data used in analytics, and overwrite deleted data to prevent recovery. You may request expedited deletion by contacting <a class="pp-link" href="mailto:info@tarbuuz.ai">info&#64;tarbuuz.ai</a>.</p>
+      </section>
+
+      <!-- 5 -->
+      <section id="security" class="pp-section">
+        <div class="pp-section__number">05</div>
+        <h2 class="pp-section__title">Data Security</h2>
+
+        <p>We implement industry-standard security measures to protect your information from unauthorized access, disclosure, alteration, or destruction.</p>
+
+        <div class="pp-security-grid">
+          <div class="pp-security-item">
+            <div class="pp-security-item__icon">🔐</div>
+            <div class="pp-security-item__title">Encryption</div>
+            <p>TLS 1.3 for data in transit · AES-256 for data at rest · Bcrypt password hashing · PCI DSS compliant tokenization — we never store full card numbers</p>
+          </div>
+          <div class="pp-security-item">
+            <div class="pp-security-item__icon">🌐</div>
+            <div class="pp-security-item__title">Network Security</div>
+            <p>Firewalls, intrusion detection &amp; prevention systems, DDoS protection, VPNs for remote access, and network segmentation</p>
+          </div>
+          <div class="pp-security-item">
+            <div class="pp-security-item__icon">🔑</div>
+            <div class="pp-security-item__title">Access Controls</div>
+            <p>Multi-factor authentication, role-based access control (RBAC), principle of least privilege, regular access reviews, and immediate revocation upon employee departure</p>
+          </div>
+          <div class="pp-security-item">
+            <div class="pp-security-item__icon">🏢</div>
+            <div class="pp-security-item__title">Organizational</div>
+            <p>Employee background checks, NDAs, annual security training, clean desk policies, vendor security assessments, 24/7 monitoring, and incident response plan</p>
+          </div>
+        </div>
+
+        <h3 class="pp-subsection">5.4 Your Security Responsibilities</h3>
+        <p>To protect your account: use a strong unique password, enable two-factor authentication, do not share your credentials, log out from shared devices, keep your contact information current, review account activity regularly, and update your app to the latest version.</p>
+
+        <div class="pp-callout pp-callout--warning">
+          <span class="pp-callout__icon" aria-hidden="true">⚠️</span>
+          <div>
+            <strong>If you suspect unauthorized access:</strong>
+            <ol class="pp-ordered-list">
+              <li>Change your password immediately</li>
+              <li>Enable two-factor authentication</li>
+              <li>Review recent account activity</li>
+              <li>Contact us at <a class="pp-link" href="mailto:info@tarbuuz.ai">info&#64;tarbuuz.ai</a></li>
+              <li>Monitor your financial accounts</li>
+            </ol>
+          </div>
+        </div>
+
+        <h3 class="pp-subsection">5.5 Limitations</h3>
+        <p>While we implement strong security measures, no system is 100% secure. We cannot guarantee absolute security against sophisticated cyber attacks, determined attackers, social engineering or phishing attempts directed at you, vulnerabilities in third-party services, or force majeure events beyond our control. You use the Platform at your own risk and are responsible for securing your own devices and accounts.</p>
+      </section>
+
+      <!-- 6 -->
+      <section id="rights" class="pp-section">
+        <div class="pp-section__number">06</div>
+        <h2 class="pp-section__title">Your Privacy Rights and Choices</h2>
+
+        <h3 class="pp-subsection">6.1 Access &amp; Portability</h3>
+        <p>You may request confirmation of what information we hold, copies of your personal data, details about how we use and share it, and information about automated decision-making. We respond within 30 days. Email <a class="pp-link" href="mailto:info@tarbuuz.ai">info&#64;tarbuuz.ai</a> with subject "Data Access Request." You may also request your data in portable format: account information (JSON or CSV), transaction history (CSV or PDF), messages (PDF), photos (ZIP), or profile data (JSON).</p>
+
+        <h3 class="pp-subsection">6.2 Correction &amp; Update</h3>
+        <p>You may correct inaccurate or incomplete information directly in Account Settings (name, email, phone, address, profile photo, dietary preferences, payment methods, and communication preferences). Records requiring verification — such as Tax ID, business licenses, and professional credentials — require contacting customer support.</p>
+
+        <h3 class="pp-subsection">6.3 Deletion</h3>
+        <ul class="pp-list">
+          <li>Close your account in Account Settings or email <a class="pp-link" href="mailto:info@tarbuuz.ai">info&#64;tarbuuz.ai</a> — deletion completed within 30 days of verification</li>
+          <li><strong>What gets deleted:</strong> Account profile, contact info, personal preferences, private messages, photos and uploads, and most activity history</li>
+          <li><strong>What may be retained:</strong> Transaction records (7 years), anonymized reviews and ratings, legal compliance data, aggregated analytics, and public forum posts (anonymized)</li>
+          <li>Exceptions also include pending disputes or litigation, fraud prevention and security needs, and other legitimate business requirements</li>
+        </ul>
+
+        <h3 class="pp-subsection">6.4 Opt-Out &amp; Preferences</h3>
+        <p>You may opt out of marketing emails using the unsubscribe link in every email, via Account Settings › Notifications, or by contacting <a class="pp-link" href="mailto:info@tarbuuz.ai">info&#64;tarbuuz.ai</a> (compliance within 10 business days). SMS: reply STOP to any message. Push notifications: manage in mobile app or device settings. Location: disable precise location in app or device settings — we still collect approximate location from IP. Cookies: see Section 8.</p>
+
+        <h3 class="pp-subsection">6.5 California Residents (CCPA/CPRA)</h3>
+        <div class="pp-callout pp-callout--info">
+          <span class="pp-callout__icon" aria-hidden="true">🏛️</span>
+          <div>
+            California residents have the right to know what personal information we collect (up to twice per year, free of charge), request deletion, opt-out of sharing for targeted advertising, limit use of sensitive information (SSN, precise location, health data), and receive non-discriminatory service regardless of privacy choices. <strong>We do not sell personal information.</strong> You may designate an authorized agent to make requests on your behalf. Contact <a class="pp-link" href="mailto:info@tarbuuz.ai">info&#64;tarbuuz.ai</a> to exercise any of these rights. We verify identity before processing requests.
+            <br><br>
+            <strong>Categories collected:</strong> Identifiers, commercial information, internet activity, geolocation, sensory data, professional information, inferences. See Sections 2, 3, and 4 for purposes, sharing, and retention.
+          </div>
+        </div>
+
+        <h3 class="pp-subsection">6.6 European Union Residents (GDPR)</h3>
+        <p>EU, EEA, UK, and Switzerland residents have the right to access, rectification, erasure ("right to be forgotten"), restriction of processing, data portability, and the right to object to processing based on legitimate interest. We process your data under legal bases of consent, contract performance, legitimate interest, and legal obligation. You may withdraw consent at any time without affecting the lawfulness of prior processing.</p>
+        <p>Contact us at <a class="pp-link" href="mailto:info@tarbuuz.ai">info&#64;tarbuuz.ai</a> for any GDPR-related request. You may also lodge a complaint with your local data protection supervisory authority.</p>
+
+        <h3 class="pp-subsection">6.7 Colorado, Connecticut, Utah &amp; Virginia Residents</h3>
+        <p>Residents of these states have rights to access, delete, and correct personal data, and to opt-out of targeted advertising and sale of personal data. We do not sell personal data. Contact <a class="pp-link" href="mailto:info@tarbuuz.ai">info&#64;tarbuuz.ai</a> to exercise these rights. Contact us for information about rights in other jurisdictions where we operate.</p>
+      </section>
+
+      <!-- 7 -->
+      <section id="children" class="pp-section">
+        <div class="pp-section__number">07</div>
+        <h2 class="pp-section__title">Children's Privacy</h2>
+
+        <div class="pp-callout pp-callout--warning">
+          <span class="pp-callout__icon" aria-hidden="true">🚫</span>
+          <div>
+            <strong>The Platform is not intended for children under 18.</strong> We do not knowingly collect information from children. Minimum age is 18 years and account creation requires age verification. We prohibit use by minors.
+          </div>
+        </div>
+
+        <h3 class="pp-subsection">7.2 If We Learn of Child Data</h3>
+        <p>If we discover we have collected information from a child, we will delete the information immediately, terminate the account, and notify parents or guardians where contact information is available.</p>
+
+        <h3 class="pp-subsection">7.3 Parental Notification</h3>
+        <p>If you believe your child has provided information to us, contact us immediately at <a class="pp-link" href="mailto:info@tarbuuz.ai">info&#64;tarbuuz.ai</a>. Please provide the child's name, email, and any account details. We will investigate and confirm deletion within 10 business days.</p>
+      </section>
+
+      <!-- 8 -->
+      <section id="cookies" class="pp-section">
+        <div class="pp-section__number">08</div>
+        <h2 class="pp-section__title">Cookies and Tracking Technologies</h2>
+
+        <p>We use cookies and similar technologies to provide, protect, and improve the Platform. Cookies are small text files stored on your device that help us recognize you, remember your preferences, understand Platform usage, deliver personalized content, and measure advertising effectiveness.</p>
+
+        <div class="pp-cookie-grid">
+          <div class="pp-cookie-item">
+            <div class="pp-cookie-item__type pp-cookie-item__type--required">Required</div>
+            <div class="pp-cookie-item__title">Strictly Necessary</div>
+            <p>Authentication and account access, security and fraud prevention, load balancing and performance, core Platform functionality, and session management. Cannot be disabled.</p>
+          </div>
+          <div class="pp-cookie-item">
+            <div class="pp-cookie-item__type pp-cookie-item__type--functional">Functional</div>
+            <div class="pp-cookie-item__title">Functional Cookies</div>
+            <p>Remember your preferences (language, location), cart items, and provide enhanced features and a customized experience.</p>
+          </div>
+          <div class="pp-cookie-item">
+            <div class="pp-cookie-item__type pp-cookie-item__type--analytics">Analytics</div>
+            <div class="pp-cookie-item__title">Analytics Cookies</div>
+            <p>Understand Platform usage, measure feature performance, identify popular content, track conversion rates, and generate usage statistics (Google Analytics, Mixpanel).</p>
+          </div>
+          <div class="pp-cookie-item">
+            <div class="pp-cookie-item__type pp-cookie-item__type--ads">Advertising</div>
+            <div class="pp-cookie-item__title">Advertising Cookies</div>
+            <p>Deliver relevant ads, measure effectiveness, limit ad frequency, personalize ad content, and enable retargeting across websites (Facebook Pixel, Google Ads).</p>
+          </div>
+        </div>
+
+        <h3 class="pp-subsection">8.3 Third-Party Cookies</h3>
+        <ul class="pp-list">
+          <li><strong>Google Analytics:</strong> Traffic analysis and usage patterns — <a class="pp-link" href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy Policy</a> · <a class="pp-link" href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener">Opt-Out</a></li>
+          <li><strong>Facebook Pixel:</strong> Ad measurement and targeting — <a class="pp-link" href="https://www.facebook.com/privacy" target="_blank" rel="noopener">Privacy Policy</a> · Opt-out via Facebook ad preferences</li>
+          <li><strong>Stripe:</strong> Payment processing and fraud prevention — <a class="pp-link" href="https://stripe.com/privacy" target="_blank" rel="noopener">Privacy Policy</a> · Necessary for transactions; cannot be disabled</li>
+        </ul>
+
+        <h3 class="pp-subsection">8.4 Other Tracking Technologies</h3>
+        <ul class="pp-list">
+          <li><strong>Web Beacons (Pixels):</strong> Embedded in emails to track opens, monitor campaign effectiveness, and track conversions from ads</li>
+          <li><strong>Local Storage:</strong> Stores preferences locally for faster loading, offline functionality, and caching frequently used data</li>
+          <li><strong>Device Fingerprinting:</strong> Combines device characteristics for fraud detection, security monitoring, and account protection</li>
+        </ul>
+
+        <h3 class="pp-subsection">8.5 Managing Cookies</h3>
+        <p>You can manage cookies through your browser: Chrome (Settings › Privacy and Security › Cookies), Firefox (Settings › Privacy &amp; Security › Cookies), Safari (Preferences › Privacy › Cookies), Edge (Settings › Privacy › Cookies). Note: blocking cookies may affect Platform functionality.</p>
+        <p>Additional opt-out tools: <a class="pp-link" href="http://www.networkadvertising.org/choices/" target="_blank" rel="noopener">NAI Opt-Out</a> · <a class="pp-link" href="http://www.aboutads.info/choices/" target="_blank" rel="noopener">DAA Opt-Out</a> · <a class="pp-link" href="https://adssettings.google.com" target="_blank" rel="noopener">Google Ad Settings</a></p>
+        <p>We do not currently respond to Do Not Track signals as there is no industry standard for implementation; however, we honor browser cookie controls.</p>
+      </section>
+
+      <!-- 9 -->
+      <section id="transfers" class="pp-section">
+        <div class="pp-section__number">09</div>
+        <h2 class="pp-section__title">International Data Transfers</h2>
+
+        <p>Tarbuuz.ai is based in the United States. If you access the Platform from outside the U.S., your information will be transferred to, stored, and processed in the United States.</p>
+
+        <h3 class="pp-subsection">9.1 Legal Basis for Transfers</h3>
+        <ul class="pp-list">
+          <li><strong>Standard Contractual Clauses:</strong> We use EU Commission-approved clauses providing GDPR-level protection for EU data transfers to the U.S.</li>
+          <li><strong>Adequacy Decisions:</strong> We rely on adequacy decisions where available and monitor changes in cross-border transfer frameworks</li>
+          <li><strong>Necessity for Contract Performance:</strong> Some transfers are required to provide services and fulfill our agreement with you</li>
+        </ul>
+
+        <h3 class="pp-subsection">9.2 Data Protection Measures</h3>
+        <p>When transferring data internationally, we encrypt data in transit and at rest, use secure data centers with physical security controls, implement strict access monitoring, conduct security assessments of foreign processors, require contractual data protection commitments, and provide mechanisms for redress and complaints.</p>
+
+        <h3 class="pp-subsection">9.3 Your Rights</h3>
+        <p>You retain all privacy rights described in Section 6 regardless of where your data is transferred. You may contact your local data protection authority, request information about specific transfer safeguards, or object to transfers in certain circumstances. Contact us for any questions about international transfers.</p>
+      </section>
+
+      <!-- 10 -->
+      <section id="changes" class="pp-section">
+        <div class="pp-section__number">10</div>
+        <h2 class="pp-section__title">Changes to This Privacy Policy</h2>
+
+        <h3 class="pp-subsection">10.1 Material Changes</h3>
+        <p>We will notify you via email to your registered address, prominent Platform notice, and in-app notification with at least <strong>30 days advance notice</strong> for material changes. Material changes include new categories of personal information collected, new purposes for using information, sharing with new categories of third parties, changes to your rights or how to exercise them, changes to retention periods, and changes to security practices.</p>
+
+        <h3 class="pp-subsection">10.2 Minor Changes</h3>
+        <p>Minor updates are effective immediately upon posting, indicated by the updated "Last Updated" date at the top of this policy. Continued use constitutes acceptance of minor changes.</p>
+
+        <h3 class="pp-subsection">10.3 Your Choices</h3>
+        <p>If you do not agree to changes, you may close your account before changes take effect, contact us to request data deletion, or stop using the Platform. Continued use after changes take effect means you accept the updated Privacy Policy.</p>
+
+        <h3 class="pp-subsection">10.4 Previous Versions</h3>
+        <p>We maintain an archive of previous Privacy Policy versions available upon request. Contact <a class="pp-link" href="mailto:info@tarbuuz.ai">info&#64;tarbuuz.ai</a> and include the version date in your request.</p>
+      </section>
+
+      <!-- 11 -->
+      <section id="contact" class="pp-section">
+        <div class="pp-section__number">11</div>
+        <h2 class="pp-section__title">Contact Us</h2>
+
+        <p>If you have questions, concerns, or requests regarding this Privacy Policy or our data practices, reach out any time. When contacting us, please include your full name, account email, a description of your inquiry, and any relevant account or transaction IDs.</p>
+
+        <div class="pp-email-banner">
+          <span class="pp-email-banner__icon" aria-hidden="true">✉️</span>
+          <div class="pp-email-banner__text">
+            <span class="pp-email-banner__label">One inbox, one team, real people reading it</span>
+            <a class="pp-email-banner__address" href="mailto:info@tarbuuz.ai">info&#64;tarbuuz.ai</a>
+          </div>
+        </div>
+
+        <h3 class="pp-subsection">11.1 What to Expect, by Request Type</h3>
+        <div class="pp-fee-table">
+          <div class="pp-fee-row pp-fee-row--header">
+            <span>Request Type</span><span>Response Time</span>
+          </div>
+          <div class="pp-fee-row">
+            <span>General inquiries</span><span>Within 3 business days</span>
+          </div>
+          <div class="pp-fee-row">
+            <span>Data access requests</span><span>Within 30 days</span>
+          </div>
+          <div class="pp-fee-row">
+            <span>Data deletion requests</span><span>Within 30 days (after identity verification)</span>
+          </div>
+          <div class="pp-fee-row">
+            <span>Unsubscribe / marketing opt-out</span><span>Within 10 business days</span>
+          </div>
+          <div class="pp-fee-row">
+            <span>Security concerns or suspected breach</span><span>Within 24 hours</span>
+          </div>
+          <div class="pp-fee-row">
+            <span>GDPR requests (EU/EEA/UK/Switzerland)</span><span>Within 1 month (extendable to 3 months for complex requests)</span>
+          </div>
+        </div>
+        <p class="pp-note">Support hours: Monday–Friday, 9 AM – 6 PM Pacific Time. Security concerns are monitored outside these hours as well.</p>
+      </section>
+
+      <!-- 12 -->
+      <section id="state" class="pp-section">
+        <div class="pp-section__number">12</div>
+        <h2 class="pp-section__title">State-Specific Disclosures</h2>
+
+        <h3 class="pp-subsection">12.1 California (Shine the Light Law)</h3>
+        <p>California residents may request information about disclosure of personal information to third parties for direct marketing purposes. We do not share personal information with third parties for their direct marketing purposes. California minors under 18 cannot use the Platform — contact us immediately for account deletion if applicable.</p>
+
+        <h3 class="pp-subsection">12.2 Nevada Residents</h3>
+        <p>Nevada law allows residents to opt-out of the sale of certain covered information. We do not sell covered information as defined by Nevada law. Contact <a class="pp-link" href="mailto:info@tarbuuz.ai">info&#64;tarbuuz.ai</a> with any questions.</p>
+
+        <h3 class="pp-subsection">12.3 Colorado, Connecticut, Utah &amp; Virginia Residents</h3>
+        <p>Residents of these states have rights to access personal data, delete personal data, correct inaccurate data, opt-out of targeted advertising, and opt-out of sale of personal data. We do not sell personal data. Contact <a class="pp-link" href="mailto:info@tarbuuz.ai">info&#64;tarbuuz.ai</a> to exercise these rights.</p>
+      </section>
+
+      <!-- 13 -->
+      <section id="additional" class="pp-section">
+        <div class="pp-section__number">13</div>
+        <h2 class="pp-section__title">Additional Information</h2>
+
+        <h3 class="pp-subsection">13.1 Automated Decision-Making</h3>
+        <p>We use automated AI systems including Smart Menu, Agentic Chef, and Intelligent Bidding for menu drafting and validation, ranking Host bids, pricing suggestions, dietary compliance checking, fraud detection, and risk assessment. These systems may affect which opportunities you see, influence menu suggestions, or result in account restrictions. You may request human review of automated decisions that significantly affect you by contacting <a class="pp-link" href="mailto:info@tarbuuz.ai">info&#64;tarbuuz.ai</a>.</p>
+
+        <h3 class="pp-subsection">13.2 Data Accuracy</h3>
+        <p>We rely on you to provide accurate information. Please keep your profile, contact details, dietary and allergy information, and business credentials current. Inaccurate information may affect match quality, service delivery, safety and compliance, payment processing, and account verification.</p>
+
+        <h3 class="pp-subsection">13.3 Third-Party Links</h3>
+        <p>The Platform may contain links to third-party websites, services, or applications — including external websites, social media platforms, payment processor sites, and integrated partner services. This Privacy Policy does not apply to those third parties, and we are not responsible for their privacy practices, content, or security. Always review the privacy policy of any third-party service you access.</p>
+
+        <h3 class="pp-subsection">13.4 Social Features</h3>
+        <p>If you use social features such as sharing content or inviting friends, information you share may become public or semi-public, may be visible to friends or followers, and may be indexed by search engines. We cannot control how others use shared information. Think carefully before sharing personal information publicly on the Platform.</p>
+
+        <h3 class="pp-subsection">13.5 Job Applicants</h3>
+        <p>If you apply for a role with Tarbuuz.ai, we collect resume, application, and interview information used solely for recruitment purposes. We retain application materials per legal requirements. Unsuccessful applicants may opt into our talent pool. Contact <a class="pp-link" href="mailto:info@tarbuuz.ai">info&#64;tarbuuz.ai</a> for applicant privacy questions.</p>
+      </section>
+
+      <!-- Acknowledgment -->
+      <div class="pp-acceptance">
+        <div class="pp-acceptance__icon" aria-hidden="true">✦</div>
+        <h2 class="pp-acceptance__title">Acknowledgment &amp; Consent</h2>
+        <p>By using the Platform, you acknowledge that you have read and understood this Privacy Policy, consent to the collection, use, and sharing of your information as described, understand your privacy rights and how to exercise them, agree to the use of cookies and tracking technologies, consent to international data transfers if applicable, and understand how to contact us with privacy questions.</p>
+        <p>If you do not agree to this Privacy Policy, you must not use the Platform.</p>
+        <p class="pp-acceptance__version">Version 1.0 &nbsp;·&nbsp; Effective May 1, 2026 &nbsp;·&nbsp; © 2026 Tarbuuz.ai LLC. All Rights Reserved.</p>
+      </div>
+
+    </main>
+  </div>
+</div>
+<app-footer />

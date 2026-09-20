@@ -1,0 +1,162 @@
+// Foodie Events dashboard — same ink/amber/indigo system as Buuz and
+// Kitchen Lab. Colors hardcoded, not CSS custom properties in a local
+// :root block — Angular scopes :root inside component-scoped styles in a
+// way that silently breaks every var() reference (confirmed directly in
+// this project).
+//
+// Nav styling now comes from the shared Header component, not this file —
+// removed the page's own duplicate .nav/.nav-logo rules once <app-header>
+// replaced the inline nav.
+
+.dashboard-body { background: #0F1117; min-height: 100vh; padding: 2rem; }
+.dashboard-container { max-width: 1400px; margin: 0 auto; }
+
+// ── Header ──
+.dashboard-header {
+  background: #151822;
+  border: 1.5px solid rgba(255, 255, 255, .08);
+  border-radius: 20px;
+  margin-bottom: 1.6rem;
+  overflow: hidden;
+}
+.header-gradient-bar { height: 4px; background: linear-gradient(90deg, #D4A94A, #B8862E); }
+.header-content { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; padding: 1.4rem 1.8rem; }
+
+.user-profile { display: flex; gap: .9rem; align-items: center; }
+.user-avatar {
+  position: relative;
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #D4A94A, #B8862E);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 14px -4px rgba(212, 169, 74, .5);
+  flex-shrink: 0;
+}
+.avatar-initials { font-family: 'Cormorant Garamond', serif; font-weight: 800; font-size: 1.1rem; color: #0F1117; letter-spacing: .5px; }
+.verified-dot {
+  position: absolute; bottom: 1px; right: 1px;
+  width: 13px; height: 13px;
+  background: #4A9B6E;
+  border-radius: 50%;
+  border: 2px solid #151822;
+}
+.user-info { display: flex; flex-direction: column; gap: .1rem; }
+.user-name { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 800; color: #fff; line-height: 1.2; }
+.user-email { font-size: .78rem; color: #8B8478; font-weight: 500; }
+
+.quick-stats { display: flex; align-items: stretch; gap: .65rem; flex-shrink: 0; }
+.stat-item {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: .7rem 1.3rem; gap: .1rem;
+  background: #1C1F2A;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, .08);
+  transition: border-color .2s, transform .2s;
+}
+.stat-item:hover { transform: translateY(-2px); border-color: rgba(212, 169, 74, .3); }
+.stat-value { font-family: 'Cormorant Garamond', serif; font-size: 1.7rem; font-weight: 700; line-height: 1; color: #D4A94A; }
+.stat-label { font-size: .63rem; color: #8B8478; text-transform: uppercase; letter-spacing: .8px; font-weight: 600; white-space: nowrap; }
+
+@media (max-width: 768px) {
+  .header-content { flex-direction: column; align-items: flex-start; padding: 1.2rem; }
+  .quick-stats { width: 100%; }
+  .stat-item {
+    flex: 1;
+    // flex:1 alone doesn't let a flex child shrink below its content's
+    // natural width — flex items default to min-width:auto, not 0. With
+    // .stat-label forced to one line (white-space:nowrap), "TOTAL EVENTS"
+    // refused to compress, so the third stat card was pushed off-screen
+    // at narrow viewports even though flex:1 was set. min-width:0
+    // is what actually lets the shrink happen; allowing the label to wrap
+    // (rather than fighting to stay on one line) is what makes that
+    // shrink land somewhere legible instead of just clipping the text.
+    min-width: 0;
+    padding: .6rem .5rem;
+  }
+  .stat-label { white-space: normal; line-height: 1.25; }
+}
+
+// ── Controls ──
+.main-stage { position: relative; }
+.stage-controls { display: flex; gap: 1.5rem; margin-bottom: 1.8rem; flex-wrap: wrap; align-items: center; }
+.search-box { position: relative; flex: 1; min-width: 280px; }
+.search-icon { position: absolute; left: 1.2rem; top: 50%; transform: translateY(-50%); font-size: 1.05rem; opacity: .5; }
+.search-input {
+  width: 100%;
+  padding: .85rem 1.2rem .85rem 3rem;
+  border: 1.5px solid rgba(255, 255, 255, .12);
+  border-radius: 999px;
+  font-size: .92rem;
+  font-family: 'Inter', sans-serif;
+  background: #1C1F2A;
+  color: #fff;
+  transition: border-color .2s;
+}
+.search-input::placeholder { color: #8B8478; }
+.search-input:focus { outline: none; border-color: #D4A94A; }
+
+.filter-tabs { display: flex; gap: .6rem; flex-wrap: wrap; align-items: center; }
+.filter-tab {
+  padding: .65rem 1.2rem;
+  border: 1.5px solid rgba(255, 255, 255, .14);
+  border-radius: 999px;
+  background: #1C1F2A;
+  color: #A39D8F;
+  font-family: 'Inter', sans-serif;
+  font-size: .85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s;
+  white-space: nowrap;
+}
+.filter-tab:hover { border-color: rgba(212, 169, 74, .35); color: #fff; }
+.filter-tab.active { background: linear-gradient(135deg, #D4A94A, #B8862E); color: #0F1117; border-color: transparent; }
+
+.create-event-btn {
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .68rem 1.4rem;
+  background: linear-gradient(135deg, #D4A94A, #B8862E);
+  color: #0F1117;
+  border: none;
+  border-radius: 999px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: 0 8px 22px -8px rgba(212, 169, 74, .5);
+  transition: transform .2s;
+}
+.create-event-btn:hover { transform: translateY(-2px); }
+@media (max-width: 600px) { .create-event-btn { width: 100%; justify-content: center; } }
+
+// ── Grid, loading, empty ──
+.event-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.6rem;
+}
+@media (max-width: 600px) { .event-grid { grid-template-columns: 1fr; gap: 1rem; } }
+
+.loading-state {
+  display: flex; flex-direction: column; align-items: center; gap: 1rem;
+  padding: 4rem 0; color: #8B8478;
+}
+.spinner {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, .1);
+  border-top-color: #D4A94A;
+  animation: fe-spin .8s linear infinite;
+}
+@keyframes fe-spin { to { transform: rotate(360deg); } }
+
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem 1rem;
+  color: #8B8478;
+}
+.empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+.empty-title { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; color: #fff; margin-bottom: .4rem; }
+.empty-text { font-size: .9rem; }

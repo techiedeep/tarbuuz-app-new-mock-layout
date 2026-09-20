@@ -1,0 +1,385 @@
+@if (modalService.isOpen()) {
+<div class="wizard-overlay" (click)="closeWizard()">
+<div class="wizard-shell" (click)="$event.stopPropagation()">
+
+<button type="button" class="wizard-close" (click)="closeWizard()" aria-label="Close">✕</button>
+
+<div class="page-head">
+  <div class="page-kicker">Create Your Event</div>
+  <h1 class="page-title">Let's build something great together</h1>
+</div>
+
+<div class="stepper-wrap">
+  <div class="stepper">
+    @for (label of stepLabels; track label; let i = $index) {
+      <div
+        class="step-item"
+        [class.done]="i < currentStep()"
+        [class.current]="i === currentStep()"
+        [class.clickable]="isStepClickable(i)"
+        (click)="isStepClickable(i) && goToStep(i)"
+      >
+        @if (i > 0) { <div class="step-connector" [class.filled]="i <= currentStep()"></div> }
+        <div class="step-circle">{{ i < currentStep() ? '✓' : i + 1 }}</div>
+        <div class="step-name">{{ label }}</div>
+      </div>
+    }
+  </div>
+</div>
+
+<div class="wizard-card">
+  <div class="step-panel">
+
+    <!-- ═══ STEP 0 — EVENT TYPE ═══ -->
+    @if (currentStep() === 0) {
+      <h2 class="step-heading">What are you celebrating?</h2>
+      <p class="step-sub">Pick the closest match — we'll tailor menu suggestions and vendor matches to fit.</p>
+      <div class="type-grid">
+        @for (t of eventTypes; track t.key) {
+          <button
+            type="button" class="type-card" [class.selected]="eventType() === t.key"
+            (click)="eventType.set(t.key); markTouched('eventType')"
+          >
+            <span class="type-icon">{{ t.icon }}</span>
+            <span class="type-name">{{ t.name }}</span>
+          </button>
+        }
+      </div>
+      @if (fieldError('eventType')) { <p class="field-error-msg">{{ fieldError('eventType') }}</p> }
+      @if (eventType() === 'other') {
+        <div class="field-group" style="margin-top:1.3rem">
+          <label class="field-label">Tell us more</label>
+          <input
+            type="text" class="field-input" [class.field-error]="fieldError('eventTypeOther')"
+            placeholder="e.g. Retirement party, Housewarming…"
+            [ngModel]="eventTypeOther()" (ngModelChange)="eventTypeOther.set($event)"
+            (blur)="markTouched('eventTypeOther')"
+          >
+          @if (fieldError('eventTypeOther')) { <p class="field-error-msg">{{ fieldError('eventTypeOther') }}</p> }
+        </div>
+      }
+      <div class="wizard-nav">
+        <button type="button" class="btn-ghost" disabled>← Back</button>
+        <button type="button" class="btn-primary" (click)="next()">Continue →</button>
+      </div>
+      @if (!currentStepValid()) { <p class="step-required-hint">Fill in the required fields above to continue</p> }
+    }
+
+    <!-- ═══ STEP 1 — DETAILS ═══ -->
+    @if (currentStep() === 1) {
+      <h2 class="step-heading">When is it happening?</h2>
+      <p class="step-sub">We'll match your timezone automatically — adjust it if you're planning from somewhere else.</p>
+
+      <div class="field-group">
+        <label class="field-label">Event Name</label>
+        <input
+          type="text" class="field-input" [class.field-error]="fieldError('eventName')"
+          placeholder="e.g. Priya's Wedding Reception" [ngModel]="eventName()" (ngModelChange)="eventName.set($event)"
+          (blur)="markTouched('eventName')"
+        >
+        @if (fieldError('eventName')) { <p class="field-error-msg">{{ fieldError('eventName') }}</p> }
+      </div>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Date</label>
+          <input
+            type="date" class="field-input" [class.field-error]="fieldError('date')"
+            [ngModel]="date()" (ngModelChange)="date.set($event)" (blur)="markTouched('date')"
+          >
+          @if (fieldError('date')) { <p class="field-error-msg">{{ fieldError('date') }}</p> }
+        </div>
+        <div class="field-group">
+          <label class="field-label">Time</label>
+          <div class="time-picker" [class.field-error]="fieldError('time')">
+            <select class="time-select" [ngModel]="timeHour()" (ngModelChange)="setTimeHour($event)" (blur)="markTouched('time')">
+              <option value="" disabled selected hidden>Hour</option>
+              @for (h of hourOptions; track h) { <option [value]="h">{{ h }}</option> }
+            </select>
+            <span class="time-colon">:</span>
+            <select class="time-select" [ngModel]="timeMinute()" (ngModelChange)="setTimeMinute($event)" (blur)="markTouched('time')">
+              <option value="" disabled selected hidden>Min</option>
+              @for (m of minuteOptions; track m) { <option [value]="m">{{ m }}</option> }
+            </select>
+            <div class="ampm-toggle">
+              <button type="button" class="ampm-btn" [class.active]="timePeriod() === 'AM'" (click)="setTimePeriod('AM')">AM</button>
+              <button type="button" class="ampm-btn" [class.active]="timePeriod() === 'PM'" (click)="setTimePeriod('PM')">PM</button>
+            </div>
+          </div>
+          @if (fieldError('time')) { <p class="field-error-msg">{{ fieldError('time') }}</p> }
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Timezone</label>
+          <select class="field-select" [ngModel]="timezone()" (ngModelChange)="timezone.set($event)" (blur)="markTouched('timezone')">
+            @for (tz of timezones; track tz) { <option [value]="tz">{{ tz.replace('_', ' ') }}</option> }
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Duration</label>
+          <select class="field-select" [ngModel]="duration()" (ngModelChange)="duration.set($event)" (blur)="markTouched('duration')">
+            @for (h of ['1','2','3','4','5','6']; track h) { <option [value]="h">{{ h }} hour{{ h === '1' ? '' : 's' }}</option> }
+            <option value="7">7+ hours</option>
+          </select>
+        </div>
+      </div>
+
+      @if (showDeliveryBanner()) {
+        <div class="delivery-banner show">
+          <div class="delivery-banner-head">{{ deliveryBannerHeadline() }}</div>
+          <p>Our full menu-matching and bidding process usually needs more lead time than this. For events this soon, we recommend ordering directly through a local delivery partner instead:</p>
+          <div class="delivery-apps">
+            @for (app of deliveryApps; track app) { <span class="delivery-app-chip">{{ app }}</span> }
+          </div>
+          <p class="delivery-continue">Prefer to try anyway? <a (click)="dismissDeliveryBanner()">Continue with Tarbuuz's full planning flow →</a></p>
+        </div>
+      }
+
+      <div class="wizard-nav">
+        <button type="button" class="btn-ghost" (click)="back()">← Back</button>
+        <button type="button" class="btn-primary" (click)="next()">Continue →</button>
+      </div>
+      @if (!currentStepValid()) { <p class="step-required-hint">Fill in the required fields above to continue</p> }
+    }
+
+    <!-- ═══ STEP 2 — GUESTS & CUISINE ═══ -->
+    @if (currentStep() === 2) {
+      <h2 class="step-heading">Who's coming, and what will they eat?</h2>
+      <p class="step-sub">Search any regional cuisine, or start from a popular pick — select as many as you like.</p>
+
+      <div class="field-group">
+        <label class="field-label">Guest Count</label>
+        <input
+          type="number" class="field-input" [class.field-error]="fieldError('guestCount')"
+          min="1" placeholder="e.g. 60" [ngModel]="guestCount()" (ngModelChange)="guestCount.set($event)"
+          (blur)="markTouched('guestCount')"
+        >
+        @if (fieldError('guestCount')) { <p class="field-error-msg">{{ fieldError('guestCount') }}</p> }
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Cuisine — search or browse popular</label>
+        <div class="search-wrap">
+          <input
+            type="text" class="field-input" placeholder="Search a region or cuisine — e.g. 'Sichuan', 'Peruvian'…"
+            autocomplete="off" [formControl]="cuisineSearchControl"
+          >
+          @if (cuisineDropdownOpen()) {
+            <div class="search-dropdown open">
+              @if (groupedCuisineResults().length === 0) {
+                <div class="search-item">No matches</div>
+              }
+              @for (group of groupedCuisineResults(); track group[0]) {
+                <div class="search-group-label">{{ group[0] }}</div>
+                @for (c of group[1]; track c.key) {
+                  <div class="search-item" (click)="addCuisineFromSearch(c.key)">
+                    {{ cuisines().has(c.key) ? '✓ ' : '' }}{{ c.name }}
+                  </div>
+                }
+              }
+            </div>
+          }
+        </div>
+        <div class="chip-row">
+          @for (c of popularCuisines; track c.key) {
+            <button type="button" class="chip" [class.selected]="cuisines().has(c.key)" (click)="toggleCuisine(c.key)">{{ c.name }}</button>
+          }
+        </div>
+        <div class="selected-summary">
+          @if (selectedCuisineNames().length === 0) {
+            No cuisines selected yet
+          } @else {
+            <b>{{ selectedCuisineNames().length }}</b> selected: {{ selectedCuisineNames().join(', ') }}
+          }
+        </div>
+        @if (fieldError('cuisines')) { <p class="field-error-msg">{{ fieldError('cuisines') }}</p> }
+      </div>
+
+      <div class="wizard-nav">
+        <button type="button" class="btn-ghost" (click)="back()">← Back</button>
+        <button type="button" class="btn-primary" (click)="next()">Continue →</button>
+      </div>
+      @if (!currentStepValid()) { <p class="step-required-hint">Fill in the required fields above to continue</p> }
+    }
+
+    <!-- ═══ STEP 3 — DIETARY & AMBIANCE ═══ -->
+    @if (currentStep() === 3) {
+      <h2 class="step-heading">Any dietary needs? What's the vibe?</h2>
+      <p class="step-sub">Select everything that applies — this shapes both the menu and the mood.</p>
+
+      <div class="field-group">
+        <label class="field-label">Dietary Needs <span class="opt">(optional)</span></label>
+        <div class="chip-row">
+          @for (d of dietaryOptions; track d.key) {
+            <button type="button" class="chip" [class.selected]="dietary().has(d.key)" (click)="toggleDietary(d.key)">{{ d.name }}</button>
+          }
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Ambiance</label>
+        <div class="chip-row">
+          @for (a of ambianceOptions; track a.key) {
+            <button type="button" class="chip" [class.selected]="ambiance() === a.key" (click)="selectAmbiance(a.key)">{{ a.name }}</button>
+          }
+        </div>
+        @if (fieldError('ambiance')) { <p class="field-error-msg">{{ fieldError('ambiance') }}</p> }
+      </div>
+
+      <div class="wizard-nav">
+        <button type="button" class="btn-ghost" (click)="back()">← Back</button>
+        <button type="button" class="btn-primary" (click)="next()">Continue →</button>
+      </div>
+      @if (!currentStepValid()) { <p class="step-required-hint">Fill in the required fields above to continue</p> }
+    }
+
+    <!-- ═══ STEP 4 — BUDGET & LOCATION ═══ -->
+    @if (currentStep() === 4) {
+      <h2 class="step-heading">Let's talk numbers and place</h2>
+      <p class="step-sub">A rough budget and location are enough to get started — you can refine details later.</p>
+
+      <div class="field-group">
+        <label class="field-label">Budget Per Person</label>
+        <div class="budget-input-wrap">
+          <span class="budget-currency">$</span>
+          <input
+            type="number" class="field-input budget-input" [class.field-error]="fieldError('budget')"
+            min="1" step="1" placeholder="e.g. 85"
+            [ngModel]="budget()" (ngModelChange)="budget.set($event)" (blur)="markTouched('budget')"
+          >
+        </div>
+        @if (fieldError('budget')) { <p class="field-error-msg">{{ fieldError('budget') }}</p> }
+      </div>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">City</label>
+          <input
+            type="text" class="field-input" [class.field-error]="fieldError('city')"
+            placeholder="e.g. Austin, TX" [ngModel]="city()" (ngModelChange)="city.set($event)"
+            (blur)="markTouched('city')"
+          >
+          @if (fieldError('city')) { <p class="field-error-msg">{{ fieldError('city') }}</p> }
+        </div>
+        <div class="field-group">
+          <label class="field-label">Area / Neighborhood <span class="opt">(optional)</span></label>
+          <input type="text" class="field-input" placeholder="e.g. Downtown" [ngModel]="area()" (ngModelChange)="area.set($event)">
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Anything else we should know? <span class="opt">(optional)</span></label>
+        <textarea
+          class="field-textarea" placeholder="Special requests — allergies to flag, a must-have dish, accessibility needs, anything at all…"
+          [ngModel]="requests()" (ngModelChange)="requests.set($event)"
+        ></textarea>
+      </div>
+
+      <div class="wizard-nav">
+        <button type="button" class="btn-ghost" (click)="back()">← Back</button>
+        <button type="button" class="btn-primary" (click)="next()">Continue →</button>
+      </div>
+      @if (!currentStepValid()) { <p class="step-required-hint">Fill in the required fields above to continue</p> }
+    }
+
+    <!-- ═══ STEP 5 — REVIEW ═══ -->
+    @if (currentStep() === 5) {
+      <h2 class="step-heading">Review everything before you submit</h2>
+      <p class="step-sub">Click "Edit" on any section to jump back and change it.</p>
+
+      <div class="review-grid">
+      <div class="review-group">
+        <div class="review-group-head"><span class="review-group-title">Event Type</span><span class="review-edit" (click)="goToStep(0)">Edit</span></div>
+        <div class="review-line">
+          @if (selectedEventTypeName()) { {{ selectedEventTypeName() }} } @else { <span class="review-empty">Not set</span> }
+        </div>
+      </div>
+
+      <div class="review-group">
+        <div class="review-group-head"><span class="review-group-title">Details</span><span class="review-edit" (click)="goToStep(1)">Edit</span></div>
+        <div class="review-line"><span class="lbl">Name:</span> {{ eventName() || '—' }}</div>
+        <div class="review-line"><span class="lbl">When:</span> {{ date() || '—' }} at {{ time() || '—' }} ({{ timezone() }})</div>
+        <div class="review-line"><span class="lbl">Duration:</span> {{ durationLabel() }}</div>
+      </div>
+
+      <div class="review-group">
+        <div class="review-group-head"><span class="review-group-title">Guests &amp; Cuisine</span><span class="review-edit" (click)="goToStep(2)">Edit</span></div>
+        <div class="review-line"><span class="lbl">Guests:</span> {{ guestCount() || '—' }}</div>
+        <div class="review-chips">
+          @if (selectedCuisineNames().length === 0) {
+            <span class="review-empty">No cuisines selected</span>
+          } @else {
+            @for (n of selectedCuisineNames(); track n) { <span class="review-chip">{{ n }}</span> }
+          }
+        </div>
+      </div>
+
+      <div class="review-group">
+        <div class="review-group-head"><span class="review-group-title">Dietary &amp; Ambiance</span><span class="review-edit" (click)="goToStep(3)">Edit</span></div>
+        <div class="review-chips">
+          @if (reviewDietaryNames().length === 0) {
+            <span class="review-empty">No dietary needs specified</span>
+          } @else {
+            @for (n of reviewDietaryNames(); track n) { <span class="review-chip">{{ n }}</span> }
+          }
+        </div>
+        <div class="review-line" style="margin-top:.5rem">
+          <span class="lbl">Ambiance:</span>
+          @if (reviewAmbianceName()) { {{ reviewAmbianceName() }} } @else { <span class="review-empty">Not set</span> }
+        </div>
+      </div>
+
+      <div class="review-group review-group--wide">
+        <div class="review-group-head"><span class="review-group-title">Budget &amp; Location</span><span class="review-edit" (click)="goToStep(4)">Edit</span></div>
+        <div class="review-line"><span class="lbl">Budget:</span> {{ budget() ? '$' + budget() + ' per person' : '—' }}</div>
+        <div class="review-line"><span class="lbl">Location:</span> {{ city() || '—' }}{{ area() ? ', ' + area() : '' }}</div>
+        <div class="review-line">
+          <span class="lbl">Requests:</span>
+          @if (requests()) { {{ requests() }} } @else { <span class="review-empty">None</span> }
+        </div>
+      </div>
+      </div>
+
+      <div class="wizard-nav">
+        <button type="button" class="btn-ghost" (click)="back()">← Back</button>
+        <button type="button" class="btn-primary" (click)="submitEvent()">Submit Event ✨</button>
+      </div>
+    }
+
+  </div>
+</div>
+
+<!-- ═══ PROCESSING POPUP (nested inside the wizard shell) ═══ -->
+@if (isSubmitting()) {
+  <div class="modal-overlay show" (click)="closeSubmitModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <button type="button" class="modal-close" (click)="closeSubmitModal()" aria-label="Close">✕</button>
+      <div class="modal-icon-wrap"><div class="modal-icon">✨</div></div>
+      <h2 class="modal-title">You're all set!</h2>
+      <p class="modal-sub">We've got the details for <b>{{ eventName() || 'your event' }}</b>. Smart Menu is generating your menu right now.</p>
+      <div class="status-line"><span class="status-dot"></span><span class="status-text">{{ currentStatusMessage() }}</span></div>
+      <div class="mini-stepper">
+        @for (step of miniSteps(); track step.label; let i = $index; let last = $last) {
+          <div class="mini-step" [class]="step.state">
+            @if (i > 0) { <div class="mini-connector" [class.filled]="i <= 1"></div> }
+            <div class="mini-circle">{{ step.state === 'done' ? '✓' : i + 1 }}</div>
+            <div class="mini-label">{{ step.label }}</div>
+          </div>
+        }
+      </div>
+      <p class="modal-eta">Usually ready in about <b>5 minutes</b> — we'll email you the moment it's done.</p>
+      <div class="modal-ctas">
+        <button class="btn-primary" type="button" style="width:100%" (click)="goToHome()">Go to Home →</button>
+        <button class="btn-ghost-full" type="button" (click)="goToDashboard()">Go to Dashboard</button>
+      </div>
+      <p class="modal-footer-note">Safe to close this and come back anytime — nothing will be lost, and your menu will be waiting when it's ready.</p>
+    </div>
+  </div>
+}
+
+</div>
+</div>
+}
+

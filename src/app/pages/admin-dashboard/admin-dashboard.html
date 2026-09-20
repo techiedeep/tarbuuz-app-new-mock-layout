@@ -1,0 +1,239 @@
+<app-header />
+
+<div class="admin-page">
+  <main class="admin-main">
+
+    <header class="topbar">
+      <div class="topbar-left">
+        <span class="admin-tag">Admin</span>
+        <h1 class="page-title">Dashboard Overview</h1>
+      </div>
+      <div class="topbar-right">
+        <div class="notif-wrapper">
+          <button class="icon-btn" type="button" aria-label="Notifications" [attr.aria-expanded]="notifOpen()" (click)="toggleNotifications()">
+            🔔<span class="notif-dot" aria-hidden="true"></span>
+          </button>
+          @if (notifOpen()) {
+            <div class="notif-dropdown" role="dialog" aria-label="Notifications">
+              <div class="notif-header"><strong>Notifications</strong><button class="notif-close" type="button" (click)="closeNotifications()">✕</button></div>
+              <div>
+                @for (a of notifPreview; track a.id) {
+                  <div class="notif-item">
+                    <span class="notif-icon" [style.background]="a.color + '20'" [style.color]="a.color">{{ a.icon }}</span>
+                    <div class="notif-body"><p>{{ a.message }}</p><span>{{ a.timestamp }}</span></div>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </header>
+
+    <!-- OVERVIEW -->
+    <section class="section-content">
+      <div class="stats-grid">
+        <div class="stat-card stat-users">
+          <div class="stat-icon-wrap"><span class="stat-icon">👥</span></div>
+          <div class="stat-body">
+            <p class="stat-label">Total Users</p><h2 class="stat-value">{{ stats.totalUsers | number }}</h2>
+            <p class="stat-sub"><span class="trend-up">▲ {{ stats.growthRate }}%</span> this month</p>
+          </div>
+        </div>
+
+        <div class="stat-card stat-events">
+          <div class="stat-icon-wrap"><span class="stat-icon">📅</span></div>
+          <div class="stat-body">
+            <p class="stat-label">Total Events</p><h2 class="stat-value">{{ stats.totalEvents | number }}</h2>
+            <p class="stat-sub"><span class="trend-up">▲ 14.2%</span> vs last month</p>
+          </div>
+        </div>
+
+        <div class="stat-card stat-bids">
+          <div class="stat-icon-wrap"><span class="stat-icon">🏷️</span></div>
+          <div class="stat-body">
+            <p class="stat-label">Total Bids</p><h2 class="stat-value">{{ stats.totalBids | number }}</h2>
+            <p class="stat-sub"><span class="trend-up">▲ 31.7%</span> vs last month</p>
+          </div>
+        </div>
+
+        <div class="stat-card stat-accepted-bids">
+          <div class="stat-icon-wrap"><span class="stat-icon">✅</span></div>
+          <div class="stat-body">
+            <p class="stat-label">Accepted Bids</p><h2 class="stat-value">{{ stats.totalAcceptedBids | number }}</h2>
+            <p class="stat-sub"><span class="trend-up">▲</span> vs last month</p>
+          </div>
+        </div>
+
+        <div class="stat-card stat-menu-validations">
+          <div class="stat-icon-wrap"><span class="stat-icon">📋</span></div>
+          <div class="stat-body">
+            <p class="stat-label">Menu Validations</p><h2 class="stat-value">{{ stats.totalMenuValidations | number }}</h2>
+            <p class="stat-sub"><span class="trend-up">▲</span> vs last month</p>
+          </div>
+        </div>
+
+        <div class="stat-card stat-subs">
+          <div class="stat-icon-wrap"><span class="stat-icon">💎</span></div>
+          <div class="stat-body">
+            <p class="stat-label">Paid Subscriptions</p><h2 class="stat-value">{{ stats.totalSubscriptions | number }}</h2>
+            <p class="stat-sub"><span class="trend-up">▲ 8.9%</span> new this month</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="charts-row">
+        <!-- Was its own full-width "secondary stats" row below the main
+             stat grid; folded into this row as a vertical stack instead,
+             using the horizontal space freed up by the other cards'
+             tighter padding, so it no longer needs a row of its own. -->
+        <div class="chart-card chart-card--quick-stats">
+          <div class="chart-header"><h3>Quick Stats</h3></div>
+          <div class="quick-stats-list">
+            <div class="sec-stat"><span class="sec-icon">🟢</span><div><p class="sec-label">Active Users</p><p class="sec-value">{{ stats.activeUsers | number }}</p></div></div>
+            <div class="sec-stat"><span class="sec-icon">💰</span><div><p class="sec-label">Revenue (Month)</p><p class="sec-value">{{ stats.revenueThisMonth | currency:'USD':'symbol':'1.0-0' }}</p></div></div>
+            <div class="sec-stat"><span class="sec-icon">⏳</span><div><p class="sec-label">Pending Reviews</p><p class="sec-value">{{ stats.pendingReviews }}</p></div></div>
+            <div class="sec-stat"><span class="sec-icon">📈</span><div><p class="sec-label">Growth Rate</p><p class="sec-value">{{ stats.growthRate }}%</p></div></div>
+          </div>
+        </div>
+
+        <div class="chart-card chart-card--bars">
+          <div class="chart-header"><h3>Weekly Activity</h3><span class="chart-badge">Last 7 days</span></div>
+          <div class="bar-chart">
+            @for (pt of weeklyActivity; track pt.label) {
+              <div class="bar-group">
+                <div class="bar-track"><div class="bar-fill" [style.height.%]="pt.percentage" [attr.title]="pt.label + ': ' + pt.value + ' events'"></div></div>
+                <span class="bar-label">{{ pt.label }}</span>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="chart-card chart-card--donut">
+          <div class="chart-header"><h3>User Distribution</h3><span class="chart-badge">By role</span></div>
+          <div class="donut-wrapper">
+            <svg viewBox="0 0 120 120" class="donut-svg">
+              <circle class="donut-ring" cx="60" cy="60" r="40" />
+              @for (seg of donutSegments; track $index) {
+                <circle class="donut-segment" cx="60" cy="60" r="40" pathLength="100"
+                  [attr.stroke]="seg.color" [attr.stroke-dasharray]="seg.dasharray" [attr.stroke-dashoffset]="seg.dashoffset" />
+              }
+              <text x="60" y="57" text-anchor="middle" class="donut-center-text">{{ totalProfiles | number }}</text>
+              <text x="60" y="70" text-anchor="middle" class="donut-center-sub">profiles</text>
+            </svg>
+            <div class="donut-legend">
+              @for (d of userDistribution; track d.label) {
+                <div class="legend-item">
+                  <span class="legend-dot" [style.background]="d.color"></span>
+                  <span class="legend-label">{{ d.label }}</span>
+                  <span class="legend-count">{{ d.value | number }}</span>
+                  <span class="legend-pct">{{ d.percentage }}%</span>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Subscription Tiers, Recent Activity and Quick Actions used to
+           split across two independent grids (Tiers ending the charts
+           row, Activity/Actions in their own row below) - at mid
+           viewport widths the charts row could only fit 3 of its 4
+           cards, leaving Tiers stranded alone with a wide empty gap
+           next to it. One grid with named areas now lays out all three
+           together and reflows as a unit: wide screens show them
+           side by side, medium screens stack Quick Actions under
+           Subscription Tiers in a narrow left column with Recent
+           Activity filling the freed space on the right, and narrow
+           screens stack all three. -->
+      <div class="insights-row">
+        <div class="chart-card insights-row__tiers">
+          <div class="chart-header"><h3>Subscription Tiers</h3><span class="chart-badge">Active plans</span></div>
+          <div class="tier-list">
+            @for (t of subscriptionTiers; track t.label) {
+              <div class="tier-row">
+                <div class="tier-info"><span class="tier-dot" [class]="'tier-' + t.label.toLowerCase()"></span><span>{{ t.label }}</span></div>
+                <div class="tier-bar-track"><div class="tier-bar-fill" [class]="'tier-bar-' + t.label.toLowerCase()" [style.width.%]="t.percentage"></div></div>
+                <span class="tier-count">{{ t.value | number }}</span>
+              </div>
+            }
+          </div>
+          <div class="revenue-highlight">
+            <p class="rev-label">Monthly Revenue</p>
+            <p class="rev-value">{{ stats.revenueThisMonth | currency:'USD':'symbol':'1.0-0' }}</p>
+          </div>
+        </div>
+
+        <div class="activity-card insights-row__activity">
+          <div class="card-header"><h3>Recent Activity</h3></div>
+          <div class="activity-feed">
+            @for (a of recentActivity; track a.id) {
+              <div class="activity-item">
+                <span class="activity-icon" [style.background]="a.color + '20'" [style.color]="a.color">{{ a.icon }}</span>
+                <div class="activity-body"><p class="activity-msg">{{ a.message }}</p><p class="activity-meta">{{ a.user }} · {{ a.timestamp }}</p></div>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="quick-actions-card insights-row__actions">
+          <div class="card-header"><h3>Quick Actions</h3></div>
+          <div class="action-grid action-grid--single">
+            <button class="action-btn" type="button" (click)="openEmailModal()"><span class="action-icon">✉️</span><span>Send Email</span></button>
+          </div>
+          <div class="platform-health">
+            <p class="health-title">Platform Health</p>
+            <div class="health-items">
+              <div class="health-row"><span>API Uptime</span><span class="health-val good">{{ platformHealth.apiUptime }}</span></div>
+              <div class="health-row"><span>Avg Response</span><span class="health-val good">{{ platformHealth.avgResponse }}</span></div>
+              <div class="health-row"><span>Error Rate</span><span class="health-val good">{{ platformHealth.errorRate }}</span></div>
+              <div class="health-row"><span>Pending Review</span><span class="health-val warn">{{ stats.pendingReviews }}</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<app-footer />
+
+<!-- EMAIL MODAL -->
+@if (emailModalOpen()) {
+  <div class="modal-overlay" (click)="closeEmailModal()">
+    <div class="modal-panel email-modal" (click)="$event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="emailModalTitle">
+      <div class="modal-header"><h2 id="emailModalTitle">✉️ Compose Email</h2><button class="modal-close" type="button" (click)="closeEmailModal()">✕</button></div>
+
+      @if (emailSentSuccess()) {
+        <div class="email-success"><span>✅</span><p>Email sent successfully!</p></div>
+      } @else {
+        <form class="email-form" [formGroup]="emailForm" (ngSubmit)="submitEmail()">
+          <div class="form-group">
+            <label for="email-to">To <span class="required">*</span></label>
+            <input id="email-to" type="email" placeholder="recipient&#64;example.com" class="form-control" [class.is-error]="fieldError('to')" maxlength="255" autocomplete="email" formControlName="to">
+            @if (fieldError('to')) { <p class="field-error">{{ fieldError('to') }}</p> }
+          </div>
+          <div class="form-group">
+            <label for="email-subject">Subject <span class="required">*</span></label>
+            <input id="email-subject" type="text" placeholder="Email subject…" class="form-control" [class.is-error]="fieldError('subject')" maxlength="150" autocomplete="off" formControlName="subject">
+            @if (fieldError('subject')) { <p class="field-error">{{ fieldError('subject') }}</p> }
+          </div>
+          <div class="form-group">
+            <label for="email-body">Message <span class="required">*</span></label>
+            <textarea id="email-body" placeholder="Write your message here…" class="form-control textarea" [class.is-error]="fieldError('body')" maxlength="5000" rows="6" formControlName="body"></textarea>
+            @if (fieldError('body')) { <p class="field-error">{{ fieldError('body') }}</p> }
+            <p class="char-count">{{ emailForm.controls.body.value.length }} / 5000</p>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn-cancel" (click)="closeEmailModal()">Cancel</button>
+            <button type="submit" class="btn-send" [disabled]="emailSubmitting()">
+              @if (emailSubmitting()) { <span class="spinner"></span> Sending… } @else { ✉️ Send Email }
+            </button>
+          </div>
+        </form>
+      }
+    </div>
+  </div>
+}

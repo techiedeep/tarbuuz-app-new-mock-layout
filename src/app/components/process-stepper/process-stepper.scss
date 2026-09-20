@@ -1,0 +1,127 @@
+// Process stepper — matches the Buuz/Kitchen Lab visual language: ink
+// cards, amber gradient nodes, same circular-stage-badge treatment already
+// established in the Kitchen Lab lifecycle stages and the Buuz format
+// selector. Colors hardcoded, not CSS custom properties in a local :root
+// block — Angular scopes :root inside component-scoped styles in a way
+// that silently breaks every var() reference (confirmed directly in this
+// project).
+
+.stepper-wrap {
+  background: #151822;
+  border: 1.5px solid rgba(255, 255, 255, .08);
+  border-radius: 20px;
+  padding: 1.6rem 1.8rem 1.4rem;
+  margin-bottom: 1.6rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.stepper-wrap::-webkit-scrollbar { display: none; }
+
+.stepper-track {
+  display: flex;
+  align-items: flex-start;
+  min-width: max-content;
+}
+
+.stepper-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 132px;
+  flex-shrink: 0;
+  text-align: center;
+  opacity: 0;
+  animation: stepper-node-in .5s cubic-bezier(.34, 1.2, .64, 1) forwards;
+  animation-delay: calc(var(--stagger) * 90ms);
+}
+
+.stepper-circle {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #1C1F2A;
+  border: 2px solid rgba(212, 169, 74, .4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: border-color .2s, box-shadow .2s;
+  box-shadow: 0 0 0 0 rgba(212, 169, 74, 0);
+}
+.stepper-node:hover .stepper-circle {
+  border-color: #D4A94A;
+  box-shadow: 0 0 0 6px rgba(212, 169, 74, .1);
+}
+
+.stepper-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  background: linear-gradient(135deg, #D4A94A, #B8862E);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stepper-label {
+  margin-top: .6rem;
+  font-size: .72rem;
+  font-weight: 600;
+  color: #A39D8F;
+  line-height: 1.35;
+  padding: 0 .3rem;
+  max-width: 128px;
+}
+
+.stepper-connector {
+  flex: 1;
+  min-width: 36px;
+  height: 2px;
+  background: rgba(255, 255, 255, .08);
+  margin-top: 23px; // vertically centers on the 46px circle
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  animation: stepper-connector-in .4s ease forwards;
+  animation-delay: calc(var(--stagger) * 90ms + 60ms);
+}
+
+// A soft gradient band that continuously sweeps left-to-right along every
+// connector at once — deliberately not tied to a "current stage" (there
+// isn't one here; see the component's own doc comment), just a gentle,
+// ongoing suggestion of motion/process rather than a static divider line.
+.stepper-shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(212, 169, 74, .9), transparent);
+  transform: translateX(-100%);
+  animation: stepper-shimmer-sweep 2.8s ease-in-out infinite;
+  animation-delay: calc(var(--stagger) * 220ms + 1.2s);
+}
+
+@keyframes stepper-node-in {
+  from { opacity: 0; transform: scale(.72) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes stepper-connector-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes stepper-shimmer-sweep {
+  0% { transform: translateX(-100%); }
+  60% { transform: translateX(100%); }
+  100% { transform: translateX(100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stepper-node, .stepper-connector { animation: none; opacity: 1; }
+  .stepper-shimmer { animation: none; opacity: 0; }
+}
+
+@media (max-width: 640px) {
+  .stepper-wrap { padding: 1.3rem 1.2rem 1.1rem; }
+  .stepper-node { width: 108px; }
+  .stepper-label { font-size: .68rem; max-width: 104px; }
+}

@@ -1,0 +1,465 @@
+@if (open) {
+<div class="drawer-backdrop" (click)="close()"></div>
+<aside class="validation-drawer" [class.drawer-open]="open" role="dialog" aria-modal="true" aria-label="Chef Contextual Validation">
+  <div class="validation-drawer__header">
+    <div class="validation-drawer__title-group">
+      <div class="header-logo" aria-hidden="true">✦</div>
+      <div>
+        <h2 class="validation-drawer__title">Agentic Chef</h2>
+        <p class="validation-drawer__subtitle">Contextual menu analysis · 7 specialist agents</p>
+      </div>
+    </div>
+    <button type="button" class="validation-drawer__close" (click)="close()" aria-label="Close Chef Validation panel">✕</button>
+  </div>
+
+  <div class="validation-drawer__body">
+
+    @if (!event) {
+      <div class="empty-state">
+        <div class="empty-icon">🎭</div>
+        <h3>No event selected</h3>
+      </div>
+    }
+
+    @if (event; as ev) {
+
+      <div class="event-strip">
+        <div class="event-strip-name">{{ ev.eventName }}</div>
+        <div class="event-strip-meta">
+          <span>👥 {{ ev.guestCount }} guests</span>
+          <span>💰 {{ ev.budget != null ? '$' + ev.budget.toLocaleString() + ' budget' : 'Budget not set' }}</span>
+          <span>📍 {{ ev.eventLocation }}</span>
+        </div>
+      </div>
+
+      <!-- ═══ IDLE ═══ -->
+      @if (stage() === 'idle') {
+        <section class="idle-state">
+          <div class="idle-logo">🍽️</div>
+          <div class="section-kicker ai">✨ Agentic Chef</div>
+          <h1 class="idle-title">Leveraging Specialist Agents</h1>
+          <p class="idle-body">
+            7 specialist agents review this menu in sequence - alignment, budget, allergen safety,
+            seasonal fit, presentation, nutrition, and a signature dish created just for this event -
+            the way a Michelin-level chef would actually check a menu before it goes out.
+          </p>
+          <div class="agent-pills">
+            @for (agent of agentDefs; track agent.name) {
+              <span class="agent-pill">{{ agent.icon }} {{ agent.name }}</span>
+            }
+          </div>
+          <button type="button" class="btn-cta" (click)="startValidation()">
+            {{ userResponse() === 'accept' || userResponse() === 'reject' ? '✦ Review Agentic Chef\u2019s Recommendation' : '✦ Start Review with Agentic Chef' }}
+          </button>
+          <p class="idle-context">{{ idleContext() }}</p>
+        </section>
+      }
+
+      <!-- ═══ VALIDATING ═══ -->
+      @if (stage() === 'validating') {
+        <div class="card">
+          <div class="validating-header">
+            <h2 class="section-title-sm">Validation in progress</h2>
+            <span class="validating-spinner"><span class="spin">⟳</span> Analyzing menu…</span>
+          </div>
+          <div class="agent-list">
+            @for (agent of agentDefs; track agent.name) {
+              <div class="agent-progress-row">
+                <span class="agent-progress-icon">{{ agent.icon }}</span>
+                <span class="agent-progress-name">{{ agent.name }}</span>
+                <span class="agent-progress-dot"></span>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- ═══ ERROR ═══ -->
+      @if (stage() === 'error') {
+        <div class="error-banner">
+          <span class="error-icon">✕</span>
+          <div><strong>Validation failed</strong><p>{{ error() }}</p></div>
+          <button type="button" class="btn-ghost" (click)="startValidation()">Retry</button>
+        </div>
+      }
+
+      <!-- ═══ COMPLETE ═══ -->
+      @if (stage() === 'complete' && result(); as r) {
+
+        @if (approvalConfig(); as cfg) {
+          <div class="status-banner {{ cfg.cssClass }}">
+            <div class="banner-top">
+              <div class="banner-left">
+                <div class="banner-icon">{{ cfg.icon }}</div>
+                <div><h2 class="banner-title">{{ cfg.text }}</h2><p class="banner-message">{{ cfg.message }}</p></div>
+              </div>
+              <div class="banner-score">
+                <span class="score-num">{{ r.overall_score }}</span><span class="score-denom">/10</span>
+                <span class="score-time">{{ r.processing_time }}s</span>
+              </div>
+            </div>
+            <div class="banner-summary">{{ r.executive_summary }}</div>
+            <div class="banner-pills">
+              @for (pill of summaryPills(); track pill.label) {
+                <span class="sum-pill">{{ pill.label }} · <strong>{{ pill.value }}</strong></span>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- ═══ At a glance ═══ -->
+        <div class="scorecard-grid">
+          @for (card of scorecards(); track card.key) {
+            <button type="button" class="scorecard scorecard--{{ card.tier }}" (click)="jumpToSection(card.key)">
+              <span class="scorecard-icon">{{ card.icon }}</span>
+              <span class="scorecard-label">{{ card.label }}</span>
+              <span class="scorecard-score">{{ card.score | number:'1.1-1' }}</span>
+            </button>
+          }
+        </div>
+
+        <!-- ═══ Needs your attention ═══ -->
+        @if (r.critical_issues.length > 0 || r.cross_contamination_risks.length > 0 || r.recommended_enhancements.length > 0) {
+          <h3 class="group-heading group-heading--urgent">Needs your attention</h3>
+        }
+
+        <!-- ═══ Critical ═══ -->
+        @if (r.critical_issues.length > 0) {
+          <div class="card card--red">
+            <button type="button" class="section-header" (click)="toggleSection('critical')">
+              <span class="sh-left"><span class="sh-icon">✕</span><span class="sh-title">Critical Observations ({{ r.critical_issues.length }})</span></span>
+              <span class="chevron" [class.chevron--open]="isSectionOpen('critical')">⌄</span>
+            </button>
+            @if (isSectionOpen('critical')) {
+              <div class="card-body">
+                @for (issue of r.critical_issues; track issue.id) {
+                  <div class="issue-card issue-card--critical">
+                    <div class="issue-badges">
+                      <span class="priority-badge priority-badge--critical">P{{ issue.priority }}</span>
+                      <span class="impact-badge impact-badge--critical">{{ issue.impact }}</span>
+                      <span class="agent-label">· {{ issue.agent }}</span>
+                    </div>
+                    <p class="issue-dish">{{ issue.dish }}</p>
+                    <div class="issue-field"><span class="field-label field-label--red">Issue</span><p>{{ issue.issue }}</p></div>
+                    <div class="issue-field"><span class="field-label field-label--green">Required fix</span><p>{{ issue.fix }}</p></div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+
+        <!-- ═══ Cross-Contamination ═══ -->
+        <div class="card card--red" id="ac-section-cc">
+          <button type="button" class="section-header" (click)="toggleSection('cc')">
+            <span class="sh-left"><span class="sh-icon">⚠</span><span class="sh-title">Allergen Safety ({{ r.cross_contamination_risks.length }} pathways)</span></span>
+            <span class="chevron" [class.chevron--open]="isSectionOpen('cc')">⌄</span>
+          </button>
+          @if (isSectionOpen('cc')) {
+            <div class="card-body">
+              @if (r.cross_contamination_risks.length === 0) {
+                <p class="section-notes">No shared-equipment allergen pathways detected across courses.</p>
+              }
+              @for (risk of r.cross_contamination_risks; track risk.id) {
+                <div class="cc-card">
+                  <div class="cc-header"><span [class]="ccSeverityClass(risk.severity)">{{ risk.severity }}</span><span class="cc-equipment">via {{ risk.equipment }}</span></div>
+                  <p class="cc-dish">At risk: <strong>{{ risk.at_risk_dish }}</strong></p>
+                  <p class="cc-source">Source: {{ (risk.source_dishes ?? []).join(', ') }} · Allergen: <strong>{{ risk.allergen }}</strong></p>
+                  <div class="issue-field"><span class="field-label field-label--red">Pathway</span><p>{{ risk.pathway_description }}</p></div>
+                  <div class="issue-field"><span class="field-label field-label--green">Mitigation</span><p>{{ risk.mitigation }}</p></div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- ═══ Recommended (accept/ignore) ═══ -->
+        @if (r.recommended_enhancements.length > 0) {
+          <div class="card card--amber">
+            <button type="button" class="section-header" (click)="toggleSection('recommended')">
+              <span class="sh-left"><span class="sh-icon">↑</span><span class="sh-title">Recommended Enhancements ({{ r.recommended_enhancements.length }})</span></span>
+              <span class="chevron" [class.chevron--open]="isSectionOpen('recommended')">⌄</span>
+            </button>
+            @if (isSectionOpen('recommended')) {
+              <div class="card-body">
+                @for (issue of r.recommended_enhancements; track issue.id) {
+                  <div [class]="issueCardClass(issue)">
+                    <div class="issue-header">
+                      <div>
+                        <div class="issue-badges"><span class="priority-badge priority-badge--amber">P{{ issue.priority }}</span><span class="agent-label">{{ issue.agent }}</span></div>
+                        <p class="issue-dish">{{ issue.dish }}</p>
+                      </div>
+                      @if (!isAccepted(issue.id) && !isIgnored(issue.id)) {
+                        <div class="issue-actions">
+                          <button type="button" class="icon-btn icon-btn--accept" (click)="acceptSuggestion(issue.id)" aria-label="Accept">👍</button>
+                          <button type="button" class="icon-btn icon-btn--ignore" (click)="ignoreSuggestion(issue.id)" aria-label="Ignore">👎</button>
+                        </div>
+                      }
+                      @if (isAccepted(issue.id)) { <span class="accepted-label">✓ Accepted</span> }
+                      @if (isIgnored(issue.id)) { <span class="ignored-label">Ignored</span> }
+                    </div>
+                    <div class="issue-field"><span class="field-label field-label--amber">Issue</span><p>{{ issue.issue }}</p></div>
+                    <div class="issue-field"><span class="field-label field-label--green">Fix</span><p>{{ issue.fix }}</p></div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+
+
+        <h3 class="group-heading">Full breakdown</h3>
+        <!-- ═══ Alignment ═══ -->
+        <div class="card" id="ac-section-alignment">
+          <button type="button" class="section-header" (click)="toggleSection('alignment')">
+            <span class="sh-left"><span class="sh-icon">🎯</span><span class="sh-title">Menu-Request Alignment</span></span>
+            <span class="sh-badge">{{ r.alignment_score }}/10</span>
+            <span class="chevron" [class.chevron--open]="isSectionOpen('alignment')">⌄</span>
+          </button>
+          @if (isSectionOpen('alignment')) {
+            <div class="card-body">
+              <p class="section-notes">{{ r.alignment_notes }}</p>
+              <div class="align-grid">
+                @for (entry of alignmentEntries(); track entry.label) {
+                  <div class="align-item"><span [class]="alignDotClass(entry.status)"></span><span class="align-label">{{ formatLabel(entry.label) }}</span></div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- ═══ Budget ═══ -->
+        <div class="card" id="ac-section-budget">
+          <button type="button" class="section-header" (click)="toggleSection('budget')">
+            <span class="sh-left"><span class="sh-icon">💷</span><span class="sh-title">Budget &amp; Cost Optimization</span></span>
+            <span class="sh-badge">{{ r.budget_score }}/10</span>
+            <span class="chevron" [class.chevron--open]="isSectionOpen('budget')">⌄</span>
+          </button>
+          @if (isSectionOpen('budget')) {
+            <div class="card-body">
+              <div class="budget-verdict budget-verdict--{{ budgetVerdictCssKey(r.budget_analysis.budget_verdict) }}">
+                <span class="verdict-icon">{{ budgetVerdictIcon(r.budget_analysis.budget_verdict) }}</span>
+                <span class="verdict-text">{{ budgetVerdictLabel(r.budget_analysis.budget_verdict) }}</span>
+              </div>
+              <div class="stat-grid">
+                <div class="stat-card"><span class="stat-label">Budget per guest</span><span class="stat-value">${{ r.budget_analysis.budget_per_person }}</span></div>
+                <div class="stat-card"><span class="stat-label">Estimated cost</span><span class="stat-value">${{ r.budget_analysis.estimated_cost_per_person }}</span></div>
+                <div class="stat-card"><span class="stat-label">Of budget</span><span class="stat-value">{{ r.budget_analysis.estimated_food_cost_pct }}%</span></div>
+              </div>
+              @if (r.budget_analysis.primary_cost_drivers.length > 0) {
+                <h4 class="sub-heading">Primary cost drivers</h4>
+                <div class="tag-row">@for (d of r.budget_analysis.primary_cost_drivers; track d) { <span class="tag tag--amber">{{ d }}</span> }</div>
+              }
+              @if (r.cost_optimization_plan.length > 0) {
+                <h4 class="sub-heading">Optimization plan</h4>
+                @for (opt of r.cost_optimization_plan; track opt.dish) {
+                  <div class="opt-item">
+                    <p class="opt-dish">{{ opt.dish }}</p>
+                    <p class="opt-issue"><strong>Issue:</strong> {{ opt.current_issue }}</p>
+                    <p class="opt-suggestion">{{ opt.suggestion }}</p>
+                    <div class="opt-meta"><span class="opt-saving">💰 {{ opt.saving }}</span><span class="opt-quality">Quality impact: {{ opt.quality_impact }}</span></div>
+                  </div>
+                }
+              }
+            </div>
+          }
+        </div>
+
+        <!-- ═══ Seasonal ═══ -->
+        <div class="card" id="ac-section-seasonal">
+          <button type="button" class="section-header" (click)="toggleSection('seasonal')">
+            <span class="sh-left"><span class="sh-icon">🌱</span><span class="sh-title">Seasonal Recommendations ({{ r.seasonal_recommendations.length }})</span></span>
+            <span class="sh-badge">{{ r.seasonal_score }}/10</span>
+            <span class="chevron" [class.chevron--open]="isSectionOpen('seasonal')">⌄</span>
+          </button>
+          @if (isSectionOpen('seasonal')) {
+            <div class="card-body">
+              <span class="context-pill">🌞 {{ formatLabel(r.seasonal_context.derived_season) }} · {{ r.seasonal_context.location }}</span>
+              @for (rec of r.seasonal_recommendations; track rec.dish_name) {
+                <div class="seasonal-item">
+                  <div class="seasonal-header"><span [class]="seasonalTypeClass(rec.type)">{{ rec.type }}</span><span class="seasonal-course">{{ formatLabel(rec.course) }}</span></div>
+                  <p class="seasonal-name">{{ rec.dish_name }}</p>
+                  <p class="section-notes">{{ rec.description }}</p>
+                  <p class="seasonal-peak">{{ rec.seasonal_peak }}</p>
+                  <div class="tag-row">
+                    @for (tag of rec.dietary_info; track tag) { <span class="tag tag--sage">{{ tag }}</span> }
+                    @for (a of rec.allergens; track a) { <span class="tag tag--red">{{ a }}</span> }
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- ═══ Presentation ═══ -->
+        <div class="card" id="ac-section-presentation">
+          <button type="button" class="section-header" (click)="toggleSection('presentation')">
+            <span class="sh-left"><span class="sh-icon">🎨</span><span class="sh-title">Presentation</span></span>
+            <span class="sh-badge">{{ r.presentation_score }}/10</span>
+            <span class="chevron" [class.chevron--open]="isSectionOpen('presentation')">⌄</span>
+          </button>
+          @if (isSectionOpen('presentation')) {
+            <div class="card-body">
+              <div class="palette-grid">
+                @for (entry of objectEntries(r.presentation_course_palettes); track entry[0]) {
+                  <div class="palette-card" [class.palette-card--warn]="entry[1].monochromatic">
+                    <div class="palette-course">{{ formatLabel(entry[0]) }}</div>
+                    <div class="tag-row">
+                      @for (c of entry[1].colors_present; track c) { <span class="tag tag--sage">{{ c }}</span> }
+                      @if (!entry[1].monochromatic) { <span class="palette-ok">✓ Good variety</span> }
+                    </div>
+                    @if (entry[1].monochromatic && entry[1].recommendation) { <p class="palette-rec">{{ entry[1].recommendation }}</p> }
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- ═══ Nutritionist (new) ═══ -->
+        @if (r.nutritionist_analysis; as n) {
+          <div class="card card--indigo" id="ac-section-nutritionist">
+            <button type="button" class="section-header" (click)="toggleSection('nutritionist')">
+              <span class="sh-left"><span class="sh-icon">🥗</span><span class="sh-title">Nutritionist &amp; Dietary Coverage</span></span>
+              <span class="sh-badge sh-badge--indigo">{{ n.score }}/10</span>
+              <span class="chevron" [class.chevron--open]="isSectionOpen('nutritionist')">⌄</span>
+            </button>
+            @if (isSectionOpen('nutritionist')) {
+              <div class="card-body">
+                <p class="section-notes">{{ n.overallNotes }}</p>
+                <div class="stat-grid">
+                  <div class="stat-card"><span class="stat-label">Est. calories / guest</span><span class="stat-value">{{ n.estimatedCaloriesPerGuest }}</span></div>
+                </div>
+                @if (n.dietaryCoverage.length > 0) {
+                  <h4 class="sub-heading">Dietary need coverage</h4>
+                  @for (c of n.dietaryCoverage; track c.need) {
+                    <div class="coverage-row">
+                      <span class="coverage-dot coverage-dot--{{ c.verdict }}"></span>
+                      <div><span class="coverage-need">{{ c.need }}</span><p class="coverage-note">{{ c.note }}</p></div>
+                    </div>
+                  }
+                }
+                <h4 class="sub-heading">Macro balance</h4>
+                @for (m of n.macroBalance; track m.label) {
+                  <p class="section-notes"><strong>{{ m.label }}:</strong> {{ m.observation }}</p>
+                }
+                <h4 class="sub-heading">Course sequencing</h4>
+                <p class="section-notes">{{ n.paletteProgressionNote }}</p>
+                <p class="section-notes">{{ n.hydrationNote }}</p>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- ═══ Optional ═══ -->
+        @if (r.optional_improvements.length > 0) {
+          <div class="card">
+            <button type="button" class="section-header" (click)="toggleSection('optional')">
+              <span class="sh-left"><span class="sh-icon">✦</span><span class="sh-title">Optional Improvements ({{ r.optional_improvements.length }})</span></span>
+              <span class="chevron" [class.chevron--open]="isSectionOpen('optional')">⌄</span>
+            </button>
+            @if (isSectionOpen('optional')) {
+              <div class="card-body">
+                @for (opt of r.optional_improvements; track opt.id) {
+                  <div class="issue-card">
+                    <p class="agent-label">{{ opt.agent }}</p>
+                    <div class="issue-field"><span class="field-label">Improvement</span><p>{{ opt.fix }}</p></div>
+                    <p class="opt-context">{{ opt.issue }}</p>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+
+        <!-- ═══ Signature Dish ═══ -->
+        <div class="card card--gold">
+          <button type="button" class="section-header" (click)="toggleSection('signature')">
+            <span class="sh-left"><span class="sh-icon">⭐</span><span class="sh-title">Signature Dish · Chef's Creation</span></span>
+            <span class="chevron" [class.chevron--open]="isSectionOpen('signature')">⌄</span>
+          </button>
+          @if (isSectionOpen('signature')) {
+            <div class="card-body sig-body">
+              <h3 class="sig-name">{{ r.signature_dish.name }}</h3>
+              <p class="sig-tagline">{{ r.signature_dish.tagline }}</p>
+              <p class="section-notes">{{ r.signature_dish.description }}</p>
+              <div class="sig-grid">
+                <div><span class="field-label">Inspiration</span><p>{{ r.signature_dish.inspiration }}</p></div>
+                <div><span class="field-label">Creative twist</span><p>{{ r.signature_dish.creative_twist }}</p></div>
+                <div><span class="field-label">Plating</span><p>{{ r.signature_dish.plating }}</p></div>
+                <div><span class="field-label">Pairing</span><p>{{ r.signature_dish.pairing }}</p></div>
+              </div>
+              <h4 class="sub-heading">Ingredients</h4>
+              @for (ing of r.signature_dish.ingredients; track ing.ingredient) {
+                <p class="section-notes">• {{ ing.ingredient }} - {{ ing.quantity }}</p>
+              }
+              <h4 class="sub-heading">Method</h4>
+              @for (step of r.signature_dish.method; track step; let i = $index) {
+                <p class="section-notes">{{ i + 1 }}. {{ step }}</p>
+              }
+              <p class="chef-notes">👨‍🍳 {{ r.signature_dish.chef_notes }}</p>
+            </div>
+          }
+        </div>
+
+        <!-- ═══ Detailed Analysis ═══ -->
+        <div class="card">
+          <button type="button" class="section-header" (click)="toggleSection('detailed')">
+            <span class="sh-left"><span class="sh-icon">🧑‍🍳</span><span class="sh-title">Detailed Agent Analysis</span></span>
+            <span class="chevron" [class.chevron--open]="isSectionOpen('detailed')">⌄</span>
+          </button>
+          @if (isSectionOpen('detailed')) {
+            <div class="card-body">
+              @for (entry of detailedAgents(); track entry[0]) {
+                <div class="agent-card">
+                  <div class="agent-card-header">
+                    <div><h4 class="agent-card-name">{{ entry[1].icon }} {{ entry[0] }}</h4><span [class]="agentStatusClass(entry[1].status)">{{ agentStatusLabel(entry[1].status) }}</span></div>
+                    <div class="agent-score"><span class="score-big">{{ entry[1].score }}</span><span class="score-den">/10</span></div>
+                  </div>
+                  <p class="agent-notes">{{ entry[1].notes }}</p>
+                  <div class="checks-list">
+                    @for (check of entry[1].checks; track check.name) {
+                      <div class="check-row"><span class="check-dot check-dot--{{ check.status }}"></span><span class="check-name">{{ formatLabel(check.name) }}</span></div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- ═══ Actions ═══ -->
+        <footer class="chef-footer">
+          <div class="chef-footer-card">
+            <div class="chef-footer-title">Chef's Recommendations</div>
+            <div class="chef-footer-body">
+              Curated by our <span class="hl-sage">Michelin-level agentic chef</span> - these recommendations guide the host and shape
+              <span class="hl-sage">cost</span>, <span class="hl-sage">quality</span>, and <span class="hl-sage">experience</span>.
+              <br><span class="chef-footer-sub">Accept or reject based on your priorities, then attach your decision to the Smart Menu.</span>
+            </div>
+          </div>
+
+          @if (userResponse() === 'accept' || userResponse() === 'reject') {
+            <p class="chef-footer-responded">You have {{ userResponse() === 'accept' ? 'accepted' : 'rejected' }} the chef's recommendations.</p>
+          } @else {
+            <div class="chef-footer-actions">
+              <button type="button" class="btn-cta" (click)="acceptAll()">Accept</button>
+              <button type="button" class="btn-ghost" (click)="rejectAll()">Reject</button>
+            </div>
+          }
+
+          @if (isRoutingToHost()) {
+            <p class="chef-footer-attaching">Attaching to the Smart Menu…</p>
+          }
+          @if (isAttached()) {
+            <div class="attached-confirm">✓ Attached to the Smart Menu and routed to the host - they'll see these notes when reviewing the menu.</div>
+          }
+        </footer>
+
+      }
+    }
+
+  </div>
+</aside>
+}
+

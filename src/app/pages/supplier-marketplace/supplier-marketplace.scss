@@ -1,0 +1,82 @@
+// Supplier Marketplace — same ink/amber/indigo palette as the rest of
+// the app. The one bold moment is the hero; everything else (filters,
+// cards) stays disciplined so the actual task — comparing many
+// suppliers' offerings quickly — isn't fighting the visual design.
+//
+// No cart here by design: this page's job is discovery and comparison
+// across Suppliers, not transacting on their behalf. Each card links
+// straight to that Supplier's own portal instead.
+:host { display: block; background: #0F1117; color: #cfcac0; }
+
+// ── Hero ──
+.mp-hero { position: relative; overflow: hidden; text-align: center; padding: 4rem 2rem 2.5rem; }
+.mp-hero__glow { position: absolute; top: -30%; left: 50%; transform: translateX(-50%); width: 600px; height: 400px; background: #D4A94A; opacity: .1; border-radius: 50%; filter: blur(90px); pointer-events: none; }
+.mp-hero__eyebrow { position: relative; color: #D4A94A; font-weight: 700; font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; margin-bottom: .8rem; }
+.mp-hero__title { position: relative; font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: clamp(2rem, 4.5vw, 3rem); color: #F5F3EE; max-width: 780px; margin: 0 auto 1rem; line-height: 1.2; }
+.mp-hero__accent { color: #D4A94A; font-style: italic; }
+.mp-hero__sub { position: relative; color: #A39D8F; font-size: 1rem; line-height: 1.6; max-width: 580px; margin: 0 auto; }
+
+// ── Search + category filters ──
+.mp-filters { max-width: 1200px; margin: 0 auto; padding: 0 2rem 1.5rem; }
+.mp-search { position: relative; max-width: 480px; margin: 0 auto 1.4rem; }
+.mp-search__icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); opacity: .6; }
+.mp-search__input {
+  width: 100%; background: #1C1F2A; border: 1.5px solid rgba(255,255,255,.14); border-radius: 999px;
+  color: #fff; font: 400 .92rem/1 'Inter', sans-serif; padding: .8rem 1rem .8rem 2.6rem; outline: none;
+}
+.mp-search__input:focus { border-color: #D4A94A; }
+.mp-search__input::placeholder { color: #8B8478; }
+
+.mp-category-row { display: flex; gap: .6rem; flex-wrap: wrap; justify-content: center; }
+.mp-chip {
+  display: inline-flex; align-items: center; gap: .4rem; background: #151822;
+  border: 1.5px solid rgba(255,255,255,.12); border-radius: 999px; color: #A39D8F;
+  font: 600 .82rem/1 'Inter', sans-serif; padding: .55rem 1rem; cursor: pointer;
+  transition: border-color .15s, color .15s, background .15s;
+}
+.mp-chip:hover { border-color: rgba(212,169,74,.35); color: #cfcac0; }
+.mp-chip.selected { background: rgba(212,169,74,.12); border-color: #D4A94A; color: #D4A94A; }
+.mp-chip__icon { font-size: .95rem; }
+.mp-chip__count { background: rgba(255,255,255,.08); border-radius: 999px; padding: .05rem .4rem; font-size: .72rem; }
+.mp-chip.selected .mp-chip__count { background: rgba(212,169,74,.2); }
+
+// ── Listings grid — full-width now that there's no cart sidebar ──
+.mp-grid-wrap { max-width: 1200px; margin: 0 auto; padding: 0 2rem 5rem; }
+.mp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem; }
+.mp-empty { grid-column: 1 / -1; text-align: center; padding: 3rem 1rem; color: #8B8478; }
+.mp-empty__icon { font-size: 1.8rem; margin-bottom: .6rem; }
+
+.mp-card {
+  display: flex; flex-direction: column; background: #151822; border: 1.5px solid rgba(255,255,255,.08);
+  border-radius: 16px; padding: 1.3rem; transition: border-color .15s;
+}
+.mp-card:hover { border-color: rgba(212,169,74,.25); }
+.mp-card__icon { font-size: 1.8rem; margin-bottom: .7rem; }
+.mp-card__title { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.15rem; color: #F5F3EE; margin-bottom: .35rem; }
+.mp-card__supplier { font-size: .78rem; color: #8B8478; margin-bottom: .6rem; }
+.mp-card__supplier strong { color: #A39D8F; font-weight: 600; }
+.mp-card__desc { font-size: .85rem; line-height: 1.55; color: #A39D8F; margin-bottom: 1rem; flex: 1; }
+.mp-card__foot { display: flex; align-items: center; justify-content: space-between; gap: .8rem; flex-wrap: wrap; }
+.mp-card__price { font-weight: 700; color: #D4A94A; font-size: .92rem; }
+
+// Link, not a button — this navigates away to the Supplier's own portal
+// rather than performing an in-page action, so it's styled distinctly
+// from the amber-filled CTAs used elsewhere for actual commitments
+// (Approve Menu, Send it in) to avoid implying this "adds" anything.
+.mp-view-btn {
+  background: transparent; border: 1.5px solid rgba(212,169,74,.4); color: #D4A94A;
+  border-radius: 999px; padding: .45rem 1rem; font: 700 .82rem/1 'Inter', sans-serif;
+  text-decoration: none; white-space: nowrap; transition: background .15s, color .15s;
+}
+.mp-view-btn:hover { background: rgba(212,169,74,.12); }
+
+// ── Responsive ──
+@media (max-width: 960px) {
+  .mp-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .mp-hero { padding: 3rem 1.2rem 2rem; }
+  .mp-filters { padding: 0 1.2rem 1.2rem; }
+  .mp-grid-wrap { padding: 0 1.2rem 4rem; }
+  .mp-grid { grid-template-columns: 1fr; }
+}

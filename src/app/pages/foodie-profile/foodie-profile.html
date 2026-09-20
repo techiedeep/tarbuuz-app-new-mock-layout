@@ -1,0 +1,303 @@
+<app-header />
+
+<div class="cover"></div>
+
+<div class="header-wrap">
+  <div class="profile-header-block">
+    <div class="avatar-lg">{{ initials() }}</div>
+    <div class="header-text">
+      <div class="header-name">{{ displayName() }}</div>
+      <div class="header-role">Food Lover</div>
+    </div>
+    <div class="header-actions">
+      <div class="switcher-wrap">
+        <button class="switcher-pill" type="button" [class.open]="switcherOpen()" (click)="toggleSwitcher()">
+          <span>👤 Foodie</span>
+          <span class="chev" [class.expanded]="switcherOpen()">›</span>
+        </button>
+        @if (switcherOpen()) {
+          <ul class="profile-switcher-list">
+            <li>
+              <div class="ps-item ps-item--active">
+                <span class="ps-item__name">🍽️ Foodie</span>
+                <span class="ps-item__badge">Primary</span>
+                <span class="ps-item__check">✓</span>
+              </div>
+            </li>
+            <li><button class="ps-enable-btn" type="button">＋ Enable Supplier</button></li>
+            <li><button class="ps-enable-btn" type="button">＋ Enable Host</button></li>
+          </ul>
+        }
+      </div>
+      <a class="btn btn-secondary" routerLink="/events">
+        <span>🎉</span><span>Dashboard</span>
+      </a>
+      @if (!isEditing()) {
+        <button class="btn btn-primary" type="button" (click)="enableEdit()">Edit Profile</button>
+      }
+    </div>
+  </div>
+</div>
+
+<div class="tab-bar-wrap">
+  <div class="tab-bar">
+    @for (tab of tabs; track tab.id) {
+      <button
+        type="button"
+        class="tab-link"
+        [class.active]="activeTab() === tab.id"
+        (click)="scrollToTab(tab.id)">
+        {{ tab.label }}
+      </button>
+    }
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- ═══ PERSONAL INFO ═══ -->
+  <div class="section-panel primary" #sectionEl>
+    <div class="section-head">
+      <div>
+        <div class="section-title">Personal Info</div>
+        <div class="section-sub">Manage your profile details and preferences</div>
+      </div>
+      @if (!isEditing()) {
+        <button type="button" class="btn btn-primary" (click)="enableEdit()" [disabled]="isLoading()">
+          <span>✏️</span><span>Edit</span>
+        </button>
+      }
+    </div>
+
+    @if (isLoading()) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Loading profile...</p>
+      </div>
+    }
+
+    @if (!isLoading()) {
+      <form [formGroup]="personalInfoForm" (ngSubmit)="saveProfile()">
+        @if (error()) {
+          <div class="error-message" role="alert">
+            <span class="error-icon">⚠️</span>
+            <span>{{ error() }}</span>
+          </div>
+        }
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label" for="firstName">First Name <span class="required">*</span></label>
+            <input
+              id="firstName"
+              type="text"
+              class="form-input"
+              [class.error]="hasError('firstName')"
+              formControlName="firstName"
+              placeholder="Enter first name">
+            @if (hasError('firstName')) {
+              <div class="error-text">{{ getErrorMessage('firstName') }}</div>
+            }
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="lastName">Last Name <span class="required">*</span></label>
+            <input
+              id="lastName"
+              type="text"
+              class="form-input"
+              [class.error]="hasError('lastName')"
+              formControlName="lastName"
+              placeholder="Enter last name">
+            @if (hasError('lastName')) {
+              <div class="error-text">{{ getErrorMessage('lastName') }}</div>
+            }
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="email">Email <span class="required">*</span></label>
+            <input
+              id="email"
+              type="email"
+              class="form-input"
+              [class.error]="hasError('email')"
+              formControlName="email"
+              placeholder="your.email@example.com">
+            @if (hasError('email')) {
+              <div class="error-text">{{ getErrorMessage('email') }}</div>
+            }
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="phone">Phone Number <span class="required">*</span></label>
+            <input
+              id="phone"
+              type="tel"
+              class="form-input"
+              [class.error]="hasError('phone')"
+              formControlName="phone"
+              placeholder="+1 5551234567">
+            <div class="form-hint">Include country code (e.g. +1 5551234567 or +44 7911 123456)</div>
+            @if (hasError('phone')) {
+              <div class="error-text">{{ getErrorMessage('phone') }}</div>
+            }
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="address">Address <span class="required">*</span></label>
+            <input
+              id="address"
+              type="text"
+              class="form-input"
+              [class.error]="hasError('address')"
+              formControlName="address"
+              placeholder="Enter Address, City, State, Country, Zip">
+            @if (hasError('address')) {
+              <div class="error-text">{{ getErrorMessage('address') }}</div>
+            }
+          </div>
+        </div>
+
+        <div class="form-group full-width" style="margin-top:1.2rem;">
+          <label class="form-label" for="bio">About Me</label>
+          <textarea
+            id="bio"
+            class="form-textarea"
+            [class.error]="hasError('bio')"
+            rows="4"
+            formControlName="bio"
+            maxlength="500"
+            placeholder="Tell us about yourself..."></textarea>
+          @if (hasError('bio')) {
+            <div class="error-text">{{ getErrorMessage('bio') }}</div>
+          }
+          <div class="helper-text">{{ bioLength() }} / 500 characters</div>
+        </div>
+
+        @if (isEditing()) {
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" [disabled]="isSaving()">
+              <span>{{ isSaving() ? '' : '💾' }}</span>
+              @if (isSaving()) { <span class="spinner-small"></span> }
+              <span>{{ isSaving() ? 'Saving…' : 'Save Changes' }}</span>
+            </button>
+            <button type="button" class="btn btn-secondary" (click)="cancelEdit()" [disabled]="isSaving()">Cancel</button>
+          </div>
+        } @else {
+          <div class="info-message"><span>💡</span><span>Click "Edit" to update your information</span></div>
+        }
+      </form>
+    }
+  </div>
+
+  <!-- ═══ PREFERENCES ═══ -->
+  <div class="section-panel" #sectionEl>
+    <div class="section-head">
+      <div>
+        <div class="section-title">Preferences</div>
+        <div class="section-sub">Helps us tailor menu suggestions and event matches to you</div>
+      </div>
+    </div>
+
+    <div class="chip-label">Favorite Cuisines</div>
+    <div class="chip-row">
+      @for (cuisine of cuisineOptions; track cuisine) {
+        <button type="button" class="chip" [class.selected]="isCuisineSelected(cuisine)" (click)="toggleCuisine(cuisine)">
+          {{ cuisine }}
+        </button>
+      }
+    </div>
+
+    <div class="chip-label">Dietary Preferences</div>
+    <div class="chip-row">
+      @for (diet of dietaryOptions; track diet) {
+        <button type="button" class="chip" [class.selected]="isDietarySelected(diet)" (click)="toggleDietary(diet)">
+          {{ diet }}
+        </button>
+      }
+    </div>
+
+    <div class="chip-label">Typically Plans</div>
+    <div class="chip-row" style="margin-bottom:0">
+      @for (occasion of occasionOptions; track occasion) {
+        <button type="button" class="chip" [class.selected]="isOccasionSelected(occasion)" (click)="toggleOccasion(occasion)">
+          {{ occasion }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- ═══ MEMBERSHIP ═══ -->
+  <div class="section-panel" #sectionEl>
+    <div class="section-head">
+      <div>
+        <div class="section-title">Membership</div>
+        <div class="section-sub">Your current plan and what's included</div>
+      </div>
+    </div>
+
+    <div class="membership-card">
+      <div class="membership-card__top">
+        <div>
+          <span class="membership-badge" [class.pro]="membershipPlan() === 'pro'">
+            {{ membershipPlan() === 'free' ? 'Free Plan' : membershipPlan() === 'pro' ? 'Pro Plan' : 'Enterprise Plan' }}
+          </span>
+          <p class="membership-since">Every account starts here automatically — no credit card required.</p>
+        </div>
+        @if (membershipPlan() === 'free') {
+          <a class="btn btn-primary" (click)="goToPricingPlans()" style="cursor: pointer;">Upgrade to Pro →</a>
+        }
+      </div>
+
+      @if (membershipPlan() === 'free') {
+        <ul class="membership-features">
+          <li><span class="ck">✓</span> Unlimited events created</li>
+          <li><span class="ck">✓</span> Smart Menu — 3 generations/month</li>
+          <li><span class="ck">✓</span> Full marketplace bidding access</li>
+          <li><span class="ck">✓</span> Basic Dietary Intelligence</li>
+          <li><span class="ck">✓</span> Standard email support</li>
+          <li><span class="ck">✓</span> No service fees, ever</li>
+        </ul>
+        <p class="membership-note">Want unlimited Smart Menu generations, Agentic Chef coordination, and priority-ranked bidding? <a (click)="goToPricingPlans()" style="cursor: pointer;">See what Pro includes →</a></p>
+      }
+    </div>
+  </div>
+
+  <!-- ═══ SETTINGS ═══ -->
+  <div class="section-panel" #sectionEl>
+    <div class="section-head">
+      <div>
+        <div class="section-title">Settings</div>
+        <div class="section-sub">Notifications and account preferences</div>
+      </div>
+    </div>
+
+    <div class="setting-row">
+      <div class="setting-text"><b>Email notifications</b><span>Menu updates, bid activity, and event reminders</span></div>
+      <label class="toggle">
+        <input type="checkbox" [checked]="profile()?.settings?.emailNotifications" (change)="toggleSetting('emailNotifications')">
+        <span class="toggle-track"></span><span class="toggle-thumb"></span>
+      </label>
+    </div>
+    <div class="setting-row">
+      <div class="setting-text"><b>SMS notifications</b><span>Time-sensitive alerts only</span></div>
+      <label class="toggle">
+        <input type="checkbox" [checked]="profile()?.settings?.smsNotifications" (change)="toggleSetting('smsNotifications')">
+        <span class="toggle-track"></span><span class="toggle-thumb"></span>
+      </label>
+    </div>
+    <div class="setting-row">
+      <div class="setting-text"><b>Public profile</b><span>Let Hosts and Suppliers see your review history</span></div>
+      <label class="toggle">
+        <input type="checkbox" [checked]="profile()?.settings?.publicProfile" (change)="toggleSetting('publicProfile')">
+        <span class="toggle-track"></span><span class="toggle-thumb"></span>
+      </label>
+    </div>
+    <div class="danger-zone">
+      <button type="button" class="danger-link">Deactivate account</button>
+    </div>
+  </div>
+
+</div>
+
+<app-footer />

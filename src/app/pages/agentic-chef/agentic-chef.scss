@@ -1,0 +1,317 @@
+// Agentic Chef — same ink/amber/indigo system as every other page.
+// Structurally converted from the uploaded contextual-dashboard
+// reference (same stages, same sections) but every color reskinned —
+// the reference used a cream/coral/sage palette; this app's established
+// system is ink/amber, with indigo reserved for AI-specific moments
+// (the Nutritionist section, presence-of-AI badges) per the same rule
+// used everywhere else in this app. Colors hardcoded, not CSS custom
+// properties in a local :root block — Angular scopes :root inside
+// component-scoped styles in a way that silently breaks every var()
+// reference (confirmed directly, repeatedly, in this project).
+
+// Same drawer mechanics as BiddingDrawer — fixed backdrop + a panel
+// sliding in from the right via transform, not a new pattern invented
+// for this one component. :host stays a zero-footprint wrapper (no
+// background, no min-height) since this now mounts alongside whatever
+// page is already showing, the same reasoning as Create Event's modal
+// conversion.
+:host { display: contents; }
+
+// Class names matched exactly to the real production drawer reference
+// (validation-drawer / drawer-open / validation-drawer__*) rather than
+// an independently-invented naming scheme — this is what makes it the
+// same drawer the rest of that codebase already knows how to trigger
+// and style around, not just a visually similar one.
+.drawer-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(8, 9, 12, .55); backdrop-filter: blur(2px);
+  z-index: 1100;
+}
+
+.validation-drawer {
+  position: fixed; top: 0; right: 0; height: 100vh;
+  width: 76vw; max-width: 900px;
+  background: #0F1117; color: #F5F3EE;
+  box-shadow: -16px 0 40px rgba(0, 0, 0, .35);
+  transform: translateX(100%); transition: transform .25s ease;
+  z-index: 1101; display: flex; flex-direction: column;
+}
+.validation-drawer.drawer-open { transform: translateX(0); }
+@media (max-width: 900px) { .validation-drawer { width: 90vw; } }
+@media (max-width: 640px) { .validation-drawer { width: 100%; } }
+
+.validation-drawer__header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.3rem 1.6rem; border-bottom: 1px solid rgba(255, 255, 255, .08); flex-shrink: 0;
+}
+.validation-drawer__title-group { display: flex; align-items: center; gap: .8rem; }
+.header-logo {
+  width: 40px; height: 40px; border-radius: 12px; flex-shrink: 0;
+  background: linear-gradient(135deg, #D4A94A, #B8862E); color: #0F1117;
+  font-size: 1.2rem; font-weight: 700; display: flex; align-items: center; justify-content: center;
+}
+.validation-drawer__title { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.3rem; margin: 0; color: #fff; }
+.validation-drawer__subtitle { margin-top: .15rem; font-size: .82rem; color: #A39D8F; }
+.validation-drawer__close {
+  width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+  background: #1C1F2A; border: 1.5px solid rgba(255, 255, 255, .18); color: #A39D8F;
+  font-size: .85rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: border-color .2s, color .2s;
+}
+.validation-drawer__close:hover { border-color: #D4A94A; color: #D4A94A; }
+
+.validation-drawer__body { flex: 1; overflow-y: auto; padding: 1.6rem 1.8rem 3rem; }
+@media (max-width: 640px) { .validation-drawer__body { padding: 1.3rem 1.2rem 2.5rem; } }
+
+.loading-state, .empty-state { display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 5rem 1rem; color: #8B8478; text-align: center; }
+.spinner { width: 32px; height: 32px; border-radius: 50%; border: 3px solid rgba(255,255,255,.1); border-top-color: #D4A94A; animation: ac-spin .8s linear infinite; }
+@keyframes ac-spin { to { transform: rotate(360deg); } }
+
+.event-strip { background: #151822; border: 1.5px solid rgba(255,255,255,.08); border-radius: 16px; padding: 1.1rem 1.4rem; margin-bottom: 2rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+.event-strip-name { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.2rem; }
+.event-strip-meta { display: flex; gap: 1.2rem; font-size: .82rem; color: #A39D8F; flex-wrap: wrap; }
+
+// ── Idle ──
+.idle-state { text-align: center; padding: 3rem 1rem; }
+.idle-logo { font-size: 2.6rem; margin-bottom: .8rem; }
+.section-kicker.ai { color: #B5ABF0; font-weight: 700; font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; margin-bottom: .6rem; }
+.idle-title { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: clamp(1.6rem, 3vw, 2.2rem); margin-bottom: .9rem; }
+.idle-body { color: #A39D8F; max-width: 56ch; margin: 0 auto 1.6rem; line-height: 1.6; font-size: .94rem; }
+.agent-pills { display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem; margin-bottom: 2rem; }
+.agent-pill { font-size: .8rem; font-weight: 600; background: #151822; border: 1px solid rgba(255,255,255,.12); border-radius: 999px; padding: .4rem .9rem; }
+.btn-cta { background: linear-gradient(135deg, #D4A94A, #B8862E); color: #0F1117; font-weight: 700; font-size: .95rem; border: none; border-radius: 999px; padding: .95rem 2rem; cursor: pointer; box-shadow: 0 10px 26px -8px rgba(212,169,74,.5); transition: transform .2s; }
+.btn-cta:hover { transform: translateY(-2px); }
+.btn-cta:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+.idle-context { margin-top: 1.2rem; font-size: .82rem; color: #8B8478; }
+
+// ── Validating ──
+.card { background: #151822; border: 1.5px solid rgba(255,255,255,.08); border-radius: 18px; margin-bottom: 1.2rem; overflow: hidden; }
+.card--red { border-color: rgba(226,114,108,.3); }
+.card--amber { border-color: rgba(212,169,74,.3); }
+.card--gold { border-color: rgba(212,169,74,.4); }
+.card--indigo { border-color: rgba(108,93,211,.3); }
+.validating-header { display: flex; justify-content: space-between; align-items: center; padding: 1.4rem 1.6rem; }
+.section-title-sm { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.1rem; }
+.validating-spinner { font-size: .82rem; color: #B5ABF0; display: flex; align-items: center; gap: .4rem; }
+.spin { display: inline-block; animation: ac-spin 1s linear infinite; }
+.agent-list { padding: 0 1.6rem 1.6rem; display: flex; flex-direction: column; gap: .6rem; }
+.agent-progress-row { display: flex; align-items: center; gap: .7rem; background: #1C1F2A; border-radius: 10px; padding: .7rem 1rem; }
+.agent-progress-icon { font-size: 1.1rem; }
+.agent-progress-name { flex: 1; font-weight: 600; font-size: .88rem; }
+.agent-progress-dot { width: 8px; height: 8px; border-radius: 50%; background: #B5ABF0; animation: ac-pulse 1.2s infinite; }
+@keyframes ac-pulse { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
+
+// ── Error ──
+.error-banner { display: flex; align-items: center; gap: 1rem; background: rgba(226,114,108,.08); border: 1px solid rgba(226,114,108,.3); border-radius: 14px; padding: 1.2rem 1.4rem; }
+.error-icon { width: 2rem; height: 2rem; border-radius: 50%; background: #e2726c; color: #0F1117; display: flex; align-items: center; justify-content: center; font-weight: 800; flex-shrink: 0; }
+.btn-ghost { background: transparent; color: #fff; border: 1.5px solid rgba(255,255,255,.18); border-radius: 999px; padding: .7rem 1.4rem; font-weight: 700; font-size: .85rem; cursor: pointer; }
+.btn-ghost:hover { border-color: #D4A94A; color: #D4A94A; }
+
+// ── Status banner ──
+.status-banner { border-radius: 20px; padding: 1.6rem; margin-bottom: 1.5rem; }
+.banner--approved { background: rgba(74,155,110,.08); border: 1.5px solid rgba(74,155,110,.35); }
+.banner--suggestions { background: rgba(212,169,74,.08); border: 1.5px solid rgba(212,169,74,.35); }
+.banner--changes { background: rgba(226,114,108,.08); border: 1.5px solid rgba(226,114,108,.35); }
+.banner-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.banner-left { display: flex; gap: 1rem; align-items: flex-start; }
+.banner-icon { width: 2.6rem; height: 2.6rem; border-radius: 50%; background: rgba(255,255,255,.08); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+.banner-title { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.3rem; }
+.banner-message { color: #A39D8F; font-size: .88rem; margin-top: .2rem; }
+.banner-score { text-align: right; }
+.score-num { font-family: 'Cormorant Garamond', serif; font-weight: 800; font-size: 2rem; color: #D4A94A; }
+.score-denom { color: #8B8478; font-size: .9rem; }
+.score-time { display: block; font-size: .72rem; color: #8B8478; }
+.banner-summary { font-size: .9rem; line-height: 1.6; margin-bottom: 1rem; }
+.banner-pills { display: flex; gap: .6rem; flex-wrap: wrap; }
+.sum-pill { font-size: .78rem; background: rgba(255,255,255,.06); border-radius: 999px; padding: .35rem .8rem; }
+
+// ── At-a-glance scorecard grid — the actual fix for "too linear": every
+// one of these scores already existed, buried inside its own full-width
+// accordion. Surfacing them together, as small clickable tiles, means
+// someone can read the whole shape of the result in one glance instead
+// of scrolling through eleven stacked sections to build that picture
+// themselves. Color is the primary signal (not text) — this is a
+// dashboard glance, not another paragraph to read.
+.scorecard-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: .6rem; margin-bottom: 1.6rem; }
+.scorecard {
+  display: flex; flex-direction: column; align-items: center; gap: .3rem; text-align: center;
+  background: #1C1F2A; border: 1.5px solid rgba(255,255,255,.1); border-left: 3px solid transparent;
+  border-radius: 12px; padding: .9rem .5rem; cursor: pointer; font-family: inherit; color: inherit;
+  transition: transform .15s, border-color .15s;
+}
+.scorecard:hover { transform: translateY(-2px); }
+.scorecard-icon { font-size: 1.2rem; }
+.scorecard-label { font-size: .7rem; font-weight: 600; color: #A39D8F; line-height: 1.2; }
+.scorecard-score { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.3rem; }
+.scorecard--good { border-left-color: #4A9B6E; }
+.scorecard--good .scorecard-score { color: #4A9B6E; }
+.scorecard--warn { border-left-color: #D4A94A; }
+.scorecard--warn .scorecard-score { color: #D4A94A; }
+.scorecard--risk { border-left-color: #e2726c; }
+.scorecard--risk .scorecard-score { color: #e2726c; }
+@media (max-width: 640px) { .scorecard-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 400px) { .scorecard-grid { grid-template-columns: repeat(2, 1fr); } }
+
+// ── Group headings — replace the flat, undifferentiated stack with two
+// clearly distinct zones: what needs a decision, versus what's just
+// supporting detail. The urgent variant is deliberately the only red
+// text on the page outside the issue cards themselves, so it reads as a
+// genuine signal rather than decoration.
+.group-heading {
+  font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.05rem;
+  margin: 1.8rem 0 .7rem; padding-top: .2rem; color: #cfcac0;
+}
+.group-heading--urgent { color: #e2726c; }
+.group-heading:first-of-type { margin-top: 0; }
+
+// ── Section header (collapsible) ──
+.section-header { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: .8rem; background: none; border: none; padding: 1.2rem 1.5rem; cursor: pointer; color: #fff; font-family: inherit; text-align: left; }
+.sh-left { display: flex; align-items: center; gap: .7rem; }
+.sh-icon { font-size: 1.1rem; }
+.sh-title { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.05rem; }
+.sh-badge { font-size: .78rem; font-weight: 700; background: rgba(212,169,74,.14); color: #D4A94A; border-radius: 999px; padding: .25rem .7rem; }
+.sh-badge--indigo { background: rgba(108,93,211,.16); color: #B5ABF0; }
+.chevron { transition: transform .2s; color: #8B8478; margin-left: auto; }
+.chevron--open { transform: rotate(180deg); }
+.card-body { padding: 0 1.5rem 1.5rem; }
+.section-notes { color: #A39D8F; font-size: .88rem; line-height: 1.6; margin-bottom: .6rem; }
+.sub-heading { font-size: .78rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: #8B8478; margin: 1.1rem 0 .6rem; }
+
+// ── Issue / CC cards ──
+.issue-card { background: #1C1F2A; border-radius: 12px; padding: 1rem 1.1rem; margin-bottom: .8rem; }
+.issue-card--critical { border: 1px solid rgba(226,114,108,.3); }
+.issue-card--orange { border: 1px solid rgba(212,169,74,.3); }
+.issue-card--accepted { opacity: .6; }
+.issue-card--ignored { opacity: .4; }
+.issue-header { display: flex; justify-content: space-between; align-items: flex-start; gap: .8rem; margin-bottom: .6rem; }
+.issue-badges { display: flex; align-items: center; gap: .5rem; margin-bottom: .3rem; }
+.priority-badge { font-size: .68rem; font-weight: 800; border-radius: 999px; padding: .15rem .5rem; }
+.priority-badge--critical { background: rgba(226,114,108,.18); color: #e2726c; }
+.priority-badge--amber { background: rgba(212,169,74,.18); color: #D4A94A; }
+.impact-badge { font-size: .68rem; font-weight: 700; border-radius: 999px; padding: .15rem .5rem; background: rgba(226,114,108,.1); color: #e2726c; }
+.agent-label { font-size: .74rem; color: #8B8478; }
+.issue-dish { font-weight: 700; font-size: .92rem; }
+.issue-field { margin-bottom: .5rem; }
+.field-label { display: inline-block; font-size: .68rem; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; color: #8B8478; margin-bottom: .2rem; }
+.field-label--red { color: #e2726c; }
+.field-label--green { color: #4A9B6E; }
+.field-label--amber, .field-label--sage { color: #D4A94A; }
+.issue-field p { font-size: .86rem; color: #F5F3EE; line-height: 1.5; }
+.issue-actions { display: flex; gap: .4rem; flex-shrink: 0; }
+.icon-btn { width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(255,255,255,.14); background: #151822; cursor: pointer; font-size: .8rem; }
+.icon-btn--accept:hover { border-color: #4A9B6E; }
+.icon-btn--ignore:hover { border-color: #e2726c; }
+.accepted-label { font-size: .78rem; font-weight: 700; color: #4A9B6E; }
+.ignored-label { font-size: .78rem; font-weight: 700; color: #8B8478; }
+
+.cc-card { background: #1C1F2A; border: 1px solid rgba(226,114,108,.2); border-radius: 12px; padding: 1rem 1.1rem; margin-bottom: .8rem; }
+.cc-header { display: flex; align-items: center; gap: .6rem; margin-bottom: .5rem; }
+.cc-severity { font-size: .68rem; font-weight: 800; border-radius: 999px; padding: .15rem .55rem; text-transform: uppercase; }
+.cc-severity--critical { background: rgba(226,114,108,.2); color: #e2726c; }
+.cc-severity--high { background: rgba(226,114,108,.16); color: #e2726c; }
+.cc-severity--medium { background: rgba(212,169,74,.16); color: #D4A94A; }
+.cc-severity--low { background: rgba(255,255,255,.08); color: #A39D8F; }
+.cc-equipment { font-size: .78rem; color: #8B8478; }
+.cc-dish, .cc-source { font-size: .86rem; margin-bottom: .5rem; }
+.cc-source { color: #A39D8F; }
+
+// ── Alignment ──
+.align-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: .7rem; }
+@media (max-width: 560px) { .align-grid { grid-template-columns: 1fr; } }
+.align-item { display: flex; align-items: center; gap: .6rem; font-size: .85rem; }
+.align-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.align-dot--pass { background: #4A9B6E; }
+.align-dot--warning { background: #D4A94A; }
+.align-dot--fail { background: #e2726c; }
+.align-dot--not_applicable { background: #3A3F52; }
+
+// ── Budget ──
+.budget-verdict { display: inline-flex; align-items: center; gap: .5rem; border-radius: 999px; padding: .5rem 1rem; font-weight: 700; font-size: .85rem; margin-bottom: 1rem; }
+.budget-verdict--good { background: rgba(74,155,110,.1); color: #4A9B6E; }
+.budget-verdict--tight { background: rgba(212,169,74,.1); color: #D4A94A; }
+.budget-verdict--over { background: rgba(226,114,108,.1); color: #e2726c; }
+.budget-verdict--under { background: rgba(108,93,211,.1); color: #B5ABF0; }
+.stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .7rem; margin-bottom: .5rem; }
+@media (max-width: 560px) { .stat-grid { grid-template-columns: 1fr; } }
+.stat-card { background: #1C1F2A; border-radius: 12px; padding: .8rem 1rem; }
+.stat-label { display: block; font-size: .7rem; color: #8B8478; margin-bottom: .3rem; }
+.stat-value { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.2rem; }
+.tag-row { display: flex; flex-wrap: wrap; gap: .4rem; }
+.tag { font-size: .72rem; font-weight: 600; border-radius: 999px; padding: .25rem .65rem; }
+.tag--amber { background: rgba(212,169,74,.12); color: #D4A94A; }
+.tag--sage { background: rgba(74,155,110,.12); color: #7fc79a; }
+.tag--red { background: rgba(226,114,108,.12); color: #e2726c; }
+.opt-item { background: #1C1F2A; border-radius: 12px; padding: 1rem; margin-bottom: .6rem; }
+.opt-dish { font-weight: 700; font-size: .88rem; margin-bottom: .3rem; }
+.opt-issue, .opt-suggestion { font-size: .84rem; color: #A39D8F; margin-bottom: .3rem; }
+.opt-meta { display: flex; gap: 1rem; font-size: .78rem; color: #8B8478; margin-top: .5rem; }
+.opt-saving { color: #4A9B6E; font-weight: 700; }
+.opt-context { font-size: .82rem; color: #8B8478; margin-top: .4rem; }
+
+// ── Seasonal ──
+.context-pill { display: inline-block; font-size: .78rem; font-weight: 600; background: rgba(74,155,110,.1); color: #7fc79a; border-radius: 999px; padding: .35rem .8rem; margin-bottom: 1rem; }
+.seasonal-item { background: #1C1F2A; border-radius: 12px; padding: 1rem 1.1rem; margin-bottom: .8rem; }
+.seasonal-header { display: flex; gap: .5rem; align-items: center; margin-bottom: .4rem; }
+.seasonal-type { font-size: .68rem; font-weight: 800; text-transform: uppercase; border-radius: 999px; padding: .15rem .55rem; background: rgba(74,155,110,.14); color: #7fc79a; }
+.seasonal-type--substitute { background: rgba(212,169,74,.14); color: #D4A94A; }
+.seasonal-course { font-size: .76rem; color: #8B8478; }
+.seasonal-name { font-weight: 700; margin-bottom: .3rem; }
+.seasonal-peak { font-size: .78rem; color: #8B8478; font-style: italic; margin: .4rem 0; }
+
+// ── Presentation ──
+.palette-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: .8rem; }
+@media (max-width: 560px) { .palette-grid { grid-template-columns: 1fr; } }
+.palette-card { background: #1C1F2A; border-radius: 12px; padding: 1rem; }
+.palette-card--warn { border: 1px solid rgba(212,169,74,.3); }
+.palette-course { font-weight: 700; font-size: .86rem; margin-bottom: .5rem; }
+.palette-ok { font-size: .74rem; color: #4A9B6E; font-weight: 600; }
+.palette-rec { font-size: .8rem; color: #D4A94A; margin-top: .5rem; }
+
+// ── Nutritionist (indigo, AI-adjacent per app convention) ──
+.coverage-row { display: flex; gap: .7rem; align-items: flex-start; margin-bottom: .7rem; }
+.coverage-dot { width: 10px; height: 10px; border-radius: 50%; margin-top: .3rem; flex-shrink: 0; }
+.coverage-dot--covered { background: #4A9B6E; }
+.coverage-dot--thin { background: #D4A94A; }
+.coverage-dot--gap { background: #e2726c; }
+.coverage-need { font-weight: 700; font-size: .88rem; }
+.coverage-note { font-size: .82rem; color: #A39D8F; margin-top: .15rem; }
+
+// ── Signature dish ──
+.sig-body { padding-top: 0; }
+.sig-name { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.3rem; color: #D4A94A; }
+.sig-tagline { font-style: italic; color: #A39D8F; font-size: .88rem; margin-bottom: .8rem; }
+.sig-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin: 1rem 0; }
+@media (max-width: 560px) { .sig-grid { grid-template-columns: 1fr; } }
+.sig-grid p { font-size: .84rem; color: #A39D8F; margin-top: .2rem; }
+.chef-notes { font-style: italic; color: #D4A94A; font-size: .85rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,.06); }
+
+// ── Detailed analysis ──
+.agent-card { background: #1C1F2A; border-radius: 12px; padding: 1.1rem; margin-bottom: .8rem; }
+.agent-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: .6rem; }
+.agent-card-name { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1rem; margin-bottom: .3rem; }
+.agent-status { font-size: .7rem; font-weight: 700; border-radius: 999px; padding: .15rem .55rem; }
+.agent-status--pass { background: rgba(74,155,110,.14); color: #4A9B6E; }
+.agent-status--review { background: rgba(212,169,74,.14); color: #D4A94A; }
+.agent-score { text-align: right; }
+.score-big { font-family: 'Cormorant Garamond', serif; font-weight: 800; font-size: 1.4rem; }
+.score-den { color: #8B8478; font-size: .8rem; }
+.agent-notes { font-size: .84rem; color: #A39D8F; line-height: 1.55; margin-bottom: .7rem; }
+.checks-list { display: flex; flex-direction: column; gap: .4rem; }
+.check-row { display: flex; align-items: center; gap: .5rem; font-size: .82rem; }
+.check-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.check-dot--pass { background: #4A9B6E; }
+.check-dot--warning { background: #D4A94A; }
+.check-dot--fail { background: #e2726c; }
+.check-name { color: #A39D8F; }
+
+// ── Footer ──
+.chef-footer { margin-top: 2.5rem; text-align: center; }
+.chef-footer-card { background: rgba(212,169,74,.06); border: 1px solid rgba(212,169,74,.25); border-radius: 20px; padding: 1.5rem; margin-bottom: 1.5rem; }
+.chef-footer-title { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.15rem; color: #D4A94A; margin-bottom: .6rem; }
+.chef-footer-body { font-size: .92rem; color: #A39D8F; line-height: 1.6; }
+.hl-sage { color: #7fc79a; font-weight: 700; }
+.chef-footer-sub { color: #8B8478; font-size: .84rem; display: inline-block; margin-top: .4rem; }
+.chef-footer-actions { display: flex; justify-content: center; gap: 1rem; margin-bottom: 1.2rem; }
+.chef-footer-responded { color: #8B8478; margin-bottom: 1.2rem; }
+.chef-footer-attaching { color: #B5ABF0; font-size: .85rem; font-weight: 600; margin-bottom: 1rem; }
+.attached-confirm { background: rgba(74,155,110,.1); border: 1px solid rgba(74,155,110,.3); color: #7fc79a; border-radius: 12px; padding: .9rem 1.2rem; font-size: .88rem; font-weight: 600; }

@@ -1,0 +1,20 @@
+{
+  "users": [
+    {
+      "userId": "admin-seed-0001",
+      "email": "admin@tarbuuz.com",
+      "firstName": "Tarbuuz",
+      "lastName": "Admin",
+      "roles": ["admin"],
+      "verified": true
+    },
+     {
+      "userId": "admin-seed-0002",
+      "email": "tej.garg@gmail.com",
+      "firstName": "Tej",
+      "lastName": "Garg",
+      "roles": ["admin"],
+      "verified": true
+    }
+  ]
+}
